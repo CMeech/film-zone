@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Volleyball Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white shadow p-6 rounded">
+        <h1 class="text-2xl font-bold mb-4">Volleyball Stats</h1>
+
+        <form method="post" action="/add" class="mb-4 space-y-2">
+            <input name="player" placeholder="Player Name" class="border p-2 w-full" required>
+            <input name="kills" type="number" placeholder="Kills" class="border p-2 w-full" required>
+            <input name="blocks" type="number" placeholder="Blocks" class="border p-2 w-full" required>
+            <input name="aces" type="number" placeholder="Aces" class="border p-2 w-full" required>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded">Add Stat</button>
+        </form>
+
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2">Player</th>
+                    <th class="px-4 py-2">Kills</th>
+                    <th class="px-4 py-2">Blocks</th>
+                    <th class="px-4 py-2">Aces</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats %}
+                <tr class="text-center border-t">
+                    <td class="py-2">{{ stat[1] }}</td>
+                    <td>{{ stat[2] }}</td>
+                    <td>{{ stat[3] }}</td>
+                    <td>{{ stat[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-2">Highlight Video</h2>
+            <iframe class="w-full h-64" src="https://www.youtube.com/embed/{{ video_id }}" 
+                title="YouTube video player" allowfullscreen></iframe>
+        </div>
+    </div>
+</body>
+</html>
