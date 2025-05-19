@@ -1,0 +1,13 @@
+# Here's how to run the unit tests with Docker
+# docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
+
+services:
+  app-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile # test using prod build
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    command: pytest

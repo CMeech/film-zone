@@ -1,5 +1,5 @@
 
-from flask import Blueprint, render_template
+from flask import Blueprint
 
 health_bp = Blueprint('health', __name__)
 

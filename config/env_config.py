@@ -9,7 +9,6 @@ class EnvConfig:
     FLASK_SECRET_KEY = get_env_var("FLASK_SECRET_KEY", "super_secret_session_key")
     LOG_LEVEL = get_env_var("LOG_LEVEL", "INFO").upper()
     MAX_FORM_MEMORY_SIZE = get_env_var("MAX_FORM_MEMORY_SIZE", 1024 * 50)
-    # this isn't working yet...
     PERMANENT_SESSION_LIFETIME = get_env_var("PERMANENT_SESSION_LIFETIME", 3600)
     SESSION_COOKIE_DOMAIN = get_env_var("SESSION_COOKIE_DOMAIN", "localhost")
     SESSION_COOKIE_NAME = get_env_var("SESSION_COOKIE_NAME", "session")

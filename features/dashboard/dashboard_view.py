@@ -14,5 +14,4 @@ def index():
     # c.execute('SELECT * FROM stats')
     # stats = c.fetchall()
     # conn.close()
-    video_id = "dQw4w9WgXcQ"  # Replace with your desired YouTube video ID
-    return render_template('dashboard/index.html', stats=[], video_id=video_id)
+    return render_template('dashboard/dashboard.html')
