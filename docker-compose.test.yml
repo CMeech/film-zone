@@ -8,6 +8,11 @@ services:
       dockerfile: Dockerfile # test using prod build
     environment:
       - PYTHONPATH=/app
+      - RUN_TESTS=True
     volumes:
       - .:/app
+      - sqlite-test-data:/app/stats-data/stats-test.db
     command: pytest
+
+volumes:
+  sqlite-test-data:
