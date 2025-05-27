@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FilmZone</title>
+    <link
+        nonce="{{ g.csp_nonce }}"
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/tailwind.css') }}"
+    >
+    <!-- g is available in Jinja2 templates, no need to explicitly import -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.14.9/dist/cdn.min.js"
+        defer
+        nonce="{{ g.csp_nonce }}"
+    ></script>
+    <script
+        nonce="{{ g.csp_nonce }}"
+        src="{{ url_for('static', filename='js/components/dashboard/dashboard.js') }}"
+    ></script>
+    <style nonce="{{ g.csp_nonce }}">
+        .header-nav {
+            margin: 0px 0px 2px 0px;
+        }
+    </style>
+</head>
+<body
+    x-data="appData"
+    class="flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-white h-screen"
+>
+  <!-- Navbar -->
+    <header class="header-nav bg-white dark:bg-gray-800 shadow p-6 flex items-center justify-between">
+        <div class="text-lg font-bold">FilmZone</div>
+        <div>
+        <!-- Menu button (Small screens) -->
+            <button
+                @click="toggleSidebar"
+                class="md:hidden"
+            >
+                <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+  <!-- Sidebar -->
+  <div class="md:flex grow">
+    <!-- Side Panel -->
+    <aside
+        :class="sideBarClass"
+        class="fixed md:static z-40 inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-md transition-transform transform md:translate-x-0"
+    >
+        <nav class="p-4 space-y-4">
+            <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Dashboard</a>
+            <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Reports</a>
+            <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Settings</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- <footer>{% block footer %}{% endblock %}</footer> -->
+  </div>
+</body>
+</html>
