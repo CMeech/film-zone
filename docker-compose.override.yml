@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     environment:
+      - NODE_ENV=development
       - EXPLAIN_TEMPLATE_LOADING=True
       - FLASK_ENV=development
     command: flask run --host=0.0.0.0 --port=5000 --debug
@@ -15,3 +16,28 @@ services:
           ignore:
             - stats-data/
             - __pycache__/
+  # Run tailwind in a separate container for Prod, better logs and simpler Dockerfile build
+  tailwind:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      # Sync the host's folder to the app container above
+      # which completes the hot reload for tailwind
+      - ./static/css:/app/static/css:rw
+    develop:
+      # We need to watch the assets and templates folder as it's the input for tailwind config
+      # We mount static as it's the output. Any changes by tailwind in Docker will
+      watch:
+        - path: ./assets/css
+          target: /app/assets/css
+          action: sync
+        - path: ./templates
+          target: /app/templates
+          action: sync
+        - path: ./tailwind.config.js
+          target: /app/tailwind.config.js
+          action: sync
+    command: npx tailwindcss -o ./static/css/tailwind.css --watch=always --verbose
+    working_dir: /app

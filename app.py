@@ -2,7 +2,7 @@ from flask import Flask
 from libs.init.init_app import setup_app
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static', template_folder='templates')
     setup_app(app)
     return app
 

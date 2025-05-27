@@ -1,8 +1,10 @@
 from config.config import getConfig
 from flask import Blueprint, render_template, request, redirect, session
 from libs.hash.generate_token import generate_token
+from libs.security.rate_limit import limiter
 
 auth_bp = Blueprint('auth', __name__)
+limiter.limit("50/minute")(auth_bp)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():

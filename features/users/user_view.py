@@ -1,13 +1,13 @@
 from flask.views import MethodView
 from flask import render_template
 
-class UserView(MethodView):
-    def get(self):
-        return render_template("dashboard/index.html")
+# Unused - left for reference for ModelView development
+# class UserView(MethodView):
+#     def get(self):
+#         pass
 
-    def post(self):
-        # handle form submission
-        pass
+#     def post(self):
+#         pass
 
 
 # @app.route('/add', methods=['POST'])
