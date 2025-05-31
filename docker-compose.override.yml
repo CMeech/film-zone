@@ -39,5 +39,5 @@ services:
         - path: ./tailwind.config.js
           target: /app/tailwind.config.js
           action: sync
-    command: npx tailwindcss -o ./static/css/tailwind.css --watch=always --verbose
+    command: npx tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose
     working_dir: /app

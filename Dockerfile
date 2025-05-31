@@ -10,7 +10,7 @@ RUN npm install
 COPY ./assets ./assets
 
 # Run Tailwind to generate CSS
-RUN npx tailwindcss -o ./static/css/tailwind.css --minify
+RUN npx tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify
 
 # Stage 2: Final image with Python
 FROM python:3.11-slim
