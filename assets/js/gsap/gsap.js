@@ -1,8 +1,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+window.gsap = gsap; // Make it global if Alpine needs to access it in x-init
 
-document.addEventListener("DOMContentLoaded", () => {
-  gsap.to(".box", { x: 100, duration: 1 });
-});
+gsap.registerPlugin(ScrollTrigger);

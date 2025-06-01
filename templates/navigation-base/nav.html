@@ -9,12 +9,6 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='css/tailwind.css') }}"
     >
-    <!-- g is available in Jinja2 templates, no need to explicitly import -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.14.9/dist/cdn.min.js"
-        defer
-        nonce="{{ g.csp_nonce }}"
-    ></script>
     <script
         nonce="{{ g.csp_nonce }}"
         src="{{ url_for('static', filename='js/animation/bundle-gsap.js') }}"
@@ -28,6 +22,11 @@
             margin: 0px 0px 2px 0px;
         }
     </style>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.14.9/dist/cdn.min.js"
+        defer
+        nonce="{{ g.csp_nonce }}"
+    ></script>
 </head>
 <body
     x-data="appData"

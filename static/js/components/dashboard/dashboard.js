@@ -7,6 +7,9 @@ document.addEventListener('alpine:init', () => {
             },
             get sideBarClass() {
                 return this.sidebarOpen ? 'translate-x-0' : '-translate-x-full';
+            },
+            showContentTransition() {
+                gsap.to(".box", { x: 100, duration: 1 });
             }
         }
     })
