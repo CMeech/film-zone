@@ -7,13 +7,19 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-gsap": "esbuild assets/js/gsap/gsap.js --bundle --outfile=static/js/animation/bundle-gsap.js --minify",
+    "build-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify",
+    "watch-gsap": "esbuild assets/js/gsap/gsap.js --bundle --outfile=static/js/animation/bundle-gsap.js --sourcemap --watch",
+    "watch-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.7",
+    "esbuild": "^0.25.5",
+    "gsap": "^3.13.0",
     "tailwindcss": "^4.1.7"
   }
 }

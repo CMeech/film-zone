@@ -36,8 +36,20 @@ services:
         - path: ./templates
           target: /app/templates
           action: sync
-        - path: ./tailwind.config.js
-          target: /app/tailwind.config.js
+    command: npm run watch-tailwind
+    working_dir: /app
+  # Some JS code needs to be bundled with hot reload
+  js-bundler:
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./static/js:/app/static/js:rw
+    develop:
+      watch:
+        - path: ./assets/js
+          target: /app/assets/js
           action: sync
-    command: npx tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose
+    command: npm run watch-gsap
     working_dir: /app

@@ -178,3 +178,4 @@ cython_debug/
 
 node_modules/**
 static/css/tailwind.css
+static/js/animation/**

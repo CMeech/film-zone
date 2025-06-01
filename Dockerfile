@@ -1,4 +1,6 @@
-# Stage 1: Build assets with Node
+# Run with docker-compose -f docker-compose.yml up -d
+
+# Stage 1: Build assets with Node, avoid including JS dev dependencies in Python image
 FROM node:22-slim as nodebuild
 
 WORKDIR /app
@@ -10,7 +12,10 @@ RUN npm install
 COPY ./assets ./assets
 
 # Run Tailwind to generate CSS
-RUN npx tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify
+RUN npm run build-tailwind
+
+# Run ESBuild to bundle GSAP JS
+RUN npm run build-gsap
 
 # Stage 2: Final image with Python
 FROM python:3.11-slim

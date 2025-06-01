@@ -1,8 +1,39 @@
+# Dependency folders
+node_modules/
+venv/
+__pycache__/
 
-__pycache__
+# Python artifacts
 *.pyc
 *.pyo
 *.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Flask & local settings
 .env
+.env.*
+*.log
+instance/
+*.sqlite
 *.db
-*.sqlite3
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage/test files
+coverage/
+htmlcov/
+*.cover
+*.pytest_cache/
+test-results/
+

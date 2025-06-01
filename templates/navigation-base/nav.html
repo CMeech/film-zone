@@ -17,6 +17,10 @@
     ></script>
     <script
         nonce="{{ g.csp_nonce }}"
+        src="{{ url_for('static', filename='js/animation/bundle-gsap.js') }}"
+    ></script>
+    <script
+        nonce="{{ g.csp_nonce }}"
         src="{{ url_for('static', filename='js/components/dashboard/dashboard.js') }}"
     ></script>
     <style nonce="{{ g.csp_nonce }}">
