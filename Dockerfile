@@ -27,6 +27,14 @@ FROM python:3.11-slim
 RUN adduser --disabled-password --gecos "" appuser
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y curl
+
+ENV DATABASE_URL=sqlite:stats-data/stats.db
+
+# Install DB mate for migration handling
+RUN curl -fsSL https://github.com/amacneil/dbmate/releases/download/v2.27.0/dbmate-linux-amd64 -o /usr/local/bin/dbmate \
+  && chmod +x /usr/local/bin/dbmate
+
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -38,6 +46,8 @@ COPY . .
 
 # Set up data directory
 RUN mkdir -p stats-data && chown -R appuser:appuser stats-data
+
+RUN dbmate up
 
 # Use non-root user
 USER appuser

@@ -1,0 +1,12 @@
+# For running DB mate commands via Docker
+services:
+  dbmate:
+    image: amacneil/dbmate
+    environment:
+      - DATABASE_URL=sqlite:///stats-data/stats.db
+    # mount to host directory so changes are detected in VSCode
+    volumes:
+      - .:/app
+    working_dir: /app
+    # Just run the container with the command you want: up, down, new
+    command: new create_users
