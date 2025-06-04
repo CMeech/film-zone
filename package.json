@@ -8,6 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build-alpine": "esbuild assets/js/alpine.js --bundle --outfile=static/js/alpine/alpine.js --minify",
+    "build-alpine-dev": "esbuild assets/js/alpine/alpine.js --bundle --outfile=static/js/alpine/alpine.js --sourcemap",
     "build-gsap": "esbuild assets/js/gsap/gsap.js --bundle --outfile=static/js/animation/bundle-gsap.js --minify",
     "build-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify",
     "watch-gsap": "esbuild assets/js/gsap/gsap.js --bundle --outfile=static/js/animation/bundle-gsap.js --sourcemap --watch",
@@ -21,5 +23,8 @@
     "esbuild": "^0.25.5",
     "gsap": "^3.13.0",
     "tailwindcss": "^4.1.7"
+  },
+  "dependencies": {
+    "alpinejs": "^3.14.9"
   }
 }

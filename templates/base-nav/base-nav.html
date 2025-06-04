@@ -15,7 +15,7 @@
     ></script>
     <script
         nonce="{{ g.csp_nonce }}"
-        src="{{ url_for('static', filename='js/components/dashboard/dashboard.js') }}"
+        src="{{ url_for('static', filename='js/components/base-nav/base-nav.js') }}"
     ></script>
     <style nonce="{{ g.csp_nonce }}">
         .header-nav {
@@ -23,9 +23,8 @@
         }
     </style>
     <script
-        src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.14.9/dist/cdn.min.js"
-        defer
         nonce="{{ g.csp_nonce }}"
+        src="{{ url_for('static', filename='js/alpine/alpine.js') }}"
     ></script>
 </head>
 <body

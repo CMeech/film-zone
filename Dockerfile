@@ -15,6 +15,9 @@ COPY ./assets ./assets
 RUN npm run build-tailwind
 
 # Run ESBuild to bundle GSAP JS
+RUN npm run build-alpine
+
+# Run ESBuild to bundle GSAP JS
 RUN npm run build-gsap
 
 # Stage 2: Final image with Python
