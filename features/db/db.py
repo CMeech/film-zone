@@ -40,3 +40,10 @@ def fetch_one(query, params):
     result = c.fetchone()
     conn.close()
     return result
+
+def execute_modifying_query(query, params) -> None:
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute(query, params)
+    conn.commit()
+    conn.close()

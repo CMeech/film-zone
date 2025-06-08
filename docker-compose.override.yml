@@ -1,3 +1,4 @@
+# Dev docker file, don't use in production scenarios or for testing prod scenarios
 services:
   app:
     build:
@@ -5,8 +6,11 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - NODE_ENV=development
-      - EXPLAIN_TEMPLATE_LOADING=True
+      - EXPLAIN_TEMPLATE_LOADING=False
       - FLASK_ENV=development
+      - ADMIN_USERNAME=cmeeches
+      - ADMIN_PASSWORD=secret123
+      - LOG_LEVEL=DEBUG
     command: flask run --host=0.0.0.0 --port=5000 --debug
     develop:
       watch:

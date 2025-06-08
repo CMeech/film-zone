@@ -19,7 +19,7 @@ def access_login():
         else:
             error_message = 'Access code is not valid'
             flash(error_message)
-            render_template('auth/login-access.html', error_message=error_message)
+            return render_template('auth/login-access.html', error_message=error_message)
     return render_template('auth/login-access.html')
 
 @auth_bp.route('/login/user', methods=['GET', 'POST'])
@@ -36,5 +36,5 @@ def user_login():
         else:
             error_message = 'User crendentials are not valid'
             flash(error_message)
-            render_template('auth/login-user.html', error_message=error_message)
+            return render_template('auth/login-user.html', error_message=error_message)
     return render_template('auth/login-user.html')

@@ -1,7 +1,5 @@
 from flask import redirect, session
-from libs.hash.generate_token import generate_token
 from functools import wraps
-from config.config import getConfig
 from features.auth.auth_service import is_valid_token
 
 def require_auth(f):

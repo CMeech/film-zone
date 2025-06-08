@@ -1,4 +1,5 @@
-from features.db.db import fetch_one
+from features.db.db import execute_modifying_query, fetch_one
+from features.users.role import Role
 from features.users.user import User
 
 def verify_coach_login(username: str, password_hash: str) -> User:
@@ -14,6 +15,15 @@ def verify_coach_login(username: str, password_hash: str) -> User:
     user = User(*result)
     return user
 
+def create_access_code(access_code_hash: str, role: Role) -> str:
+    query = """
+        INSERT INTO users (password_hash, role)
+        VALUES (?, ?)
+    """
+    params = (access_code_hash, role.value)
+    execute_modifying_query(query, params)
+    return access_code_hash
+
 def verify_player_login(access_code_hash: str) -> User:
     query = """
         SELECT u.id, u.username, u.role FROM users u
@@ -27,3 +37,21 @@ def verify_player_login(access_code_hash: str) -> User:
     # short-hand for unpacking a tuple in Python
     user = User(*result)
     return user
+
+def create_user(username: str, password_hash: str, role: Role) -> User:
+    query = """
+        INSERT INTO users (username, password_hash, role)
+        VALUES (?, ?, ?)
+    """
+    params = (username, password_hash, role.value)
+    execute_modifying_query(query, params)
+    pass
+
+def admin_exists() -> bool:
+    query = """
+        SELECT u.id, u.username, u.role FROM users u
+        WHERE u.role = ?
+        LIMIT 1"""
+    params = (Role.ADMIN.value,)
+    result = fetch_one(query, params)
+    return result is not None
