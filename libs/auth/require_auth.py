@@ -2,6 +2,7 @@ from flask import redirect, session
 from libs.hash.generate_token import generate_token
 from functools import wraps
 from config.config import getConfig
+from features.auth.auth_service import is_valid_token
 
 def require_auth(f):
     """
@@ -13,7 +14,7 @@ def require_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = session.get('auth_token')
-        if token != generate_token(getConfig().ACCESS_PASSWORD):
-            return redirect('/auth/login')
+        if is_valid_token(token) is False:
+            return redirect('/auth/login/access')
         return f(*args, **kwargs)
     return wrapper

@@ -1,5 +1,22 @@
-from flask.views import MethodView
-from flask import render_template
+from config.config import getConfig
+from flask import Blueprint, render_template, request, redirect, session
+from libs.hash.generate_token import generate_token
+from libs.security.rate_limit import limiter
+
+user_bp = Blueprint('user', __name__)
+limiter.limit("100/minute")(user_bp)
+
+# @auth_bp.route('/login', methods=['GET', 'POST'])
+# def get_current_user():
+#     if request.method == 'POST':
+#         pwd = request.form['password']
+#         if pwd == getConfig().ACCESS_PASSWORD:
+#             session['auth_token'] = generate_token(pwd)
+#             session.permanent = True
+#             return redirect('/dashboard')
+#         else:
+#             return "Invalid password", 401
+#     return render_template('auth/login.html')
 
 # Unused - left for reference for ModelView development
 # class UserView(MethodView):

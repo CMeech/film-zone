@@ -1,19 +1,40 @@
-from config.config import getConfig
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, flash, render_template, request, redirect, session
 from libs.hash.generate_token import generate_token
 from libs.security.rate_limit import limiter
+from features.auth.auth_service import authenticate_player_login, authenticate_coach_login
 
 auth_bp = Blueprint('auth', __name__)
-limiter.limit("50/minute")(auth_bp)
+limiter.limit("100/minute")(auth_bp)
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
-def login():
+@auth_bp.route('/login/access', methods=['GET', 'POST'])
+def access_login():
     if request.method == 'POST':
-        pwd = request.form['password']
-        if pwd == getConfig().ACCESS_PASSWORD:
-            session['auth_token'] = generate_token(pwd)
+        access_code = request.form['password']
+        code_hash = generate_token(access_code)
+        token = authenticate_player_login(code_hash)
+        if token is not None:
+            session['auth_token'] = token
             session.permanent = True
             return redirect('/dashboard')
         else:
-            return "Invalid password", 401
-    return render_template('auth/login.html')
+            error_message = 'Access code is not valid'
+            flash(error_message)
+            render_template('auth/login-access.html', error_message=error_message)
+    return render_template('auth/login-access.html')
+
+@auth_bp.route('/login/user', methods=['GET', 'POST'])
+def user_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        password_hash = generate_token(password)
+        token = authenticate_coach_login(username, password_hash)
+        if token is not None:
+            session['auth_token'] = token
+            session.permanent = True
+            return redirect('/dashboard')
+        else:
+            error_message = 'User crendentials are not valid'
+            flash(error_message)
+            render_template('auth/login-user.html', error_message=error_message)
+    return render_template('auth/login-user.html')

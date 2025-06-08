@@ -22,5 +22,21 @@ def init_db():
     except Exception as e:
         logger.fatal(f"Failed to initialize database: {e}")
 
+
+# note: this is thread safe.
+# however, sqlite defaults to the SERIALIZABLE isolation level.
+# meaning that multiple threads can't have write access the database at the same time.
+# https://sqlite.org/serializable.html
+#
+# Use for more comples transactions with multi-query execution
 def get_connection() -> sqlite3.Connection:
     return sqlite3.connect(getConfig().DB_FILE)
+
+# Use for single row, single query transactions
+def fetch_one(query, params):
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute(query, params)
+    result = c.fetchone()
+    conn.close()
+    return result

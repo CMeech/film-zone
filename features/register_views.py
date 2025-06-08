@@ -8,11 +8,8 @@ def register_views(app):
         # Dashboard
         app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
-        # Users
-
-        # user_view = UserView.as_view('user_view')
-        # app.add_url_rule('/user', view_func=user_view, methods=['POST'])
         # E.g: Parameterized rule for ModelView
+        # user_view = UserView.as_view('user_view')
         # app.add_url_rule('/user/<int:user_id>', view_func=user_view, methods=['GET'])   
 
         # Actuator
