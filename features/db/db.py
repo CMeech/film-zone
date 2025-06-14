@@ -41,6 +41,14 @@ def fetch_one(query, params):
     conn.close()
     return result
 
+def fetch_all(query, params):
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute(query, params)
+    result = c.fetchall()
+    conn.close()
+    return result
+
 def execute_modifying_query(query, params) -> None:
     conn = get_connection()
     c = conn.cursor()

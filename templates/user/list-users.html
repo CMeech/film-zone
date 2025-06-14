@@ -1,0 +1,21 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/components/user/list-users.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div>
+  <h1 class="text-3xl font-bold mb-4">Users</h1>
+  <ul class="divide-y divide-gray-200">
+    {% for user in users %}
+    <li class="py-4">
+        <div class="flex items-center">
+          <span class="text-lg font-bold">{{ user.username }}</span>
+          <span class="text-sm text-gray-500 ml-2">{{ user.role.value }}</span>
+        </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

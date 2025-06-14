@@ -26,6 +26,7 @@
         nonce="{{ g.csp_nonce }}"
         src="{{ url_for('static', filename='js/alpine/alpine.js') }}"
     ></script>
+    {% block scripts %}{% endblock %}
 </head>
 <body
     x-data="appData"
@@ -58,6 +59,9 @@
             <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Dashboard</a>
             <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Reports</a>
             <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Settings</a>
+            {% if g.user_profile.role.value == 'admin' %}
+            <a href="/user/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Users</a>
+            {% endif %}
         </nav>
     </aside>
 

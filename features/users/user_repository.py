@@ -1,6 +1,24 @@
-from features.db.db import execute_modifying_query, fetch_one
+from features.db.db import execute_modifying_query, fetch_all, fetch_one
 from features.users.role import Role
 from features.users.user import User
+
+def get_all_users() -> list[User]:
+    query = """
+        SELECT u.id, u.username, u.role FROM users u
+    """
+    result = fetch_all(query, ())
+    users = [User(*user) for user in result]
+    return users
+
+def get_all_players() -> list[User]:
+    query = """
+        SELECT u.id, u.username, u.role FROM users u
+        WHERE u.role = ?
+    """
+    params = (Role.PLAYER.value,)
+    result = fetch_all(query, ())
+    users = [User(*user) for user in result]
+    return users
 
 def verify_coach_login(username: str, password_hash: str) -> User:
     query = """

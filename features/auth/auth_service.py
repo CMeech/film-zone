@@ -1,7 +1,10 @@
 # This will manage the cache for user access tokens
 # This will be used to authenticate users
 
-from libs.cache.cache import add_to_cache, get_value, key_exists
+from features.users.role import Role
+from features.users.user import User
+from libs.cache.cache import add_to_cache, get_value
+from libs.context.user_context import get_user_profile
 from libs.hash.generate_token import generate_token
 from features.users.user_repository import verify_coach_login, verify_player_login
 from libs.logging.logging import logger
@@ -27,18 +30,20 @@ def authenticate_coach_login(username: str, password_hash: str) -> str:
     add_to_cache(token, user, 7200)
     return token
 
-def is_valid_token(token: str) -> bool:
+def get_user_from_token(token: str) -> User:
     user = get_value(token)
     if user is None:
         logger.debug(f"Token {token} is invalid")
-        return False
     elif user.username == ACCESS_TOKEN:
         logger.debug(f"Player access token is valid")
-        return True
     else:
         logger.debug(f"User {user.username} was detected")
-        return True
+    return user
 
-def is_authorized(token: str, role: str) -> bool:
-    user = get_value(token)
-    return user is not None and user.role == role
+def is_authorized(roles: list[Role]) -> bool:
+    user = get_user_profile()
+    if (user is not None):
+        logger.debug(f"Checking authorization for user {user.username}. Roles {[role.name for role in roles]}")
+    else:
+        logger.debug("User is not authenticated")
+    return user is not None and user.role in roles

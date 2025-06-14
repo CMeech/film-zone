@@ -1,6 +1,8 @@
 from flask import redirect, session
 from functools import wraps
-from features.auth.auth_service import is_valid_token
+from features.auth.auth_service import get_user_from_token
+from libs.context.user_context import set_user_profile
+from libs.logging.logging import logger
 
 def require_auth(f):
     """
@@ -12,7 +14,10 @@ def require_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = session.get('auth_token')
-        if is_valid_token(token) is False:
+        user = get_user_from_token(token)
+        if user is None:
             return redirect('/auth/login/access')
+        set_user_profile(user)
+        logger.debug(f"User {user.username} is authenticated")
         return f(*args, **kwargs)
     return wrapper
