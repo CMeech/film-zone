@@ -46,9 +46,9 @@ def initialize_admin():
         flash(error_message)
         return render_template('error/error.html', error_message=error_message)
 
-@user_bp.route('/register/user', methods=['GET', 'POST'])
+@user_bp.route('/register', methods=['GET', 'POST'])
 @require_auth
-@pre_authorize(Role.ADMIN)
+@pre_authorize([Role.ADMIN])
 def register_user():
     if request.method == 'POST':
         try: 
@@ -56,7 +56,7 @@ def register_user():
             password = request.form['password']
             password_hash = generate_token(password)
             user_repository.create_user(username, password_hash, Role.COACH)
-            return redirect('/dashboard')
+            flash("User registered successfully.")
         except Exception as e:
             logger.error(f"Failed to register user: {e}")
             error_message = "Failed to register user."
@@ -66,7 +66,7 @@ def register_user():
     # Add team context
     return render_template('user/register-user.html')
 
-@user_bp.route('/register/playerAccess', methods=['GET', 'POST'])
+@user_bp.route('/register/player', methods=['GET', 'POST'])
 @require_auth
 @pre_authorize([Role.COACH, Role.ADMIN])
 def register_player():

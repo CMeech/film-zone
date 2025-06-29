@@ -1,5 +1,9 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('usersData', () => {
-        return {}
+        return {
+            createUser() {
+                window.location.href="/user/register"
+            }
+        }
     })
 })
