@@ -19,12 +19,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@alpinejs/csp": "^3.14.9",
     "@tailwindcss/cli": "^4.1.7",
     "esbuild": "^0.25.5",
     "gsap": "^3.13.0",
     "tailwindcss": "^4.1.7"
-  },
-  "dependencies": {
-    "alpinejs": "^3.14.9"
   }
 }
