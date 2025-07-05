@@ -59,6 +59,9 @@
                     {% if g.user_profile.role.value == 'admin' %}
                     <a href="/user/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Users</a>
                     {% endif %}
+                    {% if g.user_profile.role.value == 'admin' %}
+                    <a href="/user/register/player" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Player access</a>
+                    {% endif %}
                 </nav>
             </aside>
 

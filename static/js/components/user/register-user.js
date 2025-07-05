@@ -7,7 +7,6 @@ document.addEventListener("alpine:init", () => {
             submitForm(form) {
                 this.submitting = true;
                 document.querySelector("#userForm").submit();
-                console.log(form);
             },
             get submitText() {
                 return this.submitting ? "Submitting..." : "Submit";
