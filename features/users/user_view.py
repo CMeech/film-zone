@@ -1,4 +1,5 @@
 from config.config import getConfig
+from features.teams import team_repository
 from features.users import user_repository
 from features.users.role import Role
 from flask import Blueprint, flash, render_template, redirect, request
@@ -65,8 +66,8 @@ def register_player():
             password = request.form['password']
             team_id = request.form['teamId']
             password_hash = generate_token(password)
-            user_repository.create_access_code(password_hash, Role.PLAYER)
-            # Link to team here!
+            player = user_repository.create_access_code(password_hash, Role.PLAYER)
+            team_repository.link_team_to_user(team_id, player.id)
             flash("Player access code registered successfully.")
         except Exception as e:
             logger.error(f"Failed to register player: {e}")
