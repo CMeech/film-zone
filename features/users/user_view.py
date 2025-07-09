@@ -45,14 +45,15 @@ def initialize_admin():
 @pre_authorize([Role.ADMIN])
 def register_user():
     if request.method == 'POST':
+        username = None
         try: 
             username = request.form['username']
             password = request.form['password']
             password_hash = generate_token(password)
             user_repository.create_user(username, password_hash, Role.COACH)
-            flash("User registered successfully.")
+            flash(f"User {username} registered successfully.")
         except Exception as e:
-            logger.error(f"Failed to register user: {e}")
+            logger.error(f"Failed to register user with username {username}: {e}")
             error_message = "Failed to register user."
             flash(error_message)
     return render_template('user/register-user.html')
@@ -62,15 +63,16 @@ def register_user():
 @pre_authorize([Role.ADMIN])
 def register_player():
     if request.method == 'POST':
+        team_id = None
         try:
             password = request.form['password']
             team_id = request.form['teamId']
             password_hash = generate_token(password)
             player = user_repository.create_access_code(password_hash, Role.PLAYER)
             team_repository.link_team_to_user(team_id, player.id)
-            flash("Player access code registered successfully.")
+            flash(f"Player access code registered successfully for team with id {team_id}")
         except Exception as e:
-            logger.error(f"Failed to register player: {e}")
+            logger.error(f"Failed to register player for team with id {team_id}: {e}")
             error_message = "Failed to register player."
             flash(error_message)
     return render_template('user/register-player.html')

@@ -27,9 +27,25 @@ def create_team():
             name = request.form['name']
             logo_path = request.form['logoPath']
             team = team_repository.create_team(year, name, logo_path)
-            flash("User registered successfully.")
+            flash(f"Team {team.name} {team.year} registered successfully.")
         except Exception as e:
             logger.error(f"Failed to register team: {e}")
             error_message = "Failed to register team."
             flash(error_message)
     return render_template("team/register-team.html")
+
+@team_bp.route('/link/user', methods=['GET', 'POST'])
+@require_auth
+@pre_authorize([Role.ADMIN])
+def link_user():
+    if request.method == 'POST':
+        try:
+            team_id = request.form['teamId']
+            user_id = request.form['userId']
+            team_repository.link_team_to_user(team_id, user_id)
+            flash(f"User with id {user_id} linked to team with id {team_id} successfully.")
+        except Exception as e:
+            logger.error(f"Failed to link user with id {user_id} to team with id {team_id}: {e}")
+            error_message = "Failed to link user to team. Please check the input and try again."
+            flash(error_message)
+    return render_template("team/link-user.html")
