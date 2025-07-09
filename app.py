@@ -6,6 +6,10 @@ def create_app():
     setup_app(app)
     return app
 
+
+app = create_app()
+
+# this will not run if using gunicorn and that's okay
+# gunicorn will handle this for us
 if __name__ == '__main__':
-    app = create_app()
     app.run(host='0.0.0.0', port=5000)

@@ -10,8 +10,6 @@ services:
     environment:
       - FLASK_ENV=production
       - NODE_ENV=production
-    # use gunicorn to run the app later
-    command: flask run --host=0.0.0.0 --port=5000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/actuator/health"]
       interval: 30s

@@ -38,8 +38,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN mkdir -p stats-data
 
-RUN dbmate up
+# Set up entrypoint script
+COPY /entrypoint/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+# Run the app
+ENTRYPOINT ["/entrypoint.sh"]

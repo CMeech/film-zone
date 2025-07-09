@@ -47,11 +47,13 @@ COPY . .
 # Set up data directory
 RUN mkdir -p stats-data && chown -R appuser:appuser stats-data
 
-RUN dbmate up
+# Set up entrypoint script
+COPY /entrypoint/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Use non-root user
 USER appuser
 EXPOSE 5000
 
 # Run the app
-CMD ["python", "app.py"]
+ENTRYPOINT ["/entrypoint.sh"]
