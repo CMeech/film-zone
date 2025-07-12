@@ -39,6 +39,7 @@ services:
         - path: ./templates
           target: /app/templates
           action: sync
+    entrypoint: []
     command: npm run watch-tailwind
     working_dir: /app
   # Some JS code needs to be bundled with hot reload
@@ -54,5 +55,6 @@ services:
         - path: ./assets/js
           target: /app/assets/js
           action: sync
+    entrypoint: []
     command: npm run watch-gsap
     working_dir: /app

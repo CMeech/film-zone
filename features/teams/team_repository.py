@@ -41,6 +41,7 @@ def get_teams_by_user_id(user_id) -> List[Team]:
     query = """
             SELECT t.id, t.year, t.name, t.logo_path
             FROM Teams t join UserTeams ut on t.id = ut.team_id and ut.user_id = ?
+            ORDER BY t.id DESC
             """
     params = (user_id,)
     result = fetch_all(query, params)

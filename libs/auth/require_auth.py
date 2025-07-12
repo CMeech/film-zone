@@ -14,10 +14,10 @@ def require_auth(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         token = session.get('auth_token')
-        user = get_user_from_token(token)
-        if user is None:
+        profile = get_user_from_token(token)
+        if profile is None:
             return redirect('/auth/login/access')
-        set_user_profile(user)
-        logger.debug(f"User {user.username} is authenticated")
+        set_user_profile(profile)
+        logger.debug(f"User {profile.user.username} is authenticated")
         return f(*args, **kwargs)
     return wrapper

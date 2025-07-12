@@ -30,8 +30,15 @@
         class="flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-white h-screen"
     >
         <!-- Navbar -->
-        <header class="header-nav bg-white dark:bg-gray-800 shadow p-6 flex items-center justify-between">
-            <div class="text-lg font-bold">FilmZone</div>
+        <header class="header-nav bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between">
+            <div class="flex flex-row items-center">
+                {% if g.user_profile.active_team_logo %}
+                <div class="mr-3">
+                    <img src="{{ g.user_profile.active_team_logo }}" alt="{{ g.user_profile.active_team_name }} logo" class="h-10 w-10 object-contain">
+                </div>
+                {% endif %}
+                <div class="text-lg font-bold">FilmZone</div>
+            </div>
             <div>
                 <!-- Menu button (Small screens) -->
                 <button
@@ -56,14 +63,15 @@
                     <a href="/dashboard" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Dashboard</a>
                     <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Reports</a>
                     <a href="#" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Settings</a>
-                    {% if g.user_profile.role.value == 'admin' %}
+                    <a href="/team/list/user" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Teams</a>
+                    {% if g.user_profile.user.role.value == 'admin' %}
                     <a href="/user/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Users</a>
                     {% endif %}
-                    {% if g.user_profile.role.value == 'admin' %}
+                    {% if g.user_profile.user.role.value == 'admin' %}
                     <a href="/user/register/player" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Player access</a>
                     {% endif %}
-                    {% if g.user_profile.role.value == 'admin' %}
-                    <a href="/team/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Teams</a>
+                    {% if g.user_profile.user.role.value == 'admin' %}
+                    <a href="/team/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Teams admin</a>
                     {% endif %}
                 </nav>
             </aside>
