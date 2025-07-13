@@ -1,12 +1,15 @@
 from features.actuator.health_view import health_bp
 from features.dashboard.dashboard_view import dashboard_bp
 from features.auth.auth_view import auth_bp
+from features.rosters.rosters_view import roster_bp
 from features.teams.team_view import team_bp
 from features.users.user_view import user_bp
 from libs.logging.logging import logger
+from flask import Flask, redirect, url_for
 
-def register_views(app):
-    try: 
+
+def register_views(app: Flask):
+    try:
         # Dashboard
         app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
@@ -25,6 +28,15 @@ def register_views(app):
 
         # Team
         app.register_blueprint(team_bp, url_prefix='/team')
+
+        # Roster
+        app.register_blueprint(roster_bp, url_prefix='/roster')
+
+        # Catch-all route for unregistered URLs
+        @app.route('/', defaults={'path': ''})
+        @app.route('/<path:path>')
+        def catch_all(path):
+            return redirect(url_for('dashboard.index'))
 
         logger.info("Views registered successfully")
     except Exception as e:
