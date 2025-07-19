@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --minify",
     "build-esbuild": "node esbuild.config.js --trace-warnings",
-    "watch-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose"
+    "watch-tailwind": "tailwindcss -i ./assets/css/input.css -o ./static/css/tailwind.css --watch=always --verbose",
+    "watch-bundler": "concurrently -k -n ESBUILD,TAILWIND -c green,cyan \"npm run build-esbuild\" \"npm run watch-tailwind\""
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@alpinejs/csp": "^3.14.9",
     "@tailwindcss/cli": "^4.1.7",
+    "concurrently": "^9.2.0",
     "esbuild": "^0.25.6",
     "glob": "^11.0.3",
     "gsap": "^3.13.0",

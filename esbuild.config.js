@@ -46,3 +46,5 @@ async function build() {
         process.exit(1);
     }
 }
+
+build().then(() => console.log("Compiled successfully!"));

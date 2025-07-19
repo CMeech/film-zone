@@ -19,31 +19,8 @@ services:
           ignore:
             - stats-data/
             - __pycache__/
-  # Run tailwind in a separate container for Prod, better logs and simpler Dockerfile build
-  tailwind:
-    tty: true
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      # Sync the host's folder to the app container above
-      # which completes the hot reload for tailwind
-      - ./static/css:/app/static/css:rw
-    develop:
-      # We need to watch the assets and templates folder as it's the input for tailwind config
-      # We mount static as it's the output. Any changes by tailwind in Docker will
-      watch:
-        - path: ./assets/css
-          target: /app/assets/css
-          action: sync
-        - path: ./templates
-          target: /app/templates
-          action: sync
-    entrypoint: []
-    command: npm run watch-tailwind
-    working_dir: /app
-  # Some JS code needs to be bundled with hot reload
-  js-bundler:
+  # Tailwind CSS and JS code needs to be bundled with hot reload
+  bundler:
     tty: true
     build:
       context: .
@@ -52,11 +29,22 @@ services:
       - NODE_ENV=development
     volumes:
       - ./static/js:/app/static/js:rw
+      # Sync the host's folder to the app container above
+      # which completes the hot reload for tailwind
+      - ./static/css:/app/static/css:rw
     develop:
+      # We need to watch the assets and templates folder as it's the input for tailwind config
+      # We mount static as it's the output. Any changes by tailwind in Docker will
       watch:
         - path: ./assets/js
           target: /app/assets/js
           action: sync
+        - path: ./assets/css
+          target: /app/assets/css
+          action: sync
+        - path: ./templates
+          target: /app/templates
+          action: sync
     entrypoint: []
-    command: npm run build-esbuild
+    command: npm run watch-bundler
     working_dir: /app
