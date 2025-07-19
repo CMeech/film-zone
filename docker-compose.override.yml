@@ -48,6 +48,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
     volumes:
       - ./static/js:/app/static/js:rw
     develop:
@@ -56,5 +58,5 @@ services:
           target: /app/assets/js
           action: sync
     entrypoint: []
-    command: npm run watch-gsap
+    command: npm run build-esbuild
     working_dir: /app

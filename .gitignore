@@ -171,7 +171,7 @@ cython_debug/
 
 node_modules/**
 static/css/tailwind.css
-static/js/animation/**
+static/js/**
 
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider

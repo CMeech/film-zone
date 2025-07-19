@@ -1,24 +1,26 @@
 # Run with docker-compose -f docker-compose.yml up -d
 
 # Stage 1: Build assets with Node, avoid including JS dev dependencies in Python image
-FROM node:22-slim as nodebuild
+FROM node:22-slim AS nodebuild
 
 WORKDIR /app
 
 # Copy only the files needed for Tailwind to work
 COPY package*.json ./
 RUN npm install
+ENV NODE_ENV=production
 
 COPY ./assets ./assets
+
+# Create the static directory structure
+RUN mkdir -p static/js static/css
 
 # Run Tailwind to generate CSS
 RUN npm run build-tailwind
 
-# Run ESBuild to bundle GSAP JS
-RUN npm run build-alpine
-
-# Run ESBuild to bundle GSAP JS
-RUN npm run build-gsap
+COPY ./esbuild.config.js ./esbuild.config.js
+# Run ESBuild to bundle Alpine.js, RxJS, GSAP JS
+RUN npm run build-esbuild
 
 # Stage 2: Final image with Python
 FROM python:3.11-slim
@@ -39,8 +41,14 @@ RUN curl -fsSL https://github.com/amacneil/dbmate/releases/download/v2.27.0/dbma
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN mkdir -p static/js static/css
+
 # Copy Tailwind built in other stage to avoid including dev dependencies
 COPY --from=nodebuild /app/static/css/tailwind.css ./static/css/tailwind.css
+
+# Copy JS built from other image
+COPY --from=nodebuild /app/static/js/* ./static/js/
+
 # Copy project files
 COPY . .
 

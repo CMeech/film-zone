@@ -27,11 +27,6 @@ COPY package.json package-lock.json* ./
 RUN npm install
 RUN npm install --build-from-source @parcel/watcher
 
-# Run ESBuild to bundle Alpine
-# Decided not to watch changes since the alpine.js file shouldn't change often
-COPY ./assets/js/alpine ./assets/js/alpine
-RUN npm run build-alpine-dev
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
