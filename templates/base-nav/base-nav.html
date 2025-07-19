@@ -30,7 +30,7 @@
         class="flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-white h-screen"
     >
         <!-- Navbar -->
-        <header class="header-nav bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between">
+        <header class="h-[60px] mb-0.5 bg-white dark:bg-gray-800 shadow p-4 flex items-center justify-between">
             <div class="flex flex-row items-center">
                 {% if g.user_profile.active_team_logo %}
                 <div class="mr-3">
@@ -52,8 +52,8 @@
             </div>
         </header>
 
-        <!-- Sidebar -->
-        <div class="md:flex grow">
+        <!-- Sidebar (adjust height for header) -->
+        <div class="md:flex grow h-[calc(100vh-60px)]">
             <!-- Side Panel -->
             <aside
                     :class="sideBarClass"
@@ -79,7 +79,7 @@
             </aside>
 
             <!-- Main content -->
-            <main class="p-6">
+            <main class="p-6 overflow-y-auto w-full max-h-full">
                 {% block content %}{% endblock %}
             </main>
             <!-- <footer>{% block footer %}{% endblock %}</footer> -->
