@@ -1,4 +1,5 @@
 from features.actuator.health_view import health_bp
+from features.announcements.announcements_view import announcement_bp
 from features.dashboard.dashboard_view import dashboard_bp
 from features.auth.auth_view import auth_bp
 from features.rosters.rosters_view import roster_bp
@@ -31,6 +32,9 @@ def register_views(app: Flask):
 
         # Roster
         app.register_blueprint(roster_bp, url_prefix='/roster')
+
+        # Announcements
+        app.register_blueprint(announcement_bp, url_prefix='/announcements')
 
         # Catch-all route for unregistered URLs
         @app.route('/', defaults={'path': ''})
