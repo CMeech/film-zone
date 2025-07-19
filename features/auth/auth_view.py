@@ -48,3 +48,8 @@ def user_login():
             flash(error_message)
             return render_template('auth/login-user.html', error_message=error_message)
     return render_template('auth/login-user.html')
+
+@auth_bp.route('/logout', methods=['GET'])
+def logout():
+    session.pop('auth_token', None)
+    return redirect('/')
