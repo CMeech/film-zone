@@ -5,7 +5,7 @@ from features.users.user import User
 
 def get_all_users() -> list[User]:
     query = """
-        SELECT u.id, u.username, u.role FROM users u
+        SELECT u.id, u.username, u.display_name, u.role FROM users u
     """
     result = fetch_all(query, ())
     users = [User(*user) for user in result]
@@ -23,7 +23,7 @@ def get_all_players() -> list[User]:
 
 def verify_coach_login(username: str, password_hash: str) -> User:
     query = """
-        SELECT u.id, u.username, u.role FROM users u
+        SELECT u.id, u.username, display_name, u.role FROM users u
         WHERE u.username = ? AND u.password_hash = ?
         LIMIT 1"""
     params = (username, password_hash)
@@ -62,15 +62,15 @@ def verify_player_login(access_code_hash: str) -> User:
     user = User(*result)
     return user
 
-def create_user(username: str, password_hash: str, role: Role) -> User:
+def create_user(username: str, display_name: str, password_hash: str, role: Role) -> User:
     query = """
-        INSERT INTO users (username, password_hash, role)
-        VALUES (?, ?, ?)
+        INSERT INTO users (username, display_name, password_hash, role)
+        VALUES (?, ?, ?, ?)
     """
-    params = (username, password_hash, role.value)
+    params = (username, display_name, password_hash, role.value)
     execute_modifying_query(query, params)
     result_query = """
-        SELECT u.id, u.username, u.role
+        SELECT u.id, u.username, u.display_name, u.role
         FROM users u where u.username = ?
     """
     result_params = (username,)
@@ -79,7 +79,7 @@ def create_user(username: str, password_hash: str, role: Role) -> User:
 
 def admin_exists() -> bool:
     query = """
-        SELECT u.id, u.username, u.role FROM users u
+        SELECT u.id, u.username, u.display_name, u.role FROM users u
         WHERE u.role = ?
         LIMIT 1"""
     params = (Role.ADMIN.value,)

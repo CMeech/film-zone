@@ -49,8 +49,9 @@ def register_user():
         try: 
             username = request.form['username']
             password = request.form['password']
+            display_name = request.form['displayName']
             password_hash = generate_token(password)
-            user_repository.create_user(username, password_hash, Role.COACH)
+            user_repository.create_user(username, display_name, password_hash, Role.COACH)
             flash(f"User {username} registered successfully.")
         except Exception as e:
             logger.error(f"Failed to register user with username {username}: {e}")

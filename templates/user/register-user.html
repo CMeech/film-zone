@@ -56,6 +56,23 @@
                         </div>
                     </div>
 
+
+                    <div>
+                        <label for="displayName" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Display name
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                    id="displayName"
+                                    name="displayName"
+                                    type="text"
+                                    required
+                                    @change="setDisplayName"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            >
+                        </div>
+                    </div>
+
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Password
