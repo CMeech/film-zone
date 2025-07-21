@@ -18,6 +18,7 @@
   "license": "ISC",
   "devDependencies": {
     "@alpinejs/csp": "^3.14.9",
+    "@imacrayon/alpine-ajax": "^0.12.4",
     "@tailwindcss/cli": "^4.1.7",
     "concurrently": "^9.2.0",
     "esbuild": "^0.25.6",
