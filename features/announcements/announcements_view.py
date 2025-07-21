@@ -15,6 +15,7 @@ limiter.limit("100/minute")(announcement_bp)
 
 @announcement_bp.route('/list', methods=['GET'])
 @require_auth
+@team_required
 def list_announcements():
     return render_template("announcements/list-announcements.html")
 
@@ -43,14 +44,10 @@ def add_announcement():
 
     return render_template("announcements/create-announcement.html")
 
-from flask import jsonify
-
-@announcement_bp.route('/team/announcements', methods=['GET'])
+@announcement_bp.route('/team', methods=['GET'])
 @require_auth
 @team_required
 def get_team_announcements():
-    page = None
-    page_size = None
     try:
         team_id = get_active_team_id()
         page = request.args.get('page', 1, type=int)
@@ -68,15 +65,16 @@ def get_team_announcements():
             page_size=page_size
         )
 
-        return jsonify(result)
+        return render_template(
+            "announcements/announcements-page.html",
+            announcements=result["announcements"],
+            total=result["total"],
+            page=result["page"],
+            page_size=result["pageSize"],
+            total_pages=result["totalPages"]
+        )
 
     except Exception as e:
         logger.error(f"Failed to fetch team announcements: {e}")
-        return jsonify({
-            "error": "Failed to fetch announcements",
-            "total": 0,
-            "page": page,
-            "pageSize": page_size,
-            "totalPages": 0,
-            "announcements": []
-        }), 500
+        flash("There was an issue retrieving the announcements.")
+        return render_template('error/error.html')

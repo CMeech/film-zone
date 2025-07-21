@@ -5,6 +5,7 @@ from datetime import date
 class Announcement:
     id: int
     author: str
+    author_display_name: str
     message: str
     date: date
     team_id: int

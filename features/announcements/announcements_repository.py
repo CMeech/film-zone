@@ -7,8 +7,9 @@ from features.announcements.announcement import Announcement
 
 def get_all_announcements() -> List[Announcement]:
     query = """
-            SELECT a.id, a.author, a.message, a.date, a.team_id
-            FROM Announcements a \
+            SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
+            FROM Announcements a
+                     JOIN Users u ON a.author = u.username \
             """
     result = fetch_all(query, ())
     return [Announcement(*announcement) for announcement in result]
@@ -23,8 +24,9 @@ def create_announcement(author: str, message: str, team_id: int) -> Announcement
     execute_modifying_query(query, params)
 
     result_query = """
-                   SELECT a.id, a.author, a.message, a.date, a.team_id
+                   SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
                    FROM Announcements a
+                            JOIN Users u ON a.author = u.username
                    WHERE a.author = ? AND a.message = ? AND a.date = ? AND a.team_id = ? \
                    """
     result = fetch_one(result_query, params)
@@ -32,8 +34,9 @@ def create_announcement(author: str, message: str, team_id: int) -> Announcement
 
 def get_announcements_by_team_id(team_id: int) -> List[Announcement]:
     query = """
-            SELECT a.id, a.author, a.message, a.date, a.team_id
+            SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
             FROM Announcements a
+                     JOIN Users u ON a.author = u.username
             WHERE a.team_id = ?
             ORDER BY a.date DESC \
             """
@@ -41,12 +44,11 @@ def get_announcements_by_team_id(team_id: int) -> List[Announcement]:
     result = fetch_all(query, params)
     return [Announcement(*announcement) for announcement in result]
 
-
 def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: int) -> dict:
     # Calculate offset
     offset = (page - 1) * page_size
 
-    # Get total count
+    # Get total count - no need to join for count
     count_query = """
                   SELECT COUNT(*)
                   FROM Announcements a
@@ -56,8 +58,9 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
 
     # Get paginated data
     query = """
-            SELECT a.id, a.author, a.message, a.date, a.team_id
+            SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
             FROM Announcements a
+                     JOIN Users u ON a.author = u.username
             WHERE a.team_id = ?
             ORDER BY a.date DESC
             LIMIT ? OFFSET ? \
@@ -75,6 +78,7 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
             {
                 "id": ann.id,
                 "author": ann.author,
+                "authorDisplayName": ann.author_display_name,
                 "message": ann.message,
                 "date": ann.date.isoformat(),
                 "teamId": ann.team_id
