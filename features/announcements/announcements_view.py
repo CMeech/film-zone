@@ -27,6 +27,8 @@ def add_announcement():
     if request.method == 'POST':
         try:
             message = request.form['message']
+            if not message:
+                return {"error": "Message is required"}, 400
             team_id = get_active_team_id()
             user_profile = get_user_profile()
             author = user_profile.user.username
@@ -37,12 +39,10 @@ def add_announcement():
                 message=message,
                 team_id=team_id
             )
-            flash(f"Announcement created successfully.")
+            return {"message": "Announcement created successfully"}, 200
         except Exception as e:
             logger.error(f"Failed to create announcement: {e}")
-            flash("Failed to create announcement.")
-
-    return render_template("announcements/create-announcement.html")
+            return {"error": "Failed to create announcement"}, 500
 
 @announcement_bp.route('/team', methods=['GET'])
 @require_auth
@@ -64,15 +64,16 @@ def get_team_announcements():
             page=page,
             page_size=page_size
         )
-
+        last_item = min(page * page_size, result["total"])
         return render_template(
-            "announcements/announcements-page.html",
-            announcements=result["announcements"],
-            total=result["total"],
-            page=result["page"],
-            page_size=result["pageSize"],
-            total_pages=result["totalPages"]
-        )
+                "announcements/announcements-page.html",
+                announcements=result["announcements"],
+                total=result["total"],
+                page=result["page"],
+                page_size=result["pageSize"],
+                total_pages=result["totalPages"],
+                last_item=last_item
+            )
 
     except Exception as e:
         logger.error(f"Failed to fetch team announcements: {e}")

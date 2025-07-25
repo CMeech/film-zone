@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
+
 
 @dataclass
 class Announcement:
@@ -9,3 +10,10 @@ class Announcement:
     message: str
     date: date
     team_id: int
+
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Announcement':
+        # If date is a string, parse it to a date object
+        if isinstance(data['date'], str):
+            data['date'] = datetime.strptime(data['date'], '%Y-%m-%d').date()
+        return cls(**data)

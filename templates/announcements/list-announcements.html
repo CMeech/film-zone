@@ -17,8 +17,36 @@
                 </div>
             </div>
 
+            <!-- Create Announcement Form - Only visible for admin/coach -->
+            {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                <div x-data="createAnnouncement" class="mb-8">
+                    <form @submit.prevent="submitForm" class="space-y-4 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300">New Announcement</label>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <textarea
+                                    id="message"
+                                    @input="handleMessageInput"
+                                    rows="4"
+                                    class="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                                    :placeholder="getPlaceholderText"
+                            ></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                            <button
+                                    type="submit"
+                                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Post Announcement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+
             <!-- Main content area with pagination controls -->
-            <div x-data="listAnnouncements">
+            <div x-data="listAnnouncements" @announcement-created.window="loadAnnouncements">
                 <!-- Pagination controls -->
                 <div class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 sm:px-6 rounded-t-lg shadow">
                     <div class="flex-1 flex justify-between sm:hidden">

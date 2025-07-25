@@ -11,7 +11,7 @@
                         <div class="flex-shrink-0">
                             <div class="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center">
                             <span class="text-white font-medium text-sm">
-                                {{ announcement.author_display_name[:2].upper() }}
+                                {{ announcement.authorDisplayName[:2].upper() }}
                             </span>
                             </div>
                         </div>
@@ -21,7 +21,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <h3 class="text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ announcement.author_display_name }}
+                                        {{ announcement.authorDisplayName }}
                                     </h3>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
                                         {{ announcement.date.strftime('%B %d, %Y') }}
@@ -60,7 +60,7 @@
                 Showing
                 <span class="font-medium">{{ (page - 1) * page_size + 1 }}</span>
                 to
-                <span class="font-medium">{{ min(page * page_size, total) }}</span>
+                <span class="font-medium">{{ last_item }}</span>
                 of
                 <span class="font-medium">{{ total }}</span>
                 announcements

@@ -36,5 +36,39 @@ document.addEventListener('alpine:init', () => {
                 return this.currentPage + 1;
             }
         }
-    })
+    });
+    Alpine.data('createAnnouncement', () => ({
+        message: '',
+        handleMessageInput(event) {
+            this.message = event.target.value;
+        },
+        submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData();
+            formData.append('message', this.message);
+            formData.append('csrf_token', form.querySelector('input[name="csrf_token"]').value);
+
+            fetch('/announcements/create', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response failed');
+                }
+                // Clear the form
+                this.message = '';
+                document.getElementById('message').value = '';
+                // Refresh the announcements list
+                // We need to access the listAnnouncements component
+                this.$dispatch('announcement-created');
+            }).catch(error => {
+                console.error('Failed to create announcement:', error)
+            })
+        },
+        getPlaceholderText() {
+            return 'Type your announcement here...';
+        },
+    }));
+
 })

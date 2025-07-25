@@ -1,23 +1,33 @@
-
 from datetime import date
 from typing import List
+from libs.logging.logging import logger
 
 from features.db.db import fetch_all, fetch_one, execute_modifying_query
 from features.announcements.announcement import Announcement
+
+def _row_to_dict(row) -> dict:
+    return {
+        'id': row[0],
+        'author': row[1],
+        'author_display_name': row[2],
+        'message': row[3],
+        'date': row[4],
+        'team_id': row[5]
+    }
 
 def get_all_announcements() -> List[Announcement]:
     query = """
             SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
             FROM Announcements a
-                     JOIN Users u ON a.author = u.username \
+                     JOIN Users u ON a.author = u.username
             """
     result = fetch_all(query, ())
-    return [Announcement(*announcement) for announcement in result]
+    return [Announcement.from_dict(_row_to_dict(row)) for row in result]
 
 def create_announcement(author: str, message: str, team_id: int) -> Announcement:
     query = """
             INSERT INTO Announcements (author, message, date, team_id)
-            VALUES (?, ?, ?, ?) \
+            VALUES (?, ?, ?, ?)
             """
     current_date = date.today()
     params = (author, message, current_date, team_id)
@@ -27,10 +37,10 @@ def create_announcement(author: str, message: str, team_id: int) -> Announcement
                    SELECT a.id, a.author, u.display_name, a.message, a.date, a.team_id
                    FROM Announcements a
                             JOIN Users u ON a.author = u.username
-                   WHERE a.author = ? AND a.message = ? AND a.date = ? AND a.team_id = ? \
+                   WHERE a.author = ? AND a.message = ? AND a.date = ? AND a.team_id = ?
                    """
     result = fetch_one(result_query, params)
-    return Announcement(*result)
+    return Announcement.from_dict(_row_to_dict(result))
 
 def get_announcements_by_team_id(team_id: int) -> List[Announcement]:
     query = """
@@ -38,11 +48,11 @@ def get_announcements_by_team_id(team_id: int) -> List[Announcement]:
             FROM Announcements a
                      JOIN Users u ON a.author = u.username
             WHERE a.team_id = ?
-            ORDER BY a.date DESC \
+            ORDER BY a.date DESC
             """
     params = (team_id,)
     result = fetch_all(query, params)
-    return [Announcement(*announcement) for announcement in result]
+    return [Announcement.from_dict(_row_to_dict(row)) for row in result]
 
 def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: int) -> dict:
     # Calculate offset
@@ -52,7 +62,7 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
     count_query = """
                   SELECT COUNT(*)
                   FROM Announcements a
-                  WHERE a.team_id = ? \
+                  WHERE a.team_id = ?
                   """
     total_count = fetch_one(count_query, (team_id,))[0]
 
@@ -63,11 +73,15 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
                      JOIN Users u ON a.author = u.username
             WHERE a.team_id = ?
             ORDER BY a.date DESC
-            LIMIT ? OFFSET ? \
+            LIMIT ? OFFSET ?
             """
     params = (team_id, page_size, offset)
     results = fetch_all(query, params)
-    announcements = [Announcement(*announcement) for announcement in results]
+    logger.info(f"Database results: {results}")  # Debug print
+
+    announcements = [Announcement.from_dict(_row_to_dict(row)) for row in results]
+
+    logger.info(f"Converted announcements: {announcements}")
 
     return {
         "total": total_count,
@@ -80,7 +94,7 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
                 "author": ann.author,
                 "authorDisplayName": ann.author_display_name,
                 "message": ann.message,
-                "date": ann.date.isoformat(),
+                "date": ann.date,
                 "teamId": ann.team_id
             } for ann in announcements
         ]

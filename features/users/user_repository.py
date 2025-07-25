@@ -50,7 +50,7 @@ def create_access_code(access_code_hash: str, role: Role) -> Player:
 
 def verify_player_login(access_code_hash: str) -> User:
     query = """
-        SELECT u.id, u.username, u.role FROM users u
+        SELECT u.id, u.display_name, u.username, u.role FROM users u
         WHERE u.username is null AND u.password_hash = ?
         LIMIT 1"""
     # Must include comma after to ensure tuple only includes one element
