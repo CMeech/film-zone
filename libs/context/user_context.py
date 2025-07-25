@@ -8,7 +8,7 @@ def set_user_profile(profile):
 def get_user_profile() -> Profile:
     return g.get('user_profile', None)
 
-def set_active_team_id(team_id):
+def set_active_team_id(team_id: int):
     g.active_team_id = team_id
 
 def get_active_team_id() -> int:
