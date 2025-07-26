@@ -40,7 +40,6 @@ def list_resources():
     return render_template("resources/list-resources.html")
 
 
-# Add this new endpoint
 @resource_bp.route('/list/partial', methods=['GET'])
 @require_auth
 @team_required
