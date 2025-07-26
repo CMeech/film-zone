@@ -14,7 +14,9 @@ def set_app_properties(app):
     app.config['SESSION_COOKIE_DOMAIN'] = config.SESSION_COOKIE_DOMAIN
     app.config['SESSION_COOKIE_SAMESITE'] = config.SESSION_COOKIE_SAMESITE
     app.config['PERMANENT_SESSION_LIFETIME'] = config.PERMANENT_SESSION_LIFETIME
+    app.config['MAX_BODY_SIZE'] = config.MAX_BODY_SIZE
     app.config['MAX_FORM_MEMORY_SIZE'] = config.MAX_FORM_MEMORY_SIZE
+    app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
     app.config['EXPLAIN_TEMPLATE_LOADING'] = config.EXPLAIN_TEMPLATE_LOADING
 
 def setup_app(app):

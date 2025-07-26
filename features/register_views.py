@@ -2,6 +2,7 @@ from features.actuator.health_view import health_bp
 from features.announcements.announcements_view import announcement_bp
 from features.dashboard.dashboard_view import dashboard_bp
 from features.auth.auth_view import auth_bp
+from features.resources.resource_view import resource_bp
 from features.rosters.rosters_view import roster_bp
 from features.teams.team_view import team_bp
 from features.users.user_view import user_bp
@@ -35,6 +36,9 @@ def register_views(app: Flask):
 
         # Announcements
         app.register_blueprint(announcement_bp, url_prefix='/announcements')
+
+        # Resources
+        app.register_blueprint(resource_bp, url_prefix='/resources')
 
         # Catch-all route for unregistered URLs
         @app.route('/', defaults={'path': ''})

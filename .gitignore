@@ -258,3 +258,7 @@ http-client.private.env.json
 # Apifox Helper cache
 .idea/.cache/.Apifox_Helper
 .idea/ApifoxUploaderProjectSetting.xml
+
+resources/*
+# But keep the resources directory itself
+!resources/.gitkeep
