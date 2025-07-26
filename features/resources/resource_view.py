@@ -18,7 +18,17 @@ limiter.limit("100/minute")(resource_bp)
 # Get the application root directory (assumes this file is in a feature subdirectory)
 APP_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'resources')
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_EXTENSIONS = {'pdf', 'pptx'}
+
+# Add this function to get the correct MIME type
+def get_mime_type(filename):
+    extension = filename.rsplit('.', 1)[1].lower()
+    mime_types = {
+        'pdf': 'application/pdf',
+        'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    }
+    return mime_types.get(extension, 'application/octet-stream')
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -86,7 +96,7 @@ def create_resource():
                 logger.error(f"Failed to create resource: {e}")
                 return {"error": "Failed to upload resource"}, 500
         else:
-            return {"error": "Invalid file type. Only PDF files are allowed."}, 400
+            return {"error": "Invalid file type. Only PDF and PPTX files are allowed."}, 400
 
     # Only return template for GET requests
     return render_template("resources/create-resource.html")
@@ -105,9 +115,11 @@ def view_resource(resource_id):
         if resource.team_id != team_id:
             abort(403)
 
+        mime_type = get_mime_type(resource.filename)
         return send_file(
             resource.file_path,
-            mimetype='application/pdf'
+            mimetype=mime_type,
+            as_attachment=mime_type != 'application/pdf'  # Download PPTX files instead of viewing them
         )
     except Exception as e:
         logger.error(f"Failed to retrieve resource: {e}")
