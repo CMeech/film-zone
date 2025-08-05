@@ -17,6 +17,8 @@ document.addEventListener("alpine:init", () => {
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     const isMobile = window.innerWidth < 640;
+    const closeBtn = document.getElementById('closeModalBtn');
+    const modal = document.getElementById('eventModal');
 
     const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, interactionPlugin, listPlugin],
@@ -32,26 +34,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => successCallback(data.events))
                 .catch(error => failureCallback(error));
         },
-        eventClick(info) {
-            const modal = document.getElementById('eventModal');
+        eventClick: function (info) {
+            // Build event content with Tailwind + dark mode support
+            const eventModal = document.getElementById('eventModal');
             const detailsDiv = document.getElementById('eventDetails');
-
             detailsDiv.innerHTML = `
-                <h3 class="text-lg font-bold mb-2">${info.event.title}</h3>
-                <p class="mb-2"><strong>Date:</strong> ${info.event.start.toLocaleDateString()}</p>
-                <p class="mb-2"><strong>Location:</strong> ${info.event.extendedProps.location}</p>
-                <p class="mb-2"><strong>Duration:</strong> ${info.event.extendedProps.duration} minutes</p>
-                <p class="mb-4"><strong>Details:</strong> ${info.event.extendedProps.details}</p>
-                <button onclick="document.getElementById('eventModal').classList.add('hidden')"
-                        class="bg-blue-600 text-white px-4 py-2 rounded">
-                    Close
-                </button>
+                <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-white">${info.event.title}</h3>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Location:</strong> ${info.event.extendedProps.location}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Details:</strong> ${info.event.extendedProps.details}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Start:</strong> ${info.event.start.toLocaleString()}</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>End:</strong> ${info.event.end?.toLocaleString() ?? 'N/A'}</p>
             `;
-            modal.classList.remove('hidden');
-        },
+
+            // Show the modal
+            eventModal.classList.remove('hidden');
+        }
     });
 
     calendar.render();
+
+    // Close button functionality
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
 
     // RxJS: Responsive view switcher with debounce
     fromEvent(window, 'resize')
