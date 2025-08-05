@@ -1,0 +1,29 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/events/display-monthly-events.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div x-data="calendarData" class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Team Calendar</h2>
+                    <button @click="createEvent"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Add Event
+                    </button>
+                </div>
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="eventModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div id="eventDetails"></div>
+        </div>
+    </div>
+{% endblock %}

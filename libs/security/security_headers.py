@@ -34,7 +34,7 @@ def apply_security_headers(app):
             f"script-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
             f"style-src 'self' 'unsafe-inline'; " # Tailwind is not compatible with CSP nonce due to @property
             f"frame-src https://www.youtube.com https://view.officeapps.live.com; "
-            f"font-src 'self' https://cdn.jsdelivr.net; "
+            f"font-src 'self' https://cdn.jsdelivr.net data:;"
             f"img-src 'self' data:;"
         )
 

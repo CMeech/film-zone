@@ -32,7 +32,7 @@ async function build() {
             console.log('Build analysis:', await esbuild.analyzeMetafile(result.metafile));
         }
 
-// Enable watch mode only in development
+        // Enable watch mode only in development
         if (isProd) {
             // Dispose of contexts in production
             // otherwise docker build will fail

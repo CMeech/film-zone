@@ -1,0 +1,139 @@
+
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/events/create-event.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                Create new event
+            </h2>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mb-8">
+                    <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                        {% for message in messages %}
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 8v1a1 1 0 00.293.707l.707-.707A6 6 0 0010 2z" />
+                                </svg>
+                                <span class="block">{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="bg-white dark:bg-gray-800 py-8 px-6 shadow rounded-lg sm:px-10">
+            <div x-data="eventData">
+                <form
+                        id="eventForm"
+                        @submit.prevent="submitForm"
+                        method="POST"
+                        class="space-y-6"
+                >
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Event Name
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    @change="setName"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Date
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                    id="date"
+                                    type="datetime-local"
+                                    name="datetime"
+                                    required
+                                    @change="setDate"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Location
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                    id="location"
+                                    name="location"
+                                    type="text"
+                                    required
+                                    @change="setLocation"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="duration" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Duration (minutes)
+                        </label>
+                        <div class="mt-2">
+                            <input
+                                    id="duration"
+                                    name="duration"
+                                    type="number"
+                                    min="1"
+                                    required
+                                    @change="setDuration"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="details" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Details
+                        </label>
+                        <div class="mt-2">
+                            <textarea
+                                    id="details"
+                                    name="details"
+                                    rows="4"
+                                    required
+                                    @change="setDetails"
+                                    class="appearance-none block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-base"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button
+                                type="submit"
+                                :disabled="disabled"
+                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                        >
+                            <span x-text="submitText"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
