@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, flash
 from features.events import events_repository
+from features.users.role import Role
+from libs.auth.pre_authorize import pre_authorize
 from libs.auth.require_auth import require_auth
 from libs.auth.team_required import team_required
 from libs.context.user_context import get_active_team_id
@@ -51,6 +53,7 @@ def get_events_by_range():
 @events_bp.route('/create', methods=['GET', 'POST'])
 @require_auth
 @team_required
+@pre_authorize([Role.ADMIN, Role.COACH])
 def create_event():
     if request.method == 'POST':
         try:
@@ -76,3 +79,21 @@ def create_event():
             return render_template("events/create-event.html", error=True)
 
     return render_template("events/create-event.html")
+
+@events_bp.route('/<int:event_id>', methods=['DELETE'])
+@require_auth
+@team_required
+@pre_authorize([Role.ADMIN, Role.COACH])
+def delete_event(event_id):
+    try:
+        team_id = get_active_team_id()
+        deleted = events_repository.delete_event(event_id, team_id)
+
+        if deleted:
+            return '', 204  # No content on success
+        else:
+            return {'error': 'Event not found or not authorized'}, 404
+
+    except Exception as e:
+        logger.error(f"Error deleting event {event_id}: {e}")
+        return {'error': 'Error deleting event'}, 500

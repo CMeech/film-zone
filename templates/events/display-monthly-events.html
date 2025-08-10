@@ -29,6 +29,13 @@
                 ✕
             </button>
             <div id="eventDetails" class="mt-6"></div>
+            {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
+            <button id="deleteEventBtn"
+                    class="mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
+                Delete Event
+            </button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
         </div>
     </div>
 
