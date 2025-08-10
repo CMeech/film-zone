@@ -10,10 +10,12 @@
             <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Team Calendar</h2>
+                    {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
                     <button @click="createEvent"
                             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         Add Event
                     </button>
+                    {% endif %}
                 </div>
                 <div id="calendar"></div>
             </div>

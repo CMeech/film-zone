@@ -10,6 +10,11 @@ from libs.logging.logging import logger
 
 events_bp = Blueprint('events', __name__)
 
+TYPE_COLORS = {
+    "Game": "#ef4444",       # Tailwind red-500
+    "Practice": "#38bdf8",   # Tailwind sky-400
+    "Other": "#facc15",      # Tailwind yellow-400
+}
 
 @events_bp.route('/calendar', methods=['GET'])
 @require_auth
@@ -35,13 +40,15 @@ def get_events_by_range():
             start_dt = event.date  # assuming event.date is a datetime object
             end_dt = start_dt + timedelta(minutes=event.duration if event.duration else 0)
 
+            logger.debug(f"Event type is {event.event_type} and color is {TYPE_COLORS.get(event.event_type, TYPE_COLORS['Other'])}")
             calendar_events.append({
                 'id': event.id,
                 'title': event.name,
                 'start': start_dt.isoformat(),  # 'YYYY-MM-DDTHH:MM:SS'
                 'end': end_dt.isoformat(),
                 'details': event.details,
-                'location': event.location
+                'location': event.location,
+                'color': TYPE_COLORS.get(event.event_type, TYPE_COLORS["Other"]),
             })
 
         return {'events': calendar_events}, 200
@@ -61,6 +68,7 @@ def create_event():
             details = request.form['details']
             location = request.form['location']
             duration = int(request.form['duration'])
+            event_type = request.form['type']
 
             # Expecting a full datetime string from the form (e.g., "2025-08-02 15:30:00")
             datetime_str = request.form['datetime']
@@ -68,7 +76,7 @@ def create_event():
 
             events_repository.create_event(
                 name, details, event_datetime, location,
-                duration, get_active_team_id()
+                duration, get_active_team_id(), event_type
             )
 
             flash("Event created successfully!")

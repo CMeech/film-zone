@@ -10,6 +10,7 @@ class Event:
     location: str
     duration: int
     team_id: int
+    event_type: str
 
     @classmethod
     def from_dict(cls, data: dict):
@@ -20,5 +21,6 @@ class Event:
             date=data['date'],
             location=data['location'],
             duration=data['duration'],
-            team_id=data['team_id']
+            team_id=data['team_id'],
+            event_type=data['event_type']
         )

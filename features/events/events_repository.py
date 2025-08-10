@@ -14,30 +14,31 @@ def _row_to_dict(row) -> dict:
         'date': datetime.strptime(row[3], '%Y-%m-%d %H:%M:%S'),
         'location': row[4],
         'duration': row[5],
-        'team_id': row[6]
+        'team_id': row[6],
+        'event_type': row[7]
     }
 
 def create_event(name: str, details: str, event_date: date,
-                 location: str, duration: int, team_id: int) -> Event:
+                 location: str, duration: int, team_id: int, event_type: str) -> Event:
     query = """
-            INSERT INTO Events (name, details, date, location, duration, team_id)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO Events (name, details, date, location, duration, team_id, event_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """
-    params = (name, details, event_date, location, duration, team_id)
+    params = (name, details, event_date, location, duration, team_id, event_type)
     execute_modifying_query(query, params)
 
     result_query = """
-                   SELECT id, name, details, date, location, duration, team_id
+                   SELECT id, name, details, date, location, duration, team_id, event_type
                    FROM Events
                    WHERE name = ? AND details = ? AND date = ?
-                     AND location = ? AND duration = ? AND team_id = ?
+                     AND location = ? AND duration = ? AND team_id = ? AND event_type = ?
                    """
     result = fetch_one(result_query, params)
     return Event.from_dict(_row_to_dict(result))
 
 def get_events_in_range(start: datetime, end: datetime, team_id: int) -> List[Event]:
     query = """
-            SELECT id, name, details, date, location, duration, team_id
+            SELECT id, name, details, date, location, duration, team_id, event_type
             FROM events
             WHERE team_id = ?
               AND date >= ?
