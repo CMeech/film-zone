@@ -5,6 +5,8 @@ from features.db.db import init_db
 from features.register_views import register_views
 from libs.security.security_headers import apply_security_headers
 from libs.security.rate_limit import init_limiter, limiter
+from libs.template.init_template_filters import init_template_filters
+
 
 def set_app_properties(app):
     config = getConfig()
@@ -26,5 +28,6 @@ def setup_app(app):
     # Rate limiter must be setup before views are registered
     init_limiter(app, limiter)
     register_views(app)
+    init_template_filters(app)
     apply_security_headers(app)
     return app

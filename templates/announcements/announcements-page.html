@@ -9,7 +9,8 @@
                     <div class="flex items-start space-x-4">
                         <!-- Avatar placeholder -->
                         <div class="flex-shrink-0">
-                            <div class="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center">
+                            <div class="h-10 w-10 rounded-full flex items-center justify-center"
+                                 style="{{ announcement.authorDisplayName | username_gradient }}">
                             <span class="text-white font-medium text-sm">
                                 {{ announcement.authorDisplayName[:2].upper() }}
                             </span>
