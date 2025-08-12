@@ -8,6 +8,7 @@ dbmate up
 # Start your Flask app
 if [ "$FLASK_ENV" = "development" ]; then
   echo "Starting app with Python (dev mode)..."
+  export FLASK_APP=app.py
   exec flask run --host=0.0.0.0 --port=5000 --debug
 else
   echo "Starting app with Gunicorn..."

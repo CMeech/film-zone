@@ -29,6 +29,9 @@ def add_announcement():
             message = request.form['message']
             if not message:
                 return {"error": "Message is required"}, 400
+            title = request.form['title']
+            if not title:
+                return {"error": "Title is required"}, 400
             team_id = get_active_team_id()
             user_profile = get_user_profile()
             author = user_profile.user.username
@@ -37,7 +40,8 @@ def add_announcement():
             announcement = create_announcement(
                 author=author,
                 message=message,
-                team_id=team_id
+                team_id=team_id,
+                title=title
             )
             return {"message": "Announcement created successfully"}, 200
         except Exception as e:

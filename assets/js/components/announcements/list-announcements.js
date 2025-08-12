@@ -2,7 +2,7 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('listAnnouncements', () => {
         return {
-            currentPage: 0,
+            currentPage: 1,
             pageSize: 10,
 
             init() {
@@ -10,12 +10,11 @@ document.addEventListener('alpine:init', () => {
             },
 
             loadAnnouncements() {
-                this.$ajax('/announcements/team', {
+                console.log('Loading announcements...')
+                console.log('Page:', this.currentPage)
+                console.log('Size:', this.pageSize)
+                this.$ajax(`/announcements/team?page=${this.currentPage}&size=${this.pageSize}`, {
                     method: 'GET',
-                    params: {
-                        page: this.currentPage,
-                        size: this.pageSize
-                    },
                     target: "announcements-page"
                 }).catch(error => {
                     console.error('Failed to load announcements:', error)
@@ -23,7 +22,7 @@ document.addEventListener('alpine:init', () => {
             },
 
             previousPage() {
-                this.currentPage = Math.max(0, this.currentPage - 1);
+                this.currentPage = Math.max(1, this.currentPage - 1);
                 this.loadAnnouncements();
             },
 
@@ -33,20 +32,25 @@ document.addEventListener('alpine:init', () => {
             },
 
             getCurrentPageText() {
-                return this.currentPage + 1;
+                return this.currentPage;
             }
         }
     });
     Alpine.data('createAnnouncement', () => ({
         message: '',
+        title: '',
         handleMessageInput(event) {
             this.message = event.target.value;
+        },
+        handleTitleInput(event) {
+            this.title = event.target.value;
         },
         submitForm(event) {
             event.preventDefault();
             const form = event.target;
             const formData = new FormData();
             formData.append('message', this.message);
+            formData.append('title', this.title);
             formData.append('csrf_token', form.querySelector('input[name="csrf_token"]').value);
 
             fetch('/announcements/create', {
@@ -68,6 +72,9 @@ document.addEventListener('alpine:init', () => {
         },
         getPlaceholderText() {
             return 'Type your announcement here...';
+        },
+        get disabled() {
+            return this.message.length <= 0 || this.title.length <= 0;
         },
     }));
 

@@ -10,6 +10,7 @@ class Announcement:
     message: str
     date: date
     team_id: int
+    title: str
 
     @classmethod
     def from_dict(cls, data: dict) -> 'Announcement':

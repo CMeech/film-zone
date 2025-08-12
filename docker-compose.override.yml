@@ -11,6 +11,7 @@ services:
       - ADMIN_USERNAME=cmeeches
       - ADMIN_PASSWORD=secret123
       - LOG_LEVEL=DEBUG
+      - FLASK_DEBUG=1
     develop:
       watch:
         - path: .
