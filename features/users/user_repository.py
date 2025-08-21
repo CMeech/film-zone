@@ -85,3 +85,14 @@ def admin_exists() -> bool:
     params = (Role.ADMIN.value,)
     result = fetch_one(query, params)
     return result is not None
+
+def get_user_teams(user_id: int) -> list[int]:
+    query = """
+        SELECT t.id
+        FROM Teams t
+             JOIN UserTeams ut on t.id = ut.team_id
+        WHERE ut.user_id = ?
+    """
+    params = (user_id,)
+    result = fetch_all(query, params)
+    return result if result is not None else []

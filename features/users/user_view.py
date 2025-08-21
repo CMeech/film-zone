@@ -77,3 +77,14 @@ def register_player():
             error_message = "Failed to register player."
             flash(error_message)
     return render_template('user/register-player.html')
+
+
+@user_bp.route('/<int:user_id>/teams', methods=['GET'])
+@require_auth
+@pre_authorize([Role.ADMIN])
+def list_teams_by_user_id(user_id: int):
+    if user_id is None:
+        return {'teamIds': [], 'error': 'User ID not specified'}, 400
+    teams = user_repository.get_user_teams(user_id)
+    return {'teamIds': teams}
+
