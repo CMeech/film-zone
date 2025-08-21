@@ -5,6 +5,7 @@ from features.users.role import Role
 from flask import Blueprint, flash, render_template, redirect, request
 from libs.auth.pre_authorize import pre_authorize
 from libs.auth.require_auth import require_auth
+from libs.context.user_context import get_user_profile
 from libs.hash.generate_token import generate_token
 from libs.security.rate_limit import limiter
 from libs.logging.logging import logger
@@ -88,3 +89,25 @@ def list_teams_by_user_id(user_id: int):
     teams = user_repository.get_user_teams(user_id)
     return {'teamIds': teams}
 
+
+@user_bp.route('/resetPassword', methods=['GET', 'POST'])
+@require_auth
+@pre_authorize([Role.ADMIN, Role.COACH])
+def reset_password():
+    if request.method == 'POST':
+        user_id = None
+        try:
+            user_id = request.form.get('id', None)
+            if user_id is not None and get_user_profile().user.role != Role.ADMIN:
+                raise Exception("Only admins can reset other users' passwords")
+            if user_id is None:
+                user_id = get_user_profile().user.id
+            password = request.form['password']
+            password_hash = generate_token(password)
+            user_repository.reset_password(user_id, password_hash)
+            flash(f"Password reset successfully for user with id {user_id}.")
+        except Exception as e:
+            logger.error(f"Failed to reset password for user with id {user_id}: {e}")
+            error_message = "Failed to reset password."
+            flash(error_message)
+    return render_template('user/reset-password.html')

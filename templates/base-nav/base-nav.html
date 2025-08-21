@@ -76,6 +76,9 @@
                     {% if g.user_profile.user.role.value == 'admin' %}
                     <a href="/user/register/player" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Player access</a>
                     {% endif %}
+                    {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
+                    <a href="/user/resetPassword" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Reset password</a>
+                    {% endif %}
                     {% if g.user_profile.user.role.value == 'admin' %}
                     <a href="/team/list" class="block text-gray-800 dark:text-gray-200 hover:font-semibold">Teams admin</a>
                     {% endif %}

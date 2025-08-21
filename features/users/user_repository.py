@@ -96,3 +96,12 @@ def get_user_teams(user_id: int) -> list[int]:
     params = (user_id,)
     result = fetch_all(query, params)
     return result if result is not None else []
+
+def reset_password(user_id: int, access_code_hash: str):
+    query = """
+            UPDATE Users
+            SET password_hash = ?
+            WHERE id = ?
+    """
+    params = (access_code_hash, user_id)
+    execute_modifying_query(query, params)
