@@ -40,7 +40,6 @@ def get_events_by_range():
             start_dt = event.date  # assuming event.date is a datetime object
             end_dt = start_dt + timedelta(minutes=event.duration if event.duration else 0)
 
-            logger.debug(f"Event type is {event.event_type} and color is {TYPE_COLORS.get(event.event_type, TYPE_COLORS['Other'])}")
             calendar_events.append({
                 'id': event.id,
                 'title': event.name,

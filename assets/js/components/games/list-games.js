@@ -4,6 +4,7 @@ document.addEventListener('alpine:init', () => {
         return {
             // ---- State ----
             games: [],
+            events: [],
             submitting: false,
             submitText: 'Create Game',
             newGame: {
@@ -18,6 +19,9 @@ document.addEventListener('alpine:init', () => {
             },
 
             // ---- Field setters (used by @change) ----
+            setEventId(event) {
+                this.newGame.event_id = event.target.value ? parseInt(event.target.value, 10) : null;
+            },
             setOpponentName(event) {
                 this.newGame.opponent_name = event.target.value;
             },
@@ -42,7 +46,66 @@ document.addEventListener('alpine:init', () => {
             },
 
             // ---- Data fetching & rendering ----
+            async loadEvents() {
+                try {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setMonth(start.getMonth() - 2);
+
+                    const startISO = start.toISOString();
+                    const endISO = end.toISOString();
+
+                    const url = `/events/calendar/range?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}`;
+
+                    const res = await fetch(url, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                    });
+
+                    if (!res.ok) throw new Error('Failed to load events');
+                    const data = await res.json();
+
+                    // Save for Alpine state if needed
+                    const events = data?.events ? data.events : [];
+                    this.events = events;
+
+                    // Populate the <select> manually
+                    const select = document.querySelector("#event_id");
+                    select.innerHTML = ""; // clear old options
+
+                    events.forEach(e => {
+                        const option = document.createElement("option");
+                        option.value = e.id;
+
+                        option.textContent = `${e.title} (${this.formatDate(e.start)})`;
+                        select.appendChild(option);
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+
+            formatDate(date) {
+                if (!date) {
+                    return null;
+                }
+                // Convert timestamp string to Date
+                const parsedDate = new Date(date);
+
+                // Format as readable English date (e.g. "August 24, 2025")
+                return parsedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            },
+
             async loadGames() {
+                try {
+                    await this.loadEvents();
+                } catch (err) {
+                    console.error(err);
+                }
                 try {
                     const res = await fetch('/games/list/json', {
                         headers: { 'Accept': 'application/json' },
@@ -79,6 +142,12 @@ document.addEventListener('alpine:init', () => {
                     // Final score (first <p> inside body)
                     const scoreEl = frag.querySelector('p');
                     if (scoreEl) scoreEl.textContent = game.final_score || '';
+
+                    // Location
+                    const locationEl = frag.getElementById('location');
+                    if (locationEl && game.event_date) {
+                        locationEl.textContent = this.formatDate(game.event_date);
+                    }
 
                     // Delete button (if present in template due to role)
                     const delBtn = frag.querySelector('button');
@@ -131,7 +200,7 @@ document.addEventListener('alpine:init', () => {
                         final_score: this.newGame.final_score || null,
                         is_home: !!this.newGame.is_home,
                         team_id: team_id,
-                        // event_id, video_url, game_data can be added later if you expose fields
+                        event_id: this.newGame.event_id,
                     };
 
                     const res = await fetch('/games/create', {
