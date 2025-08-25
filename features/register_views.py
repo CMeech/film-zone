@@ -3,6 +3,7 @@ from features.announcements.announcements_view import announcement_bp
 from features.dashboard.dashboard_view import dashboard_bp
 from features.auth.auth_view import auth_bp
 from features.events.events_view import events_bp
+from features.games.game_view import game_bp
 from features.resources.resource_view import resource_bp
 from features.rosters.rosters_view import roster_bp
 from features.teams.team_view import team_bp
@@ -43,6 +44,9 @@ def register_views(app: Flask):
 
         # Events
         app.register_blueprint(events_bp, url_prefix='/events')
+
+        # Games
+        app.register_blueprint(game_bp, url_prefix='/games')
 
         # Catch-all route for unregistered URLs
         @app.route('/', defaults={'path': ''})
