@@ -1,3 +1,5 @@
+import json
+import os
 from flask import Blueprint, render_template, request, jsonify, flash
 from features.games import game_repository
 from features.users.role import Role
@@ -6,6 +8,18 @@ from libs.auth.pre_authorize import pre_authorize
 from libs.auth.team_required import team_required
 from libs.context.user_context import get_active_team_id
 from libs.logging.logging import logger
+from jsonschema import validate, ValidationError
+
+# Resolve schema path relative to project root
+SCHEMA_PATH = os.path.join(
+    os.path.dirname(__file__),  # features/games
+    "..", "..",                 # go up to project root
+    "schemas",
+    "game_schema.json"
+)
+
+with open(SCHEMA_PATH, "r") as f:
+    GAME_SCHEMA = json.load(f)
 
 game_bp = Blueprint('game', __name__)
 
@@ -84,7 +98,7 @@ def create_game():
 @pre_authorize([Role.ADMIN, Role.COACH])
 @team_required
 def update_game(game_id):
-    """Update limited game details (event_id, video_url)."""
+    """Update limited game details (event_id, video_url, final_score)."""
     try:
         game = get_game_internal(game_id)
     except RuntimeError as e:
@@ -95,8 +109,9 @@ def update_game(game_id):
         data = request.get_json()
         event_id = data.get("event_id")
         video_url = data.get("video_url")
+        final_score = data.get("final_score")
 
-        game_repository.update_game_details(game_id, event_id, video_url)
+        game_repository.update_game_details(game_id, event_id, video_url, final_score)
         return jsonify({"success": True})
     except Exception as e:
         logger.error(f"Failed to update game {game_id}: {e}")
@@ -107,19 +122,25 @@ def update_game(game_id):
 @pre_authorize([Role.ADMIN, Role.COACH])
 @team_required
 def update_game_data(game_id):
-    """Placeholder endpoint to update game_data (json schema TBD)."""
+    """Update game_data with JSON schema validation."""
     try:
         game = get_game_internal(game_id)
     except RuntimeError as e:
-        return jsonify({"error": e}), 401
+        return jsonify({"error": str(e)}), 401
     if not game:
         return jsonify({"error": "Game not found"}), 404
+
     try:
-        data = request.get_json()
+        data = request.get_json(force=True)
         game_data = data.get("game_data")
-        # TODO: validate game_data against schema once defined
+
+        # Validate game_data against schema
+        validate(instance=game_data, schema=GAME_SCHEMA)
+
         game_repository.update_game_data(game_id, game_data)
         return jsonify({"success": True})
+    except ValidationError as ve:
+        return jsonify({"error": f"Invalid game data: {ve.message}"}), 400
     except Exception as e:
         logger.error(f"Failed to update game_data for game {game_id}: {e}")
         return jsonify({"error": "Failed to update game_data"}), 400
