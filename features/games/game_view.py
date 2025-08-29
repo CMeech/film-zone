@@ -2,6 +2,7 @@ import json
 import os
 from flask import Blueprint, render_template, request, jsonify, flash
 from features.games import game_repository
+from features.rosters.roster_repository import get_players_by_roster_id
 from features.users.role import Role
 from libs.auth.require_auth import require_auth
 from libs.auth.pre_authorize import pre_authorize
@@ -49,18 +50,70 @@ def list_games_json():
     games = game_repository.get_all_games_without_data(get_active_team_id())
     return jsonify([vars(game) for game in games])
 
+def _empty_player_stats(players):
+    """
+    Build player_stats mapping based on roster players.
+    Each player number -> empty stats dict.
+    """
+    stats_template = {
+        "kills": [],
+        "sets": [],
+        "blocks": 0,
+        "digs": 0,
+        "aces": 0,
+        "missed_serves": 0,
+        "errors": 0
+    }
+    # must be string since it's used as a key
+    return { str(p.number): dict(stats_template) for p in players }
+
+
+def _make_empty_set(players):
+    """
+    Build an empty set structure following the JSON schema.
+    """
+    return {
+        "score": {"team": 0, "opponent": 0},
+        "team": {
+            "starting_rotation": [],
+            "player_stats": _empty_player_stats(players)
+        },
+        "opponent": {
+            "starting_rotation": [],
+            "player_stats": {}
+        }
+    }
+
+
+def _make_default_game_data(players):
+    """
+    Build default game_data with 5 sets pre-populated.
+    One extra set for total
+    """
+    return {
+        "sets": [_make_empty_set(players) for _ in range(6)]
+    }
+
+
 @game_bp.route('/<int:game_id>', methods=['GET'])
 @require_auth
 @team_required
 def get_game(game_id):
-    """Return a single game including game_data."""
+    """Return a single game including game_data, with default if missing."""
     try:
         game = get_game_internal(game_id)
     except RuntimeError as e:
-        return jsonify({"error": e}), 401
+        return jsonify({"error": str(e)}), 401
     if not game:
         return jsonify({"error": "Game not found"}), 404
+
+    # If no game_data, populate with default
+    if not game.game_data:
+        players = get_players_by_roster_id(game.team_id)
+        game.game_data = _make_default_game_data(players)
+
     return jsonify(vars(game))
+
 
 def get_game_internal(game_id):
     """Return a single game including game_data."""
