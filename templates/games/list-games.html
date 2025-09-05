@@ -1,3 +1,4 @@
+
 {% extends "base-nav/base-nav.html" %}
 
 {% block scripts %}
@@ -5,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div x-data="gamesData" class="p-4">
+    <div x-data="gamesApp" x-init="init()" class="p-4">
         <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
         <h1 class="text-3xl font-bold mb-6">Games</h1>
 
@@ -25,7 +26,7 @@
                                 id="opponent_name"
                                 name="opponent_name"
                                 required
-                                @change="setOpponentName"
+                                x-model="newGame.opponent_name"
                                 class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg p-2"
                         />
                     </div>
@@ -38,7 +39,7 @@
                                 type="text"
                                 id="final_score"
                                 name="final_score"
-                                @change="setFinalScore"
+                                x-model="newGame.final_score"
                                 class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg p-2"
                         />
                     </div>
@@ -48,13 +49,14 @@
                                 type="checkbox"
                                 id="is_home"
                                 name="is_home"
-                                @change="setIsHome"
+                                x-model="newGame.is_home"
                                 class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
                         <label for="is_home" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                             Home Game
                         </label>
                     </div>
+
                     <div>
                         <label for="event_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Event
@@ -62,21 +64,25 @@
                         <select
                                 id="event_id"
                                 name="event_id"
-                                @change="setEventId"
+                                x-model="newGame.event_id"
                                 class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700
-               dark:bg-gray-900 dark:text-white shadow-sm focus:border-blue-500
-               focus:ring-blue-500 text-lg p-2"
+                                   dark:bg-gray-900 dark:text-white shadow-sm focus:border-blue-500
+                                   focus:ring-blue-500 text-lg p-2"
                         >
                             <option value="">-- Select an Event --</option>
+                            <template x-for="event in events" :key="event.id">
+                                <option :value="event.id" x-text="getEventTitle(event)"></option>
+                            </template>
                         </select>
                     </div>
                 </div>
 
                 <button
                         type="submit"
+                        :disabled="disabled"
                         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition"
                 >
-                    Create Game
+                    <span x-text="submitText"></span>
                 </button>
             </form>
         {% endif %}
@@ -84,37 +90,36 @@
         <div
                 id="games-list"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                x-init="loadGames"
         >
-            <!-- Tiles will be loaded here by Alpine AJAX -->
+            <template x-for="game in games" :key="game.id">
+                <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition cursor-pointer flex flex-col"
+                        @click="goToGame(game.id)"
+                >
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white" x-text="gameTitle(game)"></h3>
+                            <div class="flex justify-between mt-1">
+                                <p class="text-gray-500 dark:text-gray-400" x-text="game.final_score || ''"></p>
+                                <span class="text-gray-400 dark:text-gray-500 text-sm" x-text="formatDate(game.event_date)"></span>
+                            </div>
+                        </div>
+
+                        {% if g.user_profile.user.role.value in ["coach", "admin"] %}
+                            <button
+                                    type="button"
+                                    class="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded-lg shadow"
+                                    @click.stop="deleteGame(game.id)"
+                            >
+                                Delete
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </template>
         </div>
 
-        <template id="game-tile-template">
-            <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition cursor-pointer flex flex-col"
-            >
-                <div class="p-4 flex-1 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white"></h3>
-                        <div class="flex justify-between mt-1">
-                            <p class="text-gray-500 dark:text-gray-400"></p>
-                            <span id="location" class="text-gray-400 dark:text-gray-500 text-sm"></span>
-                        </div>
-                    </div>
-
-                    {% if g.user_profile.user.role.value in ["coach", "admin"] %}
-                        <button
-                                type="button"
-                                class="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded-lg shadow"
-                        >
-                            Delete
-                        </button>
-                    {% endif %}
-                </div>
-            </div>
-        </template>
-
-        <div x-show="noGames" class="text-center mt-6 text-gray-500">
+        <div x-show="games.length === 0" class="text-center mt-6 text-gray-500">
             No games found
         </div>
     </div>
