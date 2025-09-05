@@ -52,12 +52,20 @@ def create_game(game_data, opponent_name, final_score,
     return Game(*result)
 
 def update_game_details(game_id: int, event_id: Optional[int], video_url: Optional[str], final_score: Optional[str]) -> None:
-    query = """
-            UPDATE Games
-            SET event_id = ?, video_url = ?, final_score = ?
-            WHERE id = ? \
-            """
-    params = (event_id, video_url, final_score, game_id)
+    if event_id is None :
+        query = """
+                UPDATE Games
+                SET video_url = ?, final_score = ?
+                WHERE id = ? \
+                """
+        params = (video_url, final_score, game_id)
+    else:
+        query = """
+                UPDATE Games
+                SET event_id = ?, video_url = ?, final_score = ?
+                WHERE id = ? \
+                """
+        params = (event_id, video_url, final_score, game_id)
     execute_modifying_query(query, params)
 
 def update_game_data(game_id: int, game_data: str) -> None:
