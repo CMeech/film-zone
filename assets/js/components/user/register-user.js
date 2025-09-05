@@ -3,6 +3,7 @@ document.addEventListener("alpine:init", () => {
         return {
             username: "",
             password: "",
+            displayName: "",
             submitting: false,
             submitForm(form) {
                 this.submitting = true;
@@ -12,13 +13,7 @@ document.addEventListener("alpine:init", () => {
                 return this.submitting ? "Submitting..." : "Submit";
             },
             get disabled() {
-                return this.username.length <= 0 || this.password.length <= 0 || this.submitting;
-            },
-            setUsername(event) {
-                this.username = event.target.value;
-            },
-            setPassword(event) {
-                this.password = event.target.value;
+                return this.username.length <= 0 || this.displayName.length <= 0 || this.password.length <= 0 || this.submitting;
             }
         }
     })
