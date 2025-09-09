@@ -58,9 +58,201 @@
 
             <!-- 3) Interactive Stats Form -->
             <section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-show="latestGameData" x-cloak>
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Placeholder InteractiveForm</h2>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Interactive Match Controls</h2>
 
+                <!-- Main action area -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- Left: Main buttons & contextual controls -->
+                    <div class="space-y-4">
+                        <!-- Primary actions -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button type="button" class="py-3 px-4 rounded-lg shadow text-lg font-medium"
+                                    :class="mode === 'addStat' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                    @click="enterAddStat">
+                                ➕ Add Stat
+                            </button>
+
+                            <button type="button" class="py-3 px-4 rounded-lg shadow text-lg font-medium"
+                                    :class="mode === 'addPlayer' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                    @click="enterAddPlayer">
+                                👤 Add Opponent Player
+                            </button>
+
+                            <button type="button" class="py-3 px-4 rounded-lg shadow text-lg font-medium"
+                                    :class="mode === 'adjustScore' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                                    @click="enterAdjustScore">
+                                🔢 Adjust Score
+                            </button>
+                        </div>
+
+                        <!-- Contextual step area (changes based on mode) -->
+                        <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm">
+
+                            <!-- Mode: Add Stat -->
+                            <div x-show="mode === 'addStat'">
+                                <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Select team</div>
+                                <div class="flex gap-2 mb-3">
+                                    <button type="button" class="px-3 py-2 rounded-md font-medium"
+                                            :class="selectedTeam === 'team' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 dark:text-gray-200'"
+                                            @click="selectTeam('team')">My Team</button>
+                                    <button type="button" class="px-3 py-2 rounded-md font-medium"
+                                            :class="selectedTeam === 'opponent' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 dark:text-gray-200'"
+                                            @click="selectTeam('opponent')">Opponent</button>
+                                </div>
+
+                                <div x-show="selectedTeam">
+                                    <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Select player</div>
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        <template x-for="num in getRoster(selectedTeam)" :key="num">
+                                            <button type="button" class="px-4 py-2 rounded-md border font-medium"
+                                                    :class="selectedPlayer === num ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'"
+                                                    @click="selectPlayerButton(num)">
+                                                <span x-text="num"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+
+                                    <div x-show="selectedPlayer" class="mb-3">
+                                        <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Choose stat</div>
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('kills')">Kills</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('sets')">Sets</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('blocks')">Blocks</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('digs')">Digs</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('aces')">Aces</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('missed_serves')">Missed Serves</button>
+                                            <button type="button" class="py-2 px-3 rounded-md" @click="chooseStat('errors')">Errors</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Position picker (for sets and kills) -->
+                                    <div x-show="positionSelection.visible" class="mt-3">
+                                        <div class="mb-2 text-sm text-gray-600 dark:text-gray-300" x-text="positionSelection.type === 'set' ? 'Select FROM position' : 'Select FROM position'"></div>
+                                        <div class="grid grid-cols-3 gap-2 mb-2">
+                                            <template x-for="i in 6" :key="i">
+                                                <button type="button" class="py-2 rounded-md" :class="positionSelection.from === i ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                                        @click="positionSelectFrom(i)"><span x-text="i"></span></button>
+                                            </template>
+                                        </div>
+
+                                        <div class="mb-2 text-sm text-gray-600 dark:text-gray-300" x-text="positionSelection.type === 'set' ? 'Select TO position' : 'Select TARGET position'"></div>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <template x-for="i in 6" :key="'to-'+i">
+                                                <button type="button" class="py-2 rounded-md" :class="positionSelection.to === i ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                                        @click="positionSelectTo(i)"><span x-text="i"></span></button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode: Add Opponent Player -->
+                            <div x-show="mode === 'addPlayer'">
+                                <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Enter opponent player number</div>
+                                <div class="flex gap-2">
+                                    <input type="number" min="1" max="99" x-model.number="newOpponentNumber"
+                                           class="px-3 py-2 rounded-md border w-28 dark:bg-gray-900 dark:text-white"/>
+                                    <button type="button" class="px-4 py-2 rounded-md bg-green-600 text-white" @click="addOpponentPlayerFromForm">Add</button>
+                                </div>
+                            </div>
+
+                            <!-- Mode: Adjust Score -->
+                            <div x-show="mode === 'adjustScore'">
+                                <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Adjust current set score</div>
+                                <div class="flex gap-2 items-center">
+                                    <div class="flex items-center gap-1">
+                                        <button class="px-3 py-2 rounded-md bg-blue-500 text-white" @click="adjustScore('team', 1)">+ Team</button>
+                                        <button class="px-3 py-2 rounded-md bg-red-500 text-white" @click="adjustScore('team', -1)">− Team</button>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button class="px-3 py-2 rounded-md bg-blue-500 text-white" @click="adjustScore('opponent', 1)">+ Opp</button>
+                                        <button class="px-3 py-2 rounded-md bg-red-500 text-white" @click="adjustScore('opponent', -1)">− Opp</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode: Rotations editor -->
+                            <div x-show="mode === 'setRotation'">
+                                <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Edit starting rotations</div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="mb-1 font-semibold">My Team</div>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <template x-for="(val, idx) in rotationEdit.team" :key="'trot-'+idx">
+                                                <input type="number" min="1" max="99" x-model.number="rotationEdit.team[idx]"
+                                                       class="px-2 py-1 rounded border dark:bg-gray-900 dark:text-white"/>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="mb-1 font-semibold">Opponent</div>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <template x-for="(val, idx) in rotationEdit.opponent" :key="'orot-'+idx">
+                                                <input type="number" min="1" max="99" x-model.number="rotationEdit.opponent[idx]"
+                                                       class="px-2 py-1 rounded border dark:bg-gray-900 dark:text-white"/>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button class="px-4 py-2 rounded-md bg-indigo-600 text-white" @click="applyRotations">Update Rotations</button>
+                                </div>
+                            </div>
+
+                            <div x-show="mode ==='idle'">
+                                <span class="text-sm font-light">Select an action</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Right: Small quick summary / rosters view -->
+                    <div class="space-y-3">
+                        <div>
+                            <div class="font-semibold mb-1">Rosters</div>
+                            <div class="flex gap-2 items-start">
+                                <div class="flex-1">
+                                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">My Team</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <template x-for="n in getRoster('team')" :key="'rt-'+n">
+                                            <button type="button" class="px-3 py-1 rounded-md text-sm"
+                                                    :class="selectedPlayer === n && selectedTeam === 'team' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'">
+                                                <span x-text="n"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="flex-1">
+                                    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Opponent</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <template x-for="n in getRoster('opponent')" :key="'ro-'+n">
+                                            <button type="button" class="px-3 py-1 rounded-md text-sm"
+                                                    :class="selectedPlayer === n && selectedTeam === 'opponent' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'">
+                                                <span x-text="n"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="font-semibold mb-1">Current Set Score</div>
+                            <div class="text-lg font-medium" x-text="currentSetScoreText"></div>
+                        </div>
+
+                        <div>
+                            <button class="px-3 py-2 rounded-md bg-blue-500 text-white" @click="enterSetRotation">Edit Rotations</button>
+                        </div>
+                    </div>
+                </div>
             </section>
+
 
 
             <!-- 4) Readonly Stats Viewer -->
@@ -76,7 +268,7 @@
                         <button type="button"
                                 :class="activeSetIndex === idx ? 'px-3 py-1 rounded bg-indigo-600 text-white'
                                            : 'px-3 py-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'"
-                                @click="activeSetIndex = idx">
+                                @click="setActiveSet(idx)">
                             <span x-text="label"></span>
                         </button>
                     </template>
@@ -103,22 +295,55 @@
                            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th class="px-4 py-2">Player #</th>
-                            <th class="px-4 py-2">Kills</th>
-                            <th class="px-4 py-2">Sets</th>
-                            <th class="px-4 py-2">Blocks</th>
-                            <th class="px-4 py-2">Digs</th>
-                            <th class="px-4 py-2">Aces</th>
-                            <th class="px-4 py-2">Missed Serves</th>
-                            <th class="px-4 py-2">Errors</th>
+                            <th class="px-4 py-2 text-left">Player #</th>
+                            <th class="px-4 py-2 text-left">Kills</th>
+                            <th class="px-4 py-2 text-left">Sets</th>
+                            <th class="px-4 py-2 text-left">Blocks</th>
+                            <th class="px-4 py-2 text-left">Digs</th>
+                            <th class="px-4 py-2 text-left">Aces</th>
+                            <th class="px-4 py-2 text-left">Missed Serves</th>
+                            <th class="px-4 py-2 text-left">Errors</th>
                         </tr>
                         </thead>
                         <tbody>
                         <template x-for="[num, stats] in getCurrentStatsEntries()" :key="num">
-                            <tr>
-                                <td class="px-4 py-2" x-text="num"></td>
-                                <td class="px-4 py-2" x-text="stats.kills"></td>
-                                <td class="px-4 py-2" x-text="stats.setsCount"></td>
+                            <tr class="align-top">
+                                <!-- Player number -->
+                                <td class="px-4 py-2 font-semibold" x-text="num"></td>
+
+                                <!-- Kills -->
+                                <td class="px-4 py-2">
+                                    <div>
+                                        <span x-text="stats.kills.length"></span>
+                                    </div>
+                                    <!-- Distribution -->
+                                    <div class="mt-1 text-xs text-gray-600 dark:text-gray-300">
+                                        <template x-for="[pos, count] in stats.killDistribution" :key="pos">
+                                            <div x-show="count > 0">
+                                                → Pos <span x-text="pos"></span>: <span x-text="count"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </td>
+
+                                <!-- Sets -->
+                                <td class="px-4 py-2">
+                                    <div>
+                                        <span x-text="stats.sets.length"></span>
+                                    </div>
+                                    <!-- Mini from→to matrix -->
+                                    <div class="mt-1 text-xs grid grid-cols-3 gap-1">
+                                        <template x-for="item in stats.setMatrix" :key="item.from + '-' + item.to">
+                                            <div x-show="item.count > 0"
+                                                 class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
+                                                <span x-text="'['+item.from+'→'+item.to+']'"></span>:
+                                                <span x-text="item.count"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </td>
+
+                                <!-- Other stats -->
                                 <td class="px-4 py-2" x-text="stats.blocks"></td>
                                 <td class="px-4 py-2" x-text="stats.digs"></td>
                                 <td class="px-4 py-2" x-text="stats.aces"></td>
@@ -129,6 +354,7 @@
                         </tbody>
                     </table>
                 </div>
+
             </section>
 
         </div>

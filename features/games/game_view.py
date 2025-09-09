@@ -75,11 +75,11 @@ def _make_empty_set(players):
     return {
         "score": {"team": 0, "opponent": 0},
         "team": {
-            "starting_rotation": [],
+            "starting_rotation": [None, None, None, None, None, None],
             "player_stats": _empty_player_stats(players)
         },
         "opponent": {
-            "starting_rotation": [],
+            "starting_rotation": [None, None, None, None, None, None],
             "player_stats": {}
         }
     }
@@ -190,7 +190,10 @@ def update_game_data(game_id):
         # Validate game_data against schema
         validate(instance=game_data, schema=GAME_SCHEMA)
 
-        game_repository.update_game_data(game_id, game_data)
+        # Convert dict -> JSON string for MySQL
+        game_data_str = json.dumps(game_data)
+
+        game_repository.update_game_data(game_id, game_data_str)
         return jsonify({"success": True})
     except ValidationError as ve:
         return jsonify({"error": f"Invalid game data: {ve.message}"}), 400

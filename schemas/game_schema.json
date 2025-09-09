@@ -21,7 +21,12 @@
             "properties": {
               "starting_rotation": {
                 "type": "array",
-                "items": { "type": "integer" },
+                "items": {
+                  "anyOf": [
+                    { "type": "integer" },
+                    { "type": "null" }
+                  ]
+                },
                 "minItems": 6,
                 "maxItems": 6,
                 "description": "Player numbers in starting positions 1–6"
@@ -36,7 +41,12 @@
             "properties": {
               "starting_rotation": {
                 "type": "array",
-                "items": { "type": "integer" },
+                "items": {
+                  "anyOf": [
+                    { "type": "integer" },
+                    { "type": "null" }
+                  ]
+                },
                 "minItems": 6,
                 "maxItems": 6
               },

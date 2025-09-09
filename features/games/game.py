@@ -1,8 +1,11 @@
+import json
+
+
 class Game:
     def __init__(self, id, game_data, opponent_name, final_score,
                  event_id, team_id, is_home, video_url, event_date=None):
         self.id = id
-        self.game_data = game_data
+        self.game_data = json.loads(game_data) if game_data is not None else None
         self.opponent_name = opponent_name
         self.final_score = final_score
         self.event_id = event_id
