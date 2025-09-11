@@ -150,3 +150,8 @@ def delete_resource(resource_id):
     except Exception as e:
         logger.error(f"Failed to delete resource: {e}")
         return {"error": "Failed to delete resource"}, 500
+
+@resource_bp.route('/whiteboard', methods=['GET'])
+@require_auth
+def interactive_whiteboard():
+    return render_template("resources/interactive/whiteboard.html")

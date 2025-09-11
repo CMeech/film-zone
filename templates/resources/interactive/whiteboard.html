@@ -1,0 +1,56 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/resources/interactive/whiteboard.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Toolbar -->
+                <div class="w-full md:w-64 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm flex flex-col gap-3">
+                    <div class="text-sm font-semibold text-gray-700 dark:text-gray-200">Tools</div>
+                    <div class="flex gap-2">
+                        <button id="tool-select" class="tool-btn flex-1 py-2 rounded border text-sm">Select</button>
+                        <button id="tool-line" class="tool-btn flex-1 py-2 rounded border text-sm">Line</button>
+                        <button id="tool-circle" class="tool-btn flex-1 py-2 rounded border text-sm">Circle</button>
+                        <button id="tool-free" class="tool-btn flex-1 py-2 rounded border text-sm">Free</button>
+                    </div>
+
+                    <div>
+                        <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 mt-2">Color</div>
+                        <div class="flex gap-2 mt-1">
+                            <button class="color-btn flex-1 py-2 rounded border text-sm" data-color="#ff3b30">RED</button>
+                            <button class="color-btn flex-1 py-2 rounded border text-sm" data-color="#34c759">GREEN</button>
+                            <button class="color-btn flex-1 py-2 rounded border text-sm" data-color="#007aff">BLUE</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 items-center mt-2">
+                        <button id="zoom-in" class="flex-1 py-2 rounded border text-sm">Zoom +</button>
+                        <button id="zoom-out" class="flex-1 py-2 rounded border text-sm">Zoom −</button>
+                    </div>
+
+                    <div class="mt-2">
+                        <button id="reset-players" class="w-full py-2 rounded border text-sm">Reset Players</button>
+                    </div>
+
+                    <div class="mt-2">
+                        <button id="clear-draw" class="w-full py-2 rounded border text-sm">Clear Drawings</button>
+                    </div>
+
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-3">Tip: drag players with mouse or touch. Click player to highlight.</div>
+                </div>
+
+                <!-- SVG Whiteboard -->
+                <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg p-2 shadow-sm">
+                    <div id="whiteboard-root" class="w-full h-[80vh] md:h-[78vh] touch-none">
+                        <!-- SVG will be injected here by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
