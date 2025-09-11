@@ -6,7 +6,7 @@ import { debounceTime } from 'rxjs/operators';
 document.addEventListener('alpine:init', function () {
     Alpine.data('viewGameApp', function () {
         return {
-            // ---------- State ----------
+            // ---------- State ----------/
             gameId: null,
             gameSubject: new ReplaySubject(1),
             metaSubject: new ReplaySubject(1),

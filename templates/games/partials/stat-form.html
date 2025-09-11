@@ -1,0 +1,380 @@
+<!-- 3) Interactive Stats Form -->
+<section
+    class="hidden md:block bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+    x-show="latestGameData"
+    x-cloak
+>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Interactive Match Controls</h2>
+
+    <!-- Main action area -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- Left: Main buttons & contextual controls -->
+        <div class="space-y-4">
+            <!-- Primary actions -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button
+                    type="button"
+                    class="cursor-pointer py-3 px-4 rounded-lg shadow text-lg font-medium"
+                    :class="mode === 'addStat' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                    @click="enterAddStat"
+                >
+                    ➕ Add Stat
+                </button>
+
+                <button
+                    type="button"
+                    class="cursor-pointer py-3 px-4 rounded-lg shadow text-lg font-medium"
+                    :class="mode === 'addPlayer' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                    @click="enterAddPlayer"
+                >
+                    👤 Add Opponent Player
+                </button>
+
+                <button
+                    type="button"
+                    class="cursor-pointer py-3 px-4 rounded-lg shadow text-lg font-medium"
+                    :class="mode === 'adjustScore' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                    @click="enterAdjustScore"
+                >
+                    🔢 Adjust Score
+                </button>
+            </div>
+
+            <!-- Contextual step area (changes based on mode) -->
+            <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg shadow-sm">
+
+                <!-- Mode: Add Stat -->
+                <div x-show="mode === 'addStat'">
+                    <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Select team</div>
+                    <div class="flex gap-2 mb-3">
+                        <button
+                            type="button"
+                            class="cursor-pointer px-3 py-2 rounded-md font-medium"
+                            :class="selectedTeam === 'team' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 dark:text-gray-200'"
+                            @click="selectTeam('team')"
+                        >My Team</button>
+                        <button
+                            type="button"
+                            class="cursor-pointer px-3 py-2 rounded-md font-medium"
+                            :class="selectedTeam === 'opponent' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700 dark:text-gray-200'"
+                            @click="selectTeam('opponent')"
+                        >Opponent</button>
+                    </div>
+
+                    <div x-show="selectedTeam">
+                        <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Select player</div>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <template
+                                x-for="num in getRoster(selectedTeam)"
+                                :key="num"
+                            >
+                                <button
+                                    type="button"
+                                    class="cursor-pointer px-4 py-2 rounded-md border font-medium"
+                                    :class="selectedPlayer === num ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'"
+                                    @click="selectPlayerButton(num)"
+                                >
+                                    <span x-text="num"></span>
+                                </button>
+                            </template>
+                        </div>
+
+                        <div
+                            x-show="selectedPlayer"
+                            class="mb-3"
+                        >
+                            <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Choose stat</div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('kills')">Kills</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('sets')">Sets</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('blocks')">Blocks</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('digs')">Digs</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('aces')">Aces</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('missed_serves')">Missed Serves</button>
+                                <button type="button" class="outline cursor-pointer py-2 px-3 rounded-md" @click="chooseStat('errors')">Errors</button>
+                            </div>
+                        </div>
+
+                        <!-- Position picker (for sets and kills) -->
+                        <div
+                            x-show="positionSelection.visible"
+                            class="mt-3"
+                        >
+                            <div
+                                class="mb-2 text-sm text-gray-600 dark:text-gray-300"
+                                x-text="positionSelection.type === 'set' ? 'Select FROM position' : 'Select FROM position'"
+                            ></div>
+                            <div class="grid grid-cols-3 gap-2 mb-2">
+                                <!-- Top row: 4 3 2 -->
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 4 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(4)"
+                                >4</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 3 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(3)"
+                                >3</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(2)">2</button>
+
+                                <!-- Bottom row: 5 6 1 -->
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 5 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(5)">5</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 6 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(6)">6</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md"
+                                    :class="positionSelection.from === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    @click="positionSelectFrom(1)">1</button>
+                            </div>
+
+                            <div
+                                class="mb-2 text-sm text-gray-600 dark:text-gray-300"
+                                x-text="positionSelection.type === 'set' ? 'Select TO position' : 'Select TARGET position'"
+                            ></div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <!-- Top row: 4 3 2 -->
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                             bg-gray-100 dark:bg-gray-800
+                                             hover:bg-gray-200 dark:hover:bg-gray-700
+                                             disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                             disabled:text-gray-500
+                                            cursor-pointer disabled:cursor-not-allowed"
+                                    :class="positionSelection.to === 4 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                    @click="positionSelectTo(4)">4</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                            bg-gray-100 dark:bg-gray-800
+                                            hover:bg-gray-200 dark:hover:bg-gray-700
+                                            disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                            disabled:text-gray-500
+                                            cursor-pointer disabled:cursor-not-allowed"
+                                        :class="positionSelection.to === 3 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                        :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                        @click="positionSelectTo(3)">3</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                         bg-gray-100 dark:bg-gray-800
+                                         hover:bg-gray-200 dark:hover:bg-gray-700
+                                         disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                         disabled:text-gray-500
+                                        cursor-pointer disabled:cursor-not-allowed"
+                                    :class="positionSelection.to === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                    :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                    @click="positionSelectTo(2)">2</button>
+
+                                <!-- Bottom row: 5 6 1 -->
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                            bg-gray-100 dark:bg-gray-800
+                                            hover:bg-gray-200 dark:hover:bg-gray-700
+                                            disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                            disabled:text-gray-500
+                                            cursor-pointer disabled:cursor-not-allowed"
+                                        :class="positionSelection.to === 5 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                        :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                        @click="positionSelectTo(5)">5</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                             bg-gray-100 dark:bg-gray-800
+                                             hover:bg-gray-200 dark:hover:bg-gray-700
+                                             disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                             disabled:text-gray-500
+                                             cursor-pointer disabled:cursor-not-allowed"
+                                        :class="positionSelection.to === 6 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                        :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                        @click="positionSelectTo(6)">6</button>
+
+                                <button
+                                    type="button"
+                                    class="cursor-pointer py-2 rounded-md
+                                             bg-gray-100 dark:bg-gray-800
+                                             hover:bg-gray-200 dark:hover:bg-gray-700
+                                             disabled:bg-gray-300 disabled:dark:bg-gray-600
+                                             disabled:text-gray-500
+                                             cursor-pointer disabled:cursor-not-allowed"
+                                        :class="positionSelection.to === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                        :disabled="positionSelection.from < 1 || positionSelection.from > 6"
+                                        @click="positionSelectTo(1)">1</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode: Add Opponent Player -->
+                <div x-show="mode === 'addPlayer'">
+                    <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Enter opponent player number</div>
+                    <div class="flex gap-2">
+                        <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            x-model.number="newOpponentNumber"
+                           class="px-3 py-2 rounded-md border w-28 dark:bg-gray-900 dark:text-white"/>
+                        <button
+                            type="button"
+                            class="cursor-pointer px-4 py-2 rounded-md bg-green-600 text-white"
+                            @click="addOpponentPlayerFromForm">Add</button>
+                    </div>
+                </div>
+
+                <!-- Mode: Adjust Score -->
+                <div x-show="mode === 'adjustScore'">
+                    <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Adjust current set score</div>
+                    <div class="flex gap-2 items-center">
+                        <div class="flex items-center gap-1">
+                            <button
+                                class="cursor-pointer px-3 py-2 rounded-md bg-blue-500 text-white"
+                                @click="adjustScore('team', 1)">+ Team</button>
+                            <button
+                                class="cursor-pointer px-3 py-2 rounded-md bg-red-500 text-white"
+                                @click="adjustScore('team', -1)">− Team</button>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button
+                                class="cursor-pointer px-3 py-2 rounded-md bg-blue-500 text-white"
+                                @click="adjustScore('opponent', 1)">+ Opp</button>
+                            <button
+                                class="cursor-pointer px-3 py-2 rounded-md bg-red-500 text-white"
+                                @click="adjustScore('opponent', -1)">− Opp</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode: Rotations editor -->
+                <div x-show="mode === 'setRotation'">
+                    <div class="mb-2 text-sm text-gray-600 dark:text-gray-300">Edit starting rotations</div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="mb-1 font-semibold">My Team</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <template
+                                    x-for="(val, idx) in rotationEdit.team"
+                                    :key="'trot-'+idx"
+                                >
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="99"
+                                        x-model.number="rotationEdit.team[idx]"
+                                       class="px-2 py-1 rounded border dark:bg-gray-900 dark:text-white"
+                                    />
+                                </template>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="mb-1 font-semibold">Opponent</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <template
+                                    x-for="(val, idx) in rotationEdit.opponent"
+                                    :key="'orot-'+idx"
+                                >
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="99"
+                                        x-model.number="rotationEdit.opponent[idx]"
+                                       class="px-2 py-1 rounded border dark:bg-gray-900 dark:text-white"
+                                    />
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button class="cursor-pointer px-4 py-2 rounded-md bg-indigo-600 text-white" @click="applyRotations">Update Rotations</button>
+                    </div>
+                </div>
+
+                <div x-show="mode ==='idle'">
+                    <span class="text-sm font-light">Select an action</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right: Small quick summary / rosters view -->
+        <div class="space-y-3">
+            <div>
+                <div class="font-semibold mb-1">Rosters</div>
+                <div class="flex gap-2 items-start">
+                    <div class="flex-1">
+                        <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">My Team</div>
+                        <div class="flex flex-wrap gap-2">
+                            <template
+                                x-for="n in getRoster('team')"
+                                :key="'rt-'+n"
+                            >
+                                <button
+                                    type="button"
+                                    class="cursor-pointer px-3 py-1 rounded-md text-sm"
+                                    :class="selectedPlayer === n && selectedTeam === 'team' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                >
+                                    <span x-text="n"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="flex-1">
+                        <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Opponent</div>
+                        <div class="flex flex-wrap gap-2">
+                            <template
+                                x-for="n in getRoster('opponent')"
+                                :key="'ro-'+n"
+                            >
+                                <button
+                                    type="button"
+                                    class="cursor-pointer px-3 py-1 rounded-md text-sm"
+                                    :class="selectedPlayer === n && selectedTeam === 'opponent' ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-800'"
+                                >
+                                    <span x-text="n"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="font-semibold mb-1">Current Set Score</div>
+                <div class="text-lg font-medium" x-text="currentSetScoreText"></div>
+            </div>
+
+            <div>
+                <button class="cursor-pointer px-3 py-2 rounded-md bg-blue-500 text-white" @click="enterSetRotation">Edit Rotations</button>
+            </div>
+        </div>
+    </div>
+</section>
