@@ -1,7 +1,83 @@
+
 {% extends "base-nav/base-nav.html" %}
 
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/dashboard/dashboard.js') }}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="animate-fade-up">
-    <h1 class="text-2xl font-bold mb-4">Welcome to the dashboard!</h1>
-</div>
+    <div x-data="dashboardData" class="animate-fade-up space-y-6 p-4">
+
+        <!-- Header / Description -->
+        <div>
+            <h1 class="text-2xl font-bold mb-2">Welcome to the Dashboard!</h1>
+            <p class="text-gray-600">
+                Stay connected with your team — check announcements, review game stats and film,
+                view upcoming events, access shared resources, and collaborate with your coaches.
+            </p>
+        </div>
+
+        <!-- Announcements Section -->
+        <div>
+            <h2 class="text-xl font-semibold mb-2">Latest Announcements</h2>
+            <div
+                    class="space-y-2 max-h-64 overflow-y-auto pr-1"
+            >
+                <div
+                    id="announcements-page"
+                    x-init="loadAnnouncements()"
+                >
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="flex justify-between items-center mt-3">
+                <button
+                        @click="prevPage"
+                        class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+                        :disabled="currentPage === 1">
+                    Previous
+                </button>
+                <button
+                        @click="nextPage"
+                        class="px-3 py-1 bg-gray-200 rounded">
+                    Next
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Quick Actions</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <a href="/games/list"
+                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <h3 class="font-medium text-gray-900 dark:text-white">Games</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">View game statistics and film</p>
+                </a>
+                <a href="/announcements/list"
+                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <h3 class="font-medium text-gray-900 dark:text-white">Announcements</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">View messages posted by team coaches</p>
+                </a>
+                <a href="/events/calendar"
+                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <h3 class="font-medium text-gray-900 dark:text-white">Calendar</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">View team events and schedule</p>
+                </a>
+                <a href="/resources/list"
+                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                    <h3 class="font-medium text-gray-900 dark:text-white">Resources</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">View important team documents</p>
+                </a>
+                <a href="/resources/whiteboard"
+                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 col-span-2 transition">
+                    <h3 class="font-medium text-gray-900 dark:text-white">Whiteboard</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Draw simple court diagrams for analysis</p>
+                </a>
+            </div>
+        </div>
+
+
+    </div>
 {% endblock %}

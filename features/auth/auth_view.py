@@ -20,7 +20,7 @@ def access_login():
             session.permanent = True
             response = make_response(redirect('/dashboard'))
             if latest_team_id is not None:
-                response.set_cookie('activeTeamId', str(latest_team_id))
+                set_team_header(latest_team_id, response)
             return response
         else:
             error_message = 'Access code is not valid'

@@ -71,7 +71,7 @@ def get_announcements_by_team_id_paginated(team_id: int, page: int, page_size: i
             FROM Announcements a
                      JOIN Users u ON a.author = u.username
             WHERE a.team_id = ?
-            ORDER BY a.date DESC
+            ORDER BY a.date DESC, a.id DESC
             LIMIT ? OFFSET ?
             """
     params = (team_id, page_size, offset)

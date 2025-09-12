@@ -6,6 +6,7 @@ from features.users.role import Role
 from libs.auth.pre_authorize import pre_authorize
 from libs.auth.require_auth import require_auth
 from libs.auth.team_required import team_required
+from libs.auth.use_team import use_team
 from libs.context.user_context import get_user_profile, get_active_team_id
 from libs.logging.logging import logger
 from libs.security.rate_limit import limiter
@@ -50,25 +51,29 @@ def add_announcement():
 
 @announcement_bp.route('/team', methods=['GET'])
 @require_auth
-@team_required
+@use_team
 def get_team_announcements():
     try:
         team_id = get_active_team_id()
-        page = request.args.get('page', 1, type=int)
-        page_size = request.args.get('size', 10, type=int)
+        last_item = 0
+        if team_id is not None:
+            page = request.args.get('page', 1, type=int)
+            page_size = request.args.get('size', 10, type=int)
 
-        # Validate page and size parameters
-        if page < 1:
-            page = 1
-        if page_size < 1 or page_size > 50:  # Limiting max page size to 50
-            page_size = 10
+            # Validate page and size parameters
+            if page < 1:
+                page = 1
+            if page_size < 1 or page_size > 50:  # Limiting max page size to 50
+                page_size = 10
 
-        result = get_announcements_by_team_id_paginated(
-            team_id=team_id,
-            page=page,
-            page_size=page_size
-        )
-        last_item = min(page * page_size, result["total"])
+            result = get_announcements_by_team_id_paginated(
+                team_id=team_id,
+                page=page,
+                page_size=page_size
+            )
+            last_item = min(page * page_size, result["total"])
+        else:
+            result = {"announcements": [], "total": 0, "page": 1, "pageSize": 10, "totalPages": 1}
         return render_template(
                 "announcements/announcements-page.html",
                 announcements=result["announcements"],
