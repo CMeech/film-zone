@@ -32,6 +32,7 @@ document.addEventListener('alpine:init', () => {
         async loadEvents() {
             try {
                 const end = new Date();
+                end.setDate(end.getDate() + 7);
                 const start = new Date();
                 start.setMonth(start.getMonth() - 2);
 
