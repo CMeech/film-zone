@@ -5,9 +5,9 @@ from flask_wtf import CSRFProtect
 import secrets
 from flask import g
 
-# Re-factor later to use environment variables
-# I don't think we need to whitelist localhost:60991 since the HTML is served from localhost
-# Thus it is not a Cross-Origin scenraio.
+# I don't think we need to whitelist the domain since the HTML
+# is served from the same domain
+# Thus it is not a Cross-Origin scenario.
 # If we had a separate front-end, we would white-list it here
 ALLOWED_ORIGINS = {}
 
@@ -50,7 +50,7 @@ def apply_security_headers(app):
         # 5. Strict Transport Security (HSTS)
         # Enable only if serving entirely over HTTPS
         # Possible make a new flag for ENABLE_SSL
-        if (getConfig().SESSION_COOKIE_SECURE):
+        if getConfig().SESSION_COOKIE_SECURE:
             response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
 
         # 6. Referrer policy

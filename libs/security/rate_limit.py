@@ -6,8 +6,8 @@ def get_session_id():
     return session.get("auth_token", get_remote_address())
 
 # We might want to disable this for tests
-def init_limiter(app, limiter):
-    limiter.init_app(app)
+def init_limiter(app, limiter_arg):
+    limiter_arg.init_app(app)
 
 limiter = Limiter(get_session_id)
 
