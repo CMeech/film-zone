@@ -11,6 +11,8 @@ from libs.context.user_context import get_active_team_id
 from libs.logging.logging import logger
 from jsonschema import validate, ValidationError
 
+from libs.security.rate_limit import limiter
+
 # Resolve schema path relative to project root
 SCHEMA_PATH = os.path.join(
     os.path.dirname(__file__),  # features/games
@@ -23,6 +25,7 @@ with open(SCHEMA_PATH, "r") as f:
     GAME_SCHEMA = json.load(f)
 
 game_bp = Blueprint('game', __name__)
+limiter.limit("200/minute")(game_bp)
 
 # ----------- HTML views -----------
 

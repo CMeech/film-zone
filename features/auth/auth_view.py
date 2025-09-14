@@ -6,7 +6,7 @@ from libs.security.rate_limit import limiter
 from features.auth.auth_service import authenticate_player_login, authenticate_coach_login
 
 auth_bp = Blueprint('auth', __name__)
-limiter.limit("100/minute")(auth_bp)
+limiter.limit("60/minute")(auth_bp)
 
 @auth_bp.route('/login/access', methods=['GET', 'POST'])
 def access_login():

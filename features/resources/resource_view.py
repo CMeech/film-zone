@@ -1,6 +1,6 @@
 
 import os
-from flask import Blueprint, render_template, request, flash, send_file, abort
+from flask import Blueprint, render_template, request, send_file, abort
 from werkzeug.utils import secure_filename
 
 from features.resources import resource_repository
@@ -52,53 +52,48 @@ def list_resources_partial():
         logger.error(f"Failed to list resources: {e}")
         return {"error": "Failed to retrieve resources"}, 500
 
-@resource_bp.route('/create', methods=['GET', 'POST'])
+@resource_bp.route('/create', methods=['POST'])
 @require_auth
 @pre_authorize([Role.ADMIN, Role.COACH])
 @team_required
 def create_resource():
-    if request.method == 'POST':
-        # Add debug logging
-        logger.info(f"Request Content-Length: {request.content_length}")
-        logger.info(f"Request Headers: {dict(request.headers)}")
+    logger.debug(f"Request Content-Length: {request.content_length}")
+    logger.debug(f"Request Headers: {dict(request.headers)}")
 
-        if 'file' not in request.files:
-            return {"error": "No file part"}, 400
+    if 'file' not in request.files:
+        return {"error": "No file part"}, 400
 
-        file = request.files['file']
-        if file.filename == '':
-            return {"error": "No selected file"}, 400
+    file = request.files['file']
+    if file.filename == '':
+        return {"error": "No selected file"}, 400
 
-        if file and allowed_file(file.filename):
-            try:
-                filename = secure_filename(file.filename)
-                team_id = get_active_team_id()
+    if file and allowed_file(file.filename):
+        try:
+            filename = secure_filename(file.filename)
+            team_id = get_active_team_id()
 
-                # Create team folder if it doesn't exist
-                team_folder = os.path.join(UPLOAD_FOLDER, str(team_id))
-                os.makedirs(team_folder, exist_ok=True)
+            # Create team folder if it doesn't exist
+            team_folder = os.path.join(UPLOAD_FOLDER, str(team_id))
+            os.makedirs(team_folder, exist_ok=True)
 
-                logger.debug(f"Uploading file to {team_folder}")
-                # Save file
-                file_path = os.path.join(team_folder, filename)
-                file.save(file_path)
+            logger.debug(f"Uploading file to {team_folder}")
+            # Save file
+            file_path = os.path.join(team_folder, filename)
+            file.save(file_path)
 
-                # Create database entry
-                resource_repository.create_resource(
-                    filename=filename,
-                    file_path=file_path,
-                    team_id=team_id
-                )
+            # Create database entry
+            resource_repository.create_resource(
+                filename=filename,
+                file_path=file_path,
+                team_id=team_id
+            )
 
-                return {"message": "Resource uploaded successfully"}, 200
-            except Exception as e:
-                logger.error(f"Failed to create resource: {e}")
-                return {"error": "Failed to upload resource"}, 500
-        else:
-            return {"error": "Invalid file type. Only PDF and PPTX files are allowed."}, 400
-
-    # Only return template for GET requests
-    return render_template("resources/create-resource.html")
+            return {"message": "Resource uploaded successfully"}, 200
+        except Exception as e:
+            logger.error(f"Failed to create resource: {e}")
+            return {"error": "Failed to upload resource"}, 500
+    else:
+        return {"error": "Invalid file type. Only PDF and PPTX files are allowed."}, 400
 
 @resource_bp.route('/view/<int:resource_id>', methods=['GET'])
 @require_auth

@@ -25,7 +25,7 @@ def initialize_admin():
     try:
         initialized = user_repository.admin_exists()
         if initialized:
-            logger.debug("Admin already initialized")
+            logger.info("Admin already initialized")
         else:
             logger.info(f"Initializing admin with role {Role.ADMIN}")
             password = getConfig().ADMIN_PASSWORD

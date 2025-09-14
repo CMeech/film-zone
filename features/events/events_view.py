@@ -7,8 +7,10 @@ from libs.auth.require_auth import require_auth
 from libs.auth.team_required import team_required
 from libs.context.user_context import get_active_team_id
 from libs.logging.logging import logger
+from libs.security.rate_limit import limiter
 
 events_bp = Blueprint('events', __name__)
+limiter.limit("120/minute")(events_bp)
 
 TYPE_COLORS = {
     "Game": "#ef4444",       # Tailwind red-500

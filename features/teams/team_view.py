@@ -11,7 +11,7 @@ from libs.logging.logging import logger
 from libs.security.rate_limit import limiter
 
 team_bp = Blueprint('team', __name__)
-limiter.limit("100/minute")(team_bp)
+limiter.limit("120/minute")(team_bp)
 
 @team_bp.route('/list', methods=['GET'])
 @require_auth

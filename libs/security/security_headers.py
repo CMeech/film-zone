@@ -63,4 +63,4 @@ def apply_security_headers(app):
 
         return response
     
-    logger.info("Security headers applied.")
+    logger.trace("Security headers applied.")
