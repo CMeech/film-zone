@@ -164,19 +164,28 @@
         return g;
     }
 
-    // Utility: get pointer coordinates in SVG coordinate space (taking account of transform scale)
+    // pointer in gRoot local coordinates (accounts for pan + scale)
     function getPointerSVGCoords(evt) {
         const pt = svg.createSVGPoint();
         pt.x = evt.clientX;
         pt.y = evt.clientY;
-        const screenCTM = svg.getScreenCTM();
-        if (!screenCTM) return { x: 0, y: 0 };
-        const inv = screenCTM.inverse();
+        const ctm = gRoot.getScreenCTM(); // includes gPan (translate) + gRoot (scale)
+        if (!ctm) return { x: 0, y: 0 };
+        const inv = ctm.inverse();
         const loc = pt.matrixTransform(inv);
-        // Because we have a scale transform on gRoot, need to account for it
-        const localX = (loc.x) / scale;
-        const localY = (loc.y) / scale;
-        return { x: localX, y: localY };
+        return { x: loc.x, y: loc.y };
+    }
+
+    // pointer in SVG/viewBox coordinates (useful for computing pan deltas)
+    function screenPointToSVG(evt) {
+        const pt = svg.createSVGPoint();
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+        const ctm = svg.getScreenCTM(); // mapping from SVG coords -> screen
+        if (!ctm) return { x: 0, y: 0 };
+        const inv = ctm.inverse();
+        const loc = pt.matrixTransform(inv);
+        return { x: loc.x, y: loc.y };
     }
 
     // Generate positions for players
@@ -308,16 +317,15 @@
         applyTransformation();
     });
 
-
     // --- Pan (drag background) ---
     let panning = false;
     let panStart = null;
 
     svg.addEventListener('pointerdown', (e) => {
-        if (tool !== 'select') return;   // ⬅ only allow pan in select mode
+        if (tool !== 'select') return;   // only allow pan in select mode
         if (e.target === svg || e.target === courtRect) {
             panning = true;
-            const pt = getPointerSVGCoords(e);
+            const pt = screenPointToSVG(e);          // SVG/viewBox coords
             panStart = { x: pt.x, y: pt.y, panX, panY };
             e.preventDefault();
         }
@@ -325,9 +333,9 @@
 
     svg.addEventListener('pointermove', (e) => {
         if (!panning) return;
-        const pt = getPointerSVGCoords(e);
-        panX = panStart.panX + (pt.x - panStart.x) * scale; // scale factor
-        panY = panStart.panY + (pt.y - panStart.y) * scale;
+        const pt = screenPointToSVG(e);
+        panX = panStart.panX + (pt.x - panStart.x); // no extra scale factor
+        panY = panStart.panY + (pt.y - panStart.y);
         applyTransformation();
     });
 
