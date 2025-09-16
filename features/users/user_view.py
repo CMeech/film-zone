@@ -29,8 +29,13 @@ def initialize_admin():
         else:
             logger.info(f"Initializing admin with role {Role.ADMIN}")
             password = getConfig().ADMIN_PASSWORD
+            username = getConfig().ADMIN_USERNAME
+            display_name = getConfig().ADMIN_DISPLAY_NAME
+            if username is None or password is None or display_name is None:
+                raise Exception("Environment not configured correctly")
             user_repository.create_user(
-                getConfig().ADMIN_USERNAME,
+                username,
+                display_name,
                 generate_token(password),
                 Role.ADMIN
             )

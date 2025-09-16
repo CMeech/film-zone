@@ -4,8 +4,9 @@ def get_env_var(var_name, default=None):
     return os.environ.get(var_name, default)
 
 class EnvConfig:
-    ADMIN_PASSWORD = get_env_var("ADMIN_PASSWORD", "admin")
-    ADMIN_USERNAME = get_env_var("ADMIN_USERNAME", "admin")
+    ADMIN_PASSWORD = get_env_var("ADMIN_PASSWORD", None)
+    ADMIN_USERNAME = get_env_var("ADMIN_USERNAME", None)
+    ADMIN_DISPLAY_NAME = get_env_var("ADMIN_DISPLAY_NAME", None)
     EXPLAIN_TEMPLATE_LOADING = get_env_var("EXPLAIN_TEMPLATE_LOADING", False)
     FLASK_SECRET_KEY = get_env_var("FLASK_SECRET_KEY", "super_secret_session_key")
     LOG_LEVEL = get_env_var("LOG_LEVEL", "INFO").upper()
