@@ -1,6 +1,7 @@
 from flask_caching import Cache
 
 from config.config import getConfig
+from libs.logging.logging import logger
 
 cache = Cache()
 
@@ -8,6 +9,7 @@ def init_cache(app):
     # enable caching
     config = getConfig()
     if config.CACHE_TYPE.lower() == "rediscache":
+        logger.debug("Using RedisCache")
         app.config["CACHE_TYPE"] = "RedisCache",
         app.config["CACHE_DEFAULT_TIMEOUT"] = config.CACHE_DEFAULT_TIMEOUT
         app.config["CACHE_REDIS_HOST"] = config.CACHE_REDIS_HOST
@@ -34,6 +36,7 @@ def add_to_cache(key, value, timeout):
     Returns:
         None
     """
+    logger.debug(f"Adding {key} to cache with timeout {timeout}")
     cache.set(key, value, timeout=timeout)
 
 def remove_from_cache(key):
@@ -46,6 +49,7 @@ def remove_from_cache(key):
     Returns:
         None
     """
+    logger.debug(f"Removing {key} from cache")
     cache.delete(key)
 
 def key_exists(key):
@@ -58,6 +62,7 @@ def key_exists(key):
     Returns:
         bool: True if the key exists, False otherwise.
     """
+    logger.debug(f"Checking if {key} exists in cache")
     return cache.get(key) is not None
 
 def get_value(key):
@@ -70,4 +75,5 @@ def get_value(key):
     Returns:
         any: The cached value, or None if the key does not exist.
     """
+    logger.debug(f"Getting {key} from cache")
     return cache.get(key)
