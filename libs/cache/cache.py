@@ -1,11 +1,23 @@
 from flask_caching import Cache
 
+from config.config import getConfig
+
 cache = Cache()
 
 def init_cache(app):
     # enable caching
-    app.config['CACHE_TYPE'] = 'SimpleCache'  # Other options: RedisCache, MemcachedCache, etc.
-    app.config['CACHE_DEFAULT_TIMEOUT'] = 600  # Cache for 10 minutes
+    config = getConfig()
+    if config.CACHE_TYPE.lower() == "rediscache":
+        app.config["CACHE_TYPE"] = "RedisCache",
+        app.config["CACHE_DEFAULT_TIMEOUT"] = config.CACHE_DEFAULT_TIMEOUT
+        app.config["CACHE_REDIS_HOST"] = config.CACHE_REDIS_HOST
+        app.config["CACHE_REDIS_PORT"] = config.CACHE_REDIS_PORT
+        app.config["CACHE_REDIS_DB"] = config.CACHE_REDIS_DB
+        if config.CACHE_REDIS_PASSWORD is not None:
+            app.config["CACHE_REDIS_PASSWORD"]: config.CACHE_REDIS_PASSWORD
+    else:
+        app.config['CACHE_TYPE'] = config.CACHE_TYPE
+        app.config['CACHE_DEFAULT_TIMEOUT'] = config.CACHE_DEFAULT_TIMEOUT
 
     # Initialize extensions
     cache.init_app(app)

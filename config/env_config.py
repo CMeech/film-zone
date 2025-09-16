@@ -7,6 +7,13 @@ class EnvConfig:
     ADMIN_PASSWORD = get_env_var("ADMIN_PASSWORD", None)
     ADMIN_USERNAME = get_env_var("ADMIN_USERNAME", None)
     ADMIN_DISPLAY_NAME = get_env_var("ADMIN_DISPLAY_NAME", None)
+    CACHE_TYPE = get_env_var("CACHE_TYPE", "SimpleCache") # Other options: RedisCache, MemcachedCache, etc.
+    CACHE_DEFAULT_TIMEOUT = get_env_var("CACHE_DEFAULT_TIMEOUT", 600) # 10 minutes
+    CACHE_REDIS_HOST = get_env_var("CACHE_REDIS_HOST", "localhost")
+    CACHE_REDIS_PORT = get_env_var("CACHE_REDIS_PORT", 6379)
+    CACHE_REDIS_DB = get_env_var("CACHE_REDIS_DB", 0)
+    CACHE_REDIS_PASSWORD = get_env_var("CACHE_REDIS_PASSWORD", None)
+    CACHE_REDIS_URL = get_env_var("CACHE_REDIS_URL", None)
     EXPLAIN_TEMPLATE_LOADING = get_env_var("EXPLAIN_TEMPLATE_LOADING", False)
     FLASK_SECRET_KEY = get_env_var("FLASK_SECRET_KEY", "super_secret_session_key")
     LOG_LEVEL = get_env_var("LOG_LEVEL", "INFO").upper()
