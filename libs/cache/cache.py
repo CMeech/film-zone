@@ -10,7 +10,7 @@ def init_cache(app):
     config = getConfig()
     if config.CACHE_TYPE.lower() == "rediscache":
         logger.debug("Using RedisCache")
-        app.config["CACHE_TYPE"] = "RedisCache",
+        app.config["CACHE_TYPE"] = "RedisCache"
         app.config["CACHE_DEFAULT_TIMEOUT"] = config.CACHE_DEFAULT_TIMEOUT
         app.config["CACHE_REDIS_HOST"] = config.CACHE_REDIS_HOST
         app.config["CACHE_REDIS_PORT"] = config.CACHE_REDIS_PORT
