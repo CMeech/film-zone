@@ -1,0 +1,64 @@
+server {
+    server_name filmzone.ca app.filmzone.ca;
+
+    location = /static/js/alpine/alpine.js {
+        root /home/appuser/app;
+        expires 1d;
+        add_header Cache-Control "public";
+    }
+
+    location = /static/js/gsap/gsap.js {
+        root /home/appuser/app;
+        expires 1d;
+        add_header Cache-Control "public";
+    }
+
+    location = /static/css/tailwind.css {
+        root /home/appuser/app;
+        expires 1d;
+        add_header Cache-Control "public";
+    }
+
+    # Default: no caching for all other static files
+    location /static/ {
+        alias /home/appuser/app/static/;
+        expires off;
+        add_header Cache-Control "no-store";
+    }
+
+    # Uploads up to 32 MB only for /resources/create
+    location /resources/create {
+        client_max_body_size 32M;
+
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/app.filmzone.ca/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/app.filmzone.ca/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = app.filmzone.ca) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    server_name filmzone.ca app.filmzone.ca;
+    return 404; # managed by Certbot
+
+}
