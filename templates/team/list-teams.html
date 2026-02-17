@@ -1,3 +1,4 @@
+
 {% extends "base-nav/base-nav.html" %}
 
 {% block scripts %}
@@ -5,42 +6,40 @@
 {% endblock %}
 
 {% block content %}
-<div x-data="teamsData">
+<div class="m-4" x-data="teamsData">
   <h1 class="text-3xl font-bold mb-4">Teams</h1>
-  <div class="flex-row align-flex-start">
+  <div class="flex flex-col sm:flex-row gap-2 mb-6">
     <button
-            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="btn btn-primary"
             @click="createTeam"
     >
       Create Team
     </button>
     <button
-            class="border-2 border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="btn btn-outline btn-primary"
             @click="linkUser"
     >
       Link User to Team
     </button>
   </div>
-  <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+  <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     {% for team in teams %}
-    <li class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-      <div class="p-6">
-        <div class="flex items-center justify-center mb-4">
-          <img src="{{ team.logo_path }}" alt="{{ team.name }} logo" class="h-32 w-32 object-contain">
-        </div>
-        <div class="text-center">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ team.name }}</h3>
-          <div class="mt-2 text-sm text-gray-500 dark:text-gray-300">
-            <p>Team ID: {{ team.id }}</p>
-            <p>Year: {{ team.year }}</p>
-          </div>
+    <li class="card bg-base-100 shadow-lg">
+      <figure class="px-10 pt-10">
+        <img src="{{ team.logo_path }}" alt="{{ team.name }} logo" class="h-32 w-32 object-contain">
+      </figure>
+      <div class="card-body items-center text-center">
+        <h3 class="card-title">{{ team.name }}</h3>
+        <div class="text-sm text-base-content/70">
+          <p>Team ID: {{ team.id }}</p>
+          <p>Year: {{ team.year }}</p>
         </div>
       </div>
     </li>
     {% endfor %}
   </ul>
   {% if not teams %}
-  <div class="text-center mt-6 text-gray-500">
+  <div class="text-center mt-6 text-base-content/60">
     No teams found
   </div>
   {% endif %}

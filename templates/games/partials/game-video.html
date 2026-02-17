@@ -1,14 +1,17 @@
+
 <!-- Embedded Video -->
-<section class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Match Video</h2>
-    <div x-show="hasVideo" class="w-full max-w-4xl mx-auto">
-        <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-lg shadow">
-            <iframe class="absolute top-0 left-0 w-full h-full"
-                    allowfullscreen loading="lazy" referrerpolicy="no-referrer"
-                    :src="embedVideoUrl"></iframe>
+<section class="card bg-base-100 shadow-lg">
+    <div class="card-body">
+        <h2 class="card-title">Match Video</h2>
+        <div x-show="hasVideo" class="w-full max-w-4xl mx-auto">
+            <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
+                <iframe class="absolute top-0 left-0 w-full h-full"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer"
+                        :src="embedVideoUrl"></iframe>
+            </div>
         </div>
-    </div>
-    <div x-show="!hasVideo" class="text-gray-500 dark:text-gray-400">
-        No video URL set.
+        <div x-show="!hasVideo" class="text-base-content/60">
+            No video URL set.
+        </div>
     </div>
 </section>

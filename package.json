@@ -17,21 +17,22 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@alpinejs/csp": "^3.15.0",
-    "@imacrayon/alpine-ajax": "^0.12.4",
-    "@tailwindcss/cli": "^4.1.7",
-    "concurrently": "^9.2.0",
-    "esbuild": "^0.25.6",
-    "glob": "^11.0.3",
-    "gsap": "^3.13.0",
+    "@alpinejs/csp": "^3.15.8",
+    "@imacrayon/alpine-ajax": "^0.12.6",
+    "@tailwindcss/cli": "^4.1.18",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.3",
+    "glob": "^13.0.3",
+    "gsap": "^3.14.2",
     "rxjs": "^7.8.2",
-    "tailwindcss": "^4.1.7"
+    "tailwindcss": "^4.1.18"
   },
   "type": "module",
   "dependencies": {
-    "@fullcalendar/core": "^6.1.18",
-    "@fullcalendar/daygrid": "^6.1.18",
-    "@fullcalendar/interaction": "^6.1.18",
-    "@fullcalendar/list": "^6.1.18"
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/list": "^6.1.20",
+    "daisyui": "^5.5.18"
   }
 }

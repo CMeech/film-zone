@@ -1,3 +1,4 @@
+
 {% extends "base-nav/base-nav.html" %}
 
 {% block scripts %}
@@ -5,40 +6,46 @@
 {% endblock %}
 
 {% block content %}
-    <div x-data="calendarData" class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div x-data="calendarData" class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Team Calendar</h2>
-                    {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
-                    <button @click="createEvent"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Add Event
-                    </button>
-                    {% endif %}
+            <div class="card bg-base-100 shadow-md">
+                <div class="card-body">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="card-title text-2xl">Team Calendar</h2>
+                        {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
+                        <button @click="createEvent"
+                                class="btn btn-primary">
+                            Add Event
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div id="calendar"></div>
                 </div>
-                <div id="calendar"></div>
             </div>
         </div>
     </div>
 
     <!-- Event Details Modal -->
-    <div id="eventModal" class="hidden fixed inset-0 z-50 bg-gray-600/80 dark:bg-black/80 backdrop-blur-sm overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border shadow-lg rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                w-full max-w-sm sm:w-96 mx-4">
+    <div id="eventModal" class="modal modal-bottom sm:modal-middle hidden">
+        <div class="modal-box bg-base-100">
             <button id="closeModalBtn"
-                    class="absolute top-0 right-0 mt-2 mr-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+                    class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                 ✕
             </button>
             <div id="eventDetails" class="mt-6"></div>
             {% if g.user_profile.user.role.value == 'admin' or g.user_profile.user.role.value == 'coach' %}
-            <button id="deleteEventBtn"
-                    class="mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">
-                Delete Event
-            </button>
+            <div class="modal-action">
+                <button id="deleteEventBtn"
+                        class="btn btn-error">
+                    Delete Event
+                </button>
+            </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             {% endif %}
         </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
     </div>
 
 {% endblock %}

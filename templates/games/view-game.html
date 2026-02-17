@@ -1,3 +1,4 @@
+
 {% extends "base-nav/base-nav.html" %}
 
 {% block scripts %}
@@ -5,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div x-data="viewGameApp" class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div x-data="viewGameApp" class="min-h-screen bg-base-200 py-8 px-4 sm:px-6 lg:px-8">
         <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}"/>
 
         <div class="max-w-7xl mx-auto space-y-8">

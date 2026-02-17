@@ -6,78 +6,87 @@
 {% endblock %}
 
 {% block content %}
-    <div x-data="dashboardData" class="animate-fade-up space-y-6 p-4">
+    <div x-data="dashboardData" class="animate-fade-up space-y-6 p-4 sm:p-6 lg:p-8">
 
         <!-- Header / Description -->
         <div>
-            <h1 class="text-2xl font-bold mb-2">Welcome to the Dashboard!</h1>
-            <p class="text-gray-600">
+            <h1 class="text-3xl font-bold mb-2">Welcome to the Dashboard!</h1>
+            <p class="text-base-content/70">
                 Stay connected with your team — check announcements, review game stats and film,
                 view upcoming events, access shared resources, and collaborate with your coaches.
             </p>
         </div>
 
         <!-- Announcements Section -->
-        <div>
-            <h2 class="text-xl font-semibold mb-2">Latest Announcements</h2>
-            <div
-                    class="space-y-2 max-h-64 overflow-y-auto pr-1"
-            >
-                <div
-                    id="announcements-page"
-                    x-init="loadAnnouncements()"
-                >
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h2 class="card-title text-xl">Latest Announcements</h2>
+                <div class="space-y-2 max-h-64 overflow-y-auto pr-2">
+                    <div
+                        id="announcements-page"
+                        x-init="loadAnnouncements()"
+                    >
+                    </div>
                 </div>
-            </div>
 
-            <!-- Pagination Controls -->
-            <div class="flex justify-between items-center mt-3">
-                <button
-                        @click="prevPage"
-                        class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
-                        :disabled="currentPage === 1">
-                    Previous
-                </button>
-                <button
-                        @click="nextPage"
-                        class="px-3 py-1 bg-gray-200 rounded">
-                    Next
-                </button>
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-base-300">
+                    <button
+                            @click="prevPage"
+                            class="btn btn-sm btn-outline"
+                            :disabled="currentPage === 1">
+                        Previous
+                    </button>
+                    <button
+                            @click="nextPage"
+                            class="btn btn-sm btn-outline">
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Quick Action Buttons -->
         <div>
-            <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Quick Actions</h2>
-            <div class="grid grid-cols-2 gap-4">
+            <h2 class="text-2xl font-bold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 <a href="/games/list"
-                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <h3 class="font-medium text-gray-900 dark:text-white">Games</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">View game statistics and film</p>
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Games</h3>
+                        <p class="text-sm text-base-content/70">View game statistics and film</p>
+                    </div>
                 </a>
                 <a href="/announcements/list"
-                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <h3 class="font-medium text-gray-900 dark:text-white">Announcements</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">View messages posted by team coaches</p>
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Announcements</h3>
+                        <p class="text-sm text-base-content/70">View messages posted by team coaches</p>
+                    </div>
                 </a>
                 <a href="/events/calendar"
-                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <h3 class="font-medium text-gray-900 dark:text-white">Calendar</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">View team events and schedule</p>
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Calendar</h3>
+                        <p class="text-sm text-base-content/70">View team events and schedule</p>
+                    </div>
                 </a>
                 <a href="/resources/list"
-                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                    <h3 class="font-medium text-gray-900 dark:text-white">Resources</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">View important team documents</p>
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Resources</h3>
+                        <p class="text-sm text-base-content/70">View important team documents</p>
+                    </div>
                 </a>
                 <a href="/resources/whiteboard"
-                   class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 col-span-2 transition">
-                    <h3 class="font-medium text-gray-900 dark:text-white">Whiteboard</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">Draw simple court diagrams for analysis</p>
+                   class="card bg-base-100 shadow-md hover:shadow-lg hover:bg-base-200 transition md:col-span-2 lg:col-span-2">
+                    <div class="card-body">
+                        <h3 class="card-title text-base">Whiteboard</h3>
+                        <p class="text-sm text-base-content/70">Draw simple court diagrams for analysis</p>
+                    </div>
                 </a>
             </div>
         </div>
-
 
     </div>
 {% endblock %}

@@ -1,20 +1,20 @@
 {# Don't forget partial must include the target ID for Alpine AJAX #}
-<div id="resources-content" class="divide-y divide-gray-200 dark:divide-gray-700">
+<div id="resources-content" class="divider">
     {% for resource in resources %}
-        <div class="p-4 flex items-center justify-between">
-            <span class="text-gray-900 dark:text-white">{{ resource.filename }}</span>
-            <div class="flex space-x-2">
+        <div class="p-4 flex items-center justify-between border-b border-base-300">
+            <span class="text-base-content">{{ resource.filename }}</span>
+            <div class="flex gap-2">
                 <button
                         data-action="view"
                         data-resource-id="{{ resource.id }}"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="btn btn-primary btn-sm">
                     View PDF
                 </button>
                 {% if g.user_profile.user.role.value in ['admin', 'coach'] %}
                     <button
                             data-action="delete"
                             data-resource-id="{{ resource.id }}"
-                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            class="btn btn-error btn-sm">
                         Delete
                     </button>
                 {% endif %}
@@ -22,7 +22,7 @@
         </div>
     {% endfor %}
     {% if not resources %}
-        <div class="p-4 text-gray-500 dark:text-gray-400">
+        <div class="p-4 text-base-content/60">
             No resources available.
         </div>
     {% endif %}

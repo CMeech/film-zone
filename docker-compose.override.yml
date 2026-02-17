@@ -8,10 +8,13 @@ services:
       - NODE_ENV=development
       - EXPLAIN_TEMPLATE_LOADING=False
       - FLASK_ENV=development
-      - ADMIN_USERNAME=cmeeches
+      - ADMIN_USERNAME=cmeeches-admin
       - ADMIN_PASSWORD=secret123
+      - ADMIN_DISPLAY_NAME=Cassius Meeches
       - LOG_LEVEL=DEBUG
       - FLASK_DEBUG=1
+    volumes:
+      - sqlite-data:/app/stats-data
     develop:
       watch:
         - path: .

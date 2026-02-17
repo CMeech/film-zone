@@ -1,15 +1,15 @@
 {#Here's a partial since we're using Alpine AJAX#}
 <script src="{{ url_for('static', filename='js/components/announcements/announcements-page.js') }}"></script>
 
-<div id="announcements-page" class="bg-gray-50 dark:bg-gray-900">
-    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+<div id="announcements-page" class="bg-base-200">
+    <div class="divide-y divide-base-300">
         {% if announcements %}
             {% for announcement in announcements %}
-                <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
-                    <div class="flex items-start space-x-4">
+                <div class="p-6 hover:bg-base-300 transition duration-150">
+                    <div class="flex items-start gap-4">
                         <!-- Avatar placeholder -->
                         <div class="flex-shrink-0">
-                            <div class="h-10 w-10 rounded-full flex items-center justify-center"
+                            <div class="h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0"
                                  style="{{ announcement.authorDisplayName | username_gradient }}">
                                 <span class="text-white font-medium text-sm">
                                     {{ announcement.authorDisplayName[:2].upper() }}
@@ -21,22 +21,22 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="text-sm font-medium text-gray-900 dark:text-white">
+                                    <h3 class="text-sm font-medium text-base-content">
                                         {{ announcement.authorDisplayName }}
                                     </h3>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                    <p class="text-xs text-base-content/60">
                                         {{ announcement.date.strftime('%B %d, %Y') }}
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Announcement title -->
-                            <h4 class="mt-3 text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            <h4 class="mt-3 text-lg font-semibold text-base-content">
                                 {{ announcement.title }}
                             </h4>
 
                             <!-- Message content -->
-                            <div class="mt-2 text-sm text-gray-700 dark:text-gray-300 space-y-4">
+                            <div class="mt-2 text-sm text-base-content/80 space-y-4">
                                 {% for paragraph in announcement.message.split('\n') %}
                                     {% if paragraph.strip() %}
                                         <p>{{ paragraph }}</p>
@@ -50,19 +50,19 @@
         {% else %}
             <!-- Empty state -->
             <div class="p-6 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="mx-auto h-12 w-12 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No announcements</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">There are no announcements to display at this time.</p>
+                <h3 class="mt-2 text-sm font-medium text-base-content">No announcements</h3>
+                <p class="mt-1 text-sm text-base-content/60">There are no announcements to display at this time.</p>
             </div>
         {% endif %}
     </div>
 
     {% if announcements %}
         <!-- Results counter -->
-        <div class="bg-white dark:bg-gray-800 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-            <p class="text-sm text-gray-700 dark:text-gray-300">
+        <div class="bg-base-100 px-6 py-4 border-t border-base-300">
+            <p class="text-sm text-base-content/80">
                 Showing
                 <span class="font-medium">{{ (page - 1) * page_size + 1 }}</span>
                 to

@@ -1,117 +1,118 @@
+
 <!-- Readonly Stats Viewer -->
 <section
-    class="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+    class="card bg-base-100 shadow-lg"
     x-show="latestGameData"
     x-cloak
 >
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Statistics</h2>
-        <p class="text-sm text-gray-600 dark:text-gray-300" x-text="currentSetScoreText"></p>
-    </div>
-
-    <!-- Tabs -->
-    <div class="flex flex-wrap gap-2 mb-4">
-        <template x-for="(label, idx) in setLabels" :key="idx">
-            <button
-                type="button"
-                class="cursor-pointer "
-                :class="activeSetIndex === idx ? 'px-3 py-1 rounded bg-indigo-600 text-white'
-                            : 'px-3 py-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'"
-                @click="setActiveSet(idx)"
-            >
-                <span x-text="label"></span>
-            </button>
-        </template>
-
-        <div class="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
-
-        <template x-for="team in teams" :key="team.key">
-            <button
-                type="button"
-                class="cursor-pointer"
-                :class="activeTeamKey===team.key ? 'px-3 py-1 rounded bg-indigo-600 text-white'
-                         : 'px-3 py-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'"
-                @click="activeTeamKey=team.key"
-            >
-                <span x-text="team.label"></span>
-            </button>
-        </template>
-    </div>
-
-    <!-- Stats Table -->
-    <div class="overflow-x-auto">
-        <div
-            x-show="getCurrentStatsEntries().length === 0"
-            class="text-gray-500 dark:text-gray-400"
-        >
-            No stats available for the selected set/team.
+    <div class="card-body">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="card-title">Statistics</h2>
+            <p class="text-sm text-base-content/60" x-text="currentSetScoreText"></p>
         </div>
-        <table
-            x-show="getCurrentStatsEntries().length > 0"
-            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
-        >
-            <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-                <th class="px-4 py-2 text-left">Player #</th>
-                <th class="px-4 py-2 text-left">Kills</th>
-                <th class="px-4 py-2 text-left">Sets</th>
-                <th class="px-4 py-2 text-left">Blocks</th>
-                <th class="px-4 py-2 text-left">Digs</th>
-                <th class="px-4 py-2 text-left">Aces</th>
-                <th class="px-4 py-2 text-left">Missed Serves</th>
-                <th class="px-4 py-2 text-left">Errors</th>
-            </tr>
-            </thead>
-            <tbody>
-            <template
-                x-for="[num, stats] in getCurrentStatsEntries()"
-                :key="num"
-            >
-                <tr class="align-top">
-                    <!-- Player number -->
-                    <td class="px-4 py-2 font-semibold" x-text="num"></td>
 
-                    <!-- Kills -->
-                    <td class="px-4 py-2">
-                        <div>
-                            <span x-text="stats.kills.length"></span>
-                        </div>
-                        <!-- Distribution -->
-                        <div class="mt-1 text-xs text-gray-600 dark:text-gray-300">
-                            <template x-for="[pos, count] in stats.killDistribution" :key="pos">
-                                <div x-show="count > 0">
-                                    → Pos <span x-text="pos"></span>: <span x-text="count"></span>
-                                </div>
-                            </template>
-                        </div>
-                    </td>
-
-                    <!-- Sets -->
-                    <td class="px-4 py-2">
-                        <div>
-                            <span x-text="stats.sets.length"></span>
-                        </div>
-                        <!-- Mini from→to matrix -->
-                        <div class="mt-1 text-xs grid grid-cols-3 gap-1">
-                            <template x-for="item in stats.setMatrix" :key="item.from + '-' + item.to">
-                                <div x-show="item.count > 0"
-                                     class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
-                                    <span x-text="'['+item.from+'→'+item.to+']'"></span>:
-                                    <span x-text="item.count"></span>
-                                </div>
-                            </template>
-                        </div>
-                    </td>
-
-                    <!-- Other stats -->
-                    <td class="px-4 py-2" x-text="stats.blocks"></td>
-                    <td class="px-4 py-2" x-text="stats.digs"></td>
-                    <td class="px-4 py-2" x-text="stats.aces"></td>
-                    <td class="px-4 py-2" x-text="stats.missed_serves"></td>
-                    <td class="px-4 py-2" x-text="stats.errors"></td>
-                </tr>
+        <!-- Tabs -->
+        <div class="tabs tabs-bordered mb-4">
+            <template x-for="(label, idx) in setLabels" :key="idx">
+                <button
+                    type="button"
+                    class="tab"
+                    :class="activeSetIndex === idx ? 'tab-active' : ''"
+                    @click="setActiveSet(idx)"
+                >
+                    <span x-text="label"></span>
+                </button>
             </template>
-            </tbody>
-        </table>
+
+            <div class="divider divider-horizontal"></div>
+
+            <template x-for="team in teams" :key="team.key">
+                <button
+                    type="button"
+                    class="tab"
+                    :class="activeTeamKey===team.key ? 'tab-active' : ''"
+                    @click="activeTeamKey=team.key"
+                >
+                    <span x-text="team.label"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Stats Table -->
+        <div class="overflow-x-auto">
+            <div
+                x-show="getCurrentStatsEntries().length === 0"
+                class="text-base-content/60"
+            >
+                No stats available for the selected set/team.
+            </div>
+            <table
+                x-show="getCurrentStatsEntries().length > 0"
+                class="table table-zebra w-full"
+            >
+                <thead>
+                <tr>
+                    <th>Player #</th>
+                    <th>Kills</th>
+                    <th>Sets</th>
+                    <th>Blocks</th>
+                    <th>Digs</th>
+                    <th>Aces</th>
+                    <th>Missed Serves</th>
+                    <th>Errors</th>
+                </tr>
+                </thead>
+                <tbody>
+                <template
+                    x-for="[num, stats] in getCurrentStatsEntries()"
+                    :key="num"
+                >
+                    <tr>
+                        <!-- Player number -->
+                        <td class="font-semibold" x-text="num"></td>
+
+                        <!-- Kills -->
+                        <td>
+                            <div>
+                                <span x-text="stats.kills.length"></span>
+                            </div>
+                            <!-- Distribution -->
+                            <div class="mt-1 text-xs text-base-content/70">
+                                <template x-for="[pos, count] in stats.killDistribution" :key="pos">
+                                    <div x-show="count > 0">
+                                        → Pos <span x-text="pos"></span>: <span x-text="count"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </td>
+
+                        <!-- Sets -->
+                        <td>
+                            <div>
+                                <span x-text="stats.sets.length"></span>
+                            </div>
+                            <!-- Mini from→to matrix -->
+                            <div class="mt-1 text-xs grid grid-cols-3 gap-1">
+                                <template x-for="item in stats.setMatrix" :key="item.from + '-' + item.to">
+                                    <div x-show="item.count > 0"
+                                         class="badge badge-outline">
+                                        <span x-text="'['+item.from+'→'+item.to+']'"></span>:
+                                        <span x-text="item.count"></span>
+                                    </div>
+                                </template>
+                            </div>
+                        </td>
+
+                        <!-- Other stats -->
+                        <td x-text="stats.blocks"></td>
+                        <td x-text="stats.digs"></td>
+                        <td x-text="stats.aces"></td>
+                        <td x-text="stats.missed_serves"></td>
+                        <td x-text="stats.errors"></td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
