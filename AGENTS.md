@@ -67,6 +67,27 @@ If dependencies are installed locally, the quick test is `RUN_TESTS=True PYTHONP
 
 For a backend change, add focused pytest coverage and run the affected tests. For a UI change, rebuild assets and exercise the relevant route in the browser at mobile and desktop widths. For auth/team changes, test unauthenticated, wrong-role, wrong-team, and valid access paths.
 
+Until FZ-008 provides the local browser regression suite, perform a basic UI
+smoke test after every bug fix or feature change, including backend-only work
+that can affect application startup, sessions, authentication, or rendered
+routes. At minimum, start the app, log in through the browser, confirm the
+dashboard renders, and exercise the route affected by the change when one
+exists.
+
+- Open the development app as `http://localhost:<port>`, not
+  `http://127.0.0.1:<port>`. The development session cookie is scoped to
+  `localhost`; using the IP address prevents the browser from returning the
+  session cookie and causes CSRF failures.
+- Use or seed a browser-test user that belongs to a team, then confirm an active
+  team cookie is present before exercising team-scoped dashboard requests. A
+  user without a team can reach the dashboard shell but causes its announcements
+  request to fail because no active team is available.
+- Check the browser console and the application server output for failed
+  background requests; a rendered page alone is not sufficient evidence of a
+  clean smoke test.
+- Remove this temporary guidance when FZ-008 supplies the equivalent automated
+  setup and coverage.
+
 ## Refactoring guardrails
 
 - Preserve endpoint URLs, response shapes, form field names, and game JSON shape unless the task explicitly permits a breaking change.

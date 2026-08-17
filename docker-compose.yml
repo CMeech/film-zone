@@ -8,6 +8,8 @@ services:
     volumes:
       - sqlite-data:/app/stats-data
     environment:
+      - FILMZONE_ENV=production
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:?Set FLASK_SECRET_KEY for production}
       - FLASK_ENV=production
       - NODE_ENV=production
     healthcheck:

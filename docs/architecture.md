@@ -28,7 +28,7 @@ The checked-in production container runs `gunicorn -b 0.0.0.0:5000 app:app`, who
 | Path | Responsibility |
 | --- | --- |
 | `app.py` | Flask app construction and local entry point |
-| `config/` | Environment-backed settings; `RUN_TESTS` selects the test database |
+| `config/` | Typed environment-backed settings; `FILMZONE_ENV` selects production and `RUN_TESTS` selects the test database |
 | `features/register_views.py` | Blueprint registration and catch-all redirect |
 | `features/<name>/` | Feature routes, SQL repositories, and data objects |
 | `libs/auth/` | Authentication, role authorization, and team-context decorators |
@@ -114,7 +114,7 @@ These are observations, not changes made by this survey. Prioritize them through
 1. **Sparse tests (accepted constraint).** Only the health endpoint has coverage. Given FilmZone's low stakes and limited feature coupling, broad test expansion is not planned; add focused coverage when changing security-sensitive or destructive behavior.
 2. **SQLite write contention (accepted constraint).** FilmZone has at most two users who can write and normally only one active user. The current SQLite behavior is adequate for that usage profile.
 3. **Shared authentication cache.** `SimpleCache` is process-local. Multiple workers/processes require Redis; otherwise a login token created in one process may fail in another.
-4. **Configuration typing.** Environment values are returned as strings, so booleans and integers such as `SESSION_COOKIE_SECURE`, cache ports/timeouts, and size limits are not reliably typed. There is no distinct production config class.
+4. **Configuration typing (resolved by FZ-001).** Boolean and integer settings are parsed explicitly, and production requires a non-default Flask secret.
 5. **Cache configuration defect.** The Redis password branch uses a type-annotation expression instead of assigning `CACHE_REDIS_PASSWORD`; password-protected Redis will not receive that setting.
 6. **Authorization consistency.** Team membership is checked by decorators, but record ownership checks vary by feature/repository. Centralized team-scoped repository queries would make cross-team access harder to introduce.
 7. **Token lifecycle.** Logout removes the cookie session value but does not delete the cached token. Role/team/password changes also leave cached profiles valid until their two-hour expiry.

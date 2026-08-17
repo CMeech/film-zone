@@ -6,7 +6,6 @@ These documents track accepted maintenance work until it is moved into the proje
 
 | ID | Task | Priority | Main area |
 | --- | --- | --- | --- |
-| `FZ-001` | [Type and validate production configuration](FZ-001-typed-production-configuration.md) | High | Configuration/security |
 | `FZ-002` | [Upgrade password and access-code hashing](FZ-002-password-hashing.md) | High | Authentication |
 | `FZ-003` | [Correct and validate Redis cache configuration](FZ-003-redis-configuration.md) | Medium | Authentication/cache |
 | `FZ-004` | [Revoke authentication tokens on logout](FZ-004-token-revocation.md) | Medium | Authentication |
@@ -14,6 +13,12 @@ These documents track accepted maintenance work until it is moved into the proje
 | `FZ-006` | [Make resource storage durable and internally consistent](FZ-006-resource-storage.md) | Medium | File resources |
 | `FZ-007` | [Preserve resource 403 and 404 responses](FZ-007-resource-http-errors.md) | Low | File resources/error handling |
 | `FZ-008` | [Add a local browser regression suite](FZ-008-local-browser-regression-suite.md) | Medium | Frontend/testing |
+
+## Completed tasks
+
+| ID | Task | Main area |
+| --- | --- | --- |
+| `FZ-001` | [Type and validate production configuration](completed/FZ-001-typed-production-configuration.md) | Configuration/security |
 
 ## Explicitly not tracked
 

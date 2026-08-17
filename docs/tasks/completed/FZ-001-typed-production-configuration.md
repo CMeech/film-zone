@@ -1,6 +1,6 @@
 # FZ-001: Type and validate production configuration
 
-Status: Open  
+Status: Completed  
 Priority: High
 
 ## Problem
@@ -18,13 +18,13 @@ Priority: High
 
 ## Acceptance criteria
 
-- [ ] `SESSION_COOKIE_SECURE=False` is parsed as `False`, not a truthy string.
-- [ ] Cache ports/indexes/timeouts, session lifetime, and request-size limits are integers.
-- [ ] Production startup fails clearly when `FLASK_SECRET_KEY` is absent or still uses the known development default.
-- [ ] Development retains safe, convenient local defaults.
-- [ ] Tests select `stats-data/stats-test.db` without depending on ambiguous string truthiness.
-- [ ] The production environment variables required by systemd are documented.
-- [ ] Focused tests cover valid and invalid boolean/integer parsing plus production secret validation.
+- [x] `SESSION_COOKIE_SECURE=False` is parsed as `False`, not a truthy string.
+- [x] Cache ports/indexes/timeouts, session lifetime, and request-size limits are integers.
+- [x] Production startup fails clearly when `FLASK_SECRET_KEY` is absent or still uses the known development default.
+- [x] Development retains safe, convenient local defaults.
+- [x] Tests select `stats-data/stats-test.db` without depending on ambiguous string truthiness.
+- [x] The production environment variables required by systemd are documented.
+- [x] Focused tests cover valid and invalid boolean/integer parsing plus production secret validation.
 
 ## Implementation notes
 
@@ -42,3 +42,10 @@ Before changing cookie-domain behavior, confirm the live value used for `app.fil
 ## Notes
 
 - This task does not change authentication design or password storage.
+- Configuration selection now uses `FILMZONE_ENV`; `FLASK_ENV` remains only for
+  the existing container entrypoint behavior.
+- Configuration objects read their supplied environment when constructed, which
+  keeps app-factory and parser tests deterministic.
+- `SESSION_COOKIE_DOMAIN` remains unchanged pending confirmation of the live
+  `app.filmzone.ca` deployment value.
+- Production variables are documented in `docs/production-configuration.md`.
