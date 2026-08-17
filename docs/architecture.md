@@ -131,7 +131,6 @@ These are observations, not changes made by this survey. Prioritize them through
 3. Centralize typed configuration and production validation.
 4. Harden SQLite connection/transaction behavior and decide whether SQLite remains the intended concurrent production store.
 5. Centralize team-scoped repository methods and token invalidation.
-6. Make resource storage durable/transaction-aware and add safe unique object names.
-7. Add optimistic concurrency to game stat saves if simultaneous editing is a real workflow.
+6. Add optimistic concurrency to game stat saves if simultaneous editing is a real workflow.
 
 Keep these as separate, reviewable changes rather than one application-wide rewrite.

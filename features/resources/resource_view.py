@@ -101,14 +101,19 @@ def create_resource():
 def view_resource(resource_id):
     try:
         resource = resource_repository.get_resource_by_id(resource_id)
-        if not resource:
-            abort(404)
+    except Exception as e:
+        logger.error(f"Failed to retrieve resource: {e}")
+        abort(500)
 
-        # Check if user has access to this team's resources
-        team_id = get_active_team_id()
-        if resource.team_id != team_id:
-            abort(403)
+    if not resource:
+        abort(404)
 
+    # Check if user has access to this team's resources
+    team_id = get_active_team_id()
+    if resource.team_id != team_id:
+        abort(403)
+
+    try:
         mime_type = get_mime_type(resource.filename)
         return send_file(
             resource.file_path,
