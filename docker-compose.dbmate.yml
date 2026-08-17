@@ -9,4 +9,4 @@ services:
       - .:/app
     working_dir: /app
     # Just run the container with the command you want: up, down, new
-    command: new create_users
+    command: new modify_final_score
