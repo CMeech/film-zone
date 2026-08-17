@@ -13,6 +13,7 @@ These documents track accepted maintenance work until it is moved into the proje
 | `FZ-005` | [Harden the active-team cookie](FZ-005-active-team-cookie.md) | Medium | Authentication/team context |
 | `FZ-006` | [Make resource storage durable and internally consistent](FZ-006-resource-storage.md) | Medium | File resources |
 | `FZ-007` | [Preserve resource 403 and 404 responses](FZ-007-resource-http-errors.md) | Low | File resources/error handling |
+| `FZ-008` | [Add a local browser regression suite](FZ-008-local-browser-regression-suite.md) | Medium | Frontend/testing |
 
 ## Explicitly not tracked
 
