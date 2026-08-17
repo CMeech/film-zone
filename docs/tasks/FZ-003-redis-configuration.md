@@ -35,11 +35,41 @@ Avoid silently falling back to `SimpleCache` in production when Redis was explic
 
 ## Verification
 
-- Exercise development with `SimpleCache`.
-- Exercise Redis without a password.
-- Exercise Redis with authentication enabled.
-- Log in, make authenticated requests across both server threads, and confirm the profile remains available.
+- The documented `docker compose -f docker-compose.test.yml up --build
+  --abort-on-container-exit` command passed after correcting its volume target
+  and overriding the production image entrypoint with `pytest`.
+- An equivalent temporary Compose service using the same built test image ran
+  the focused cache/configuration suite: 28 passed.
+- The full Dockerized test suite passed: 35 passed, with the existing
+  Flask-Limiter in-memory-storage warning.
+- Live disposable Redis 7 Alpine containers were exercised successfully both
+  without authentication and with `--requirepass`; production cache startup
+  connected and issued its validation `PING` in both cases.
+- Development `SimpleCache` startup succeeded. An isolated admin and team were
+  used to log in through the browser and exercise `/dashboard/`, the dashboard
+  announcements request, `/announcements/list`, and its team announcements
+  request. All successful-run application requests returned 200 responses.
+- The dashboard rendered at 390×844 and 1440×900. The browser console contained
+  no warnings or errors after the successful login. Server logs confirmed
+  authenticated cache reads and successful background requests.
+- One verification-only 500 occurred before the successful run because the
+  temporary user was initially seeded with `ADMIN` instead of the stored role
+  value `admin`; the seed was corrected and subsequent logs were clean.
+- Temporary browser-test records and development/Redis containers were removed.
+  The tracked development SQLite file remained byte-modified by its temporary
+  transaction even after the records were deleted and was not overwritten.
 
 ## Notes
 
 - This task does not require adding workers or changing the current concurrency model.
+- `CACHE_REDIS_URL` is authoritative when present; otherwise FilmZone uses the
+  individual host, port, database, and optional password settings.
+- When updating production configuration, use `CACHE_REDIS_HOST=localhost` for
+  a component-based local connection. If using the URL setting instead, provide
+  a complete Redis URL such as `CACHE_REDIS_URL=redis://localhost:6379/0`;
+  `CACHE_REDIS_URL=localhost` is intentionally invalid because it has no Redis
+  URL scheme.
+- Production Redis configuration is checked with a `PING` during startup and
+  never falls back to `SimpleCache` after a connection or authentication error.
+- Flask-Limiter storage remains unchanged and separate from the authentication
+  cache.

@@ -11,8 +11,8 @@ services:
       - RUN_TESTS=True
     volumes:
       - .:/app
-      - sqlite-test-data:/app/stats-data/stats-test.db
-    command: pytest
+      - sqlite-test-data:/app/stats-data
+    entrypoint: ["pytest"]
 
 volumes:
   sqlite-test-data:

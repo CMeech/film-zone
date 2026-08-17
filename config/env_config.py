@@ -48,6 +48,8 @@ def get_int(name, default=None, environ: Mapping[str, str] | None = None) -> int
 
 
 class EnvConfig:
+    IS_PRODUCTION = False
+
     def __init__(self, environ: Mapping[str, str] | None = None):
         self._environ = os.environ if environ is None else environ
 

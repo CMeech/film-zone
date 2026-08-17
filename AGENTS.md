@@ -5,6 +5,8 @@ FilmZone is a server-rendered Flask application for coaching high-school boys vo
 ## Read first
 
 - See `docs/architecture.md` for the repository map, request lifecycle, data model, deployment details, and known risks.
+- See `docs/development.md` before running the application, project tooling, or asset builds.
+- See `docs/verification.md` before testing a change or recording verification evidence.
 - The working tree may contain local database, upload, generated asset, IDE, or Docker changes. Do not modify, delete, or commit them unless the task explicitly includes them.
 - `static/css/tailwind.css` and `static/js/**` are generated outputs. Edit `assets/css/input.css` and `assets/js/**`, then rebuild.
 
@@ -43,57 +45,19 @@ FilmZone is a server-rendered Flask application for coaching high-school boys vo
 - GSAP and RxJS are bundled through esbuild. Tailwind 4 and daisyUI scan `assets/` and `templates/` through `assets/css/input.css`.
 - Preserve `credentials: 'same-origin'` and the CSRF header on authenticated fetch calls.
 
-## Commands and verification
+## Development and verification invariants
 
 This project is run and verified exclusively through Docker Compose. Do not
 invoke Flask, Python, pytest, npm, dbmate, or other project tooling directly on
 the host machine, and do not assume those dependencies are installed locally.
 
-Development uses the Compose base plus its automatic override:
+Frontend tooling must also run in the appropriate Compose service. Follow
+`docs/development.md` for commands and `docs/verification.md` for test scope,
+browser smoke tests, live-service checks, evidence recording, and cleanup.
 
-```sh
-docker compose up --build --watch
-```
-
-Production-like build/run:
-
-```sh
-docker compose -f docker-compose.yml up --build
-```
-
-Tests:
-
-```sh
-docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
-```
-
-Frontend verification must also run in the appropriate Docker Compose service;
-do not run `npm` directly on the host.
-
-For a backend change, add focused pytest coverage and run the affected tests. For a UI change, rebuild assets and exercise the relevant route in the browser at mobile and desktop widths. For auth/team changes, test unauthenticated, wrong-role, wrong-team, and valid access paths.
-
-Until FZ-008 provides the local browser regression suite, perform a basic UI
-smoke test after every bug fix or feature change, including backend-only work
-that can affect application startup, sessions, authentication, or rendered
-routes. At minimum, start the app, log in through the browser, confirm the
-dashboard renders, and exercise the route affected by the change when one
-exists.
-
-- Open the development app as `http://localhost:<port>`, not
-  `http://127.0.0.1:<port>`. The development session cookie is scoped to
-  `localhost`; using the IP address prevents the browser from returning the
-  session cookie and causes CSRF failures.
-- Start the app through `docker compose up --build --watch` for browser smoke
-  tests. Do not substitute a host-side Flask development server.
-- Use or seed a browser-test user that belongs to a team, then confirm an active
-  team cookie is present before exercising team-scoped dashboard requests. A
-  user without a team can reach the dashboard shell but causes its announcements
-  request to fail because no active team is available.
-- Check the browser console and the application server output for failed
-  background requests; a rendered page alone is not sufficient evidence of a
-  clean smoke test.
-- Remove this temporary guidance when FZ-008 supplies the equivalent automated
-  setup and coverage.
+For backend changes, add focused pytest coverage. For UI changes, rebuild assets
+and test mobile and desktop widths. For auth/team changes, cover unauthenticated,
+wrong-role, wrong-team, and valid access paths.
 
 ## Refactoring guardrails
 

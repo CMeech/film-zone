@@ -37,4 +37,9 @@ The following survey findings are accepted or intentionally ignored and should n
 - Keep the task ID stable if its file is renamed.
 - Check acceptance boxes only after implementation and verification.
 - Record material design decisions in the task's Notes section.
+- Under `Verification`, record what was actually run: commands, automated test
+  counts, live-service scenarios, browser routes and viewport sizes, console and
+  server-log results, warnings, workarounds, skipped checks, and cleanup.
+- Do not mark a task completed merely because verification coverage was added;
+  distinguish tests written from tests executed.
 - Move completed documents to `docs/tasks/completed/` rather than deleting them.
