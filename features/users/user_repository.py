@@ -1,7 +1,8 @@
-from features.db.db import execute_modifying_query, fetch_all, fetch_one
+from features.db.db import execute_modifying_query, fetch_all, fetch_one, get_connection
 from features.users.player import Player
 from features.users.role import Role
 from features.users.user import User
+from libs.auth.credentials import hash_credential, verify_credential
 
 def get_all_users() -> list[User]:
     query = """
@@ -21,18 +22,33 @@ def get_all_players() -> list[User]:
     users = [User(*user) for user in result]
     return users
 
-def verify_coach_login(username: str, password_hash: str) -> User:
-    query = """
-        SELECT u.id, u.username, display_name, u.role FROM users u
-        WHERE u.username = ? AND u.password_hash = ?
-        LIMIT 1"""
-    params = (username, password_hash)
-    result = fetch_one(query, params)
-    if result is None:
-        return None
-    # short-hand for unpacking a tuple in Python
-    user = User(*result)
-    return user
+def verify_coach_login(username: str, password: str) -> User | None:
+    conn = get_connection()
+    try:
+        result = conn.execute(
+            """
+            SELECT u.id, u.username, u.display_name, u.role, u.password_hash
+            FROM users u
+            WHERE u.username = ?
+            LIMIT 1
+            """,
+            (username,),
+        ).fetchone()
+        if result is None:
+            return None
+
+        matches, needs_upgrade = verify_credential(result[4], password)
+        if not matches:
+            return None
+        if needs_upgrade:
+            conn.execute(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                (hash_credential(password), result[0]),
+            )
+            conn.commit()
+        return User(*result[:4])
+    finally:
+        conn.close()
 
 def create_access_code(access_code_hash: str, role: Role) -> Player:
     query = """
@@ -48,19 +64,31 @@ def create_access_code(access_code_hash: str, role: Role) -> Player:
     result = fetch_one(result_query, result_params)
     return Player(*result)
 
-def verify_player_login(access_code_hash: str) -> User:
-    query = """
-        SELECT u.id, u.display_name, u.username, u.role FROM users u
-        WHERE u.username is null AND u.password_hash = ?
-        LIMIT 1"""
-    # Must include comma after to ensure tuple only includes one element
-    params = (access_code_hash,)
-    result = fetch_one(query, params)
-    if result is None:
+def verify_player_login(access_code: str) -> User | None:
+    conn = get_connection()
+    try:
+        results = conn.execute(
+            """
+            SELECT u.id, u.username, u.display_name, u.role, u.password_hash
+            FROM users u
+            WHERE u.username IS NULL
+            ORDER BY u.id
+            """
+        ).fetchall()
+        for result in results:
+            matches, needs_upgrade = verify_credential(result[4], access_code)
+            if not matches:
+                continue
+            if needs_upgrade:
+                conn.execute(
+                    "UPDATE users SET password_hash = ? WHERE id = ?",
+                    (hash_credential(access_code), result[0]),
+                )
+                conn.commit()
+            return User(*result[:4])
         return None
-    # shorthand for unpacking a tuple in Python
-    user = User(*result)
-    return user
+    finally:
+        conn.close()
 
 def create_user(username: str, display_name: str, password_hash: str, role: Role) -> User:
     query = """

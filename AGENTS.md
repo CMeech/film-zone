@@ -45,6 +45,10 @@ FilmZone is a server-rendered Flask application for coaching high-school boys vo
 
 ## Commands and verification
 
+This project is run and verified exclusively through Docker Compose. Do not
+invoke Flask, Python, pytest, npm, dbmate, or other project tooling directly on
+the host machine, and do not assume those dependencies are installed locally.
+
 Development uses the Compose base plus its automatic override:
 
 ```sh
@@ -63,7 +67,8 @@ Tests:
 docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
 ```
 
-If dependencies are installed locally, the quick test is `RUN_TESTS=True PYTHONPATH=. pytest`. Frontend verification is `npm run build-tailwind` followed by `NODE_ENV=production npm run build-esbuild`.
+Frontend verification must also run in the appropriate Docker Compose service;
+do not run `npm` directly on the host.
 
 For a backend change, add focused pytest coverage and run the affected tests. For a UI change, rebuild assets and exercise the relevant route in the browser at mobile and desktop widths. For auth/team changes, test unauthenticated, wrong-role, wrong-team, and valid access paths.
 
@@ -78,6 +83,8 @@ exists.
   `http://127.0.0.1:<port>`. The development session cookie is scoped to
   `localhost`; using the IP address prevents the browser from returning the
   session cookie and causes CSRF failures.
+- Start the app through `docker compose up --build --watch` for browser smoke
+  tests. Do not substitute a host-side Flask development server.
 - Use or seed a browser-test user that belongs to a team, then confirm an active
   team cookie is present before exercising team-scoped dashboard requests. A
   user without a team can reach the dashboard shell but causes its announcements

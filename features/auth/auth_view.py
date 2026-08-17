@@ -1,7 +1,6 @@
 from flask import Blueprint, flash, render_template, request, redirect, session, make_response
 
 from libs.auth.set_team import set_team_header
-from libs.hash.generate_token import generate_token
 from libs.security.rate_limit import limiter
 from features.auth.auth_service import authenticate_player_login, authenticate_coach_login
 
@@ -12,8 +11,7 @@ limiter.limit("60/minute")(auth_bp)
 def access_login():
     if request.method == 'POST':
         access_code = request.form['password']
-        code_hash = generate_token(access_code)
-        user_profile = authenticate_player_login(code_hash)
+        user_profile = authenticate_player_login(access_code)
         if user_profile is not None:
             latest_team_id = user_profile.team_ids[0] if len(user_profile.team_ids) > 0 else None
             session['auth_token'] = user_profile.token
@@ -33,8 +31,7 @@ def user_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        password_hash = generate_token(password)
-        user_profile = authenticate_coach_login(username, password_hash)
+        user_profile = authenticate_coach_login(username, password)
         if user_profile is not None:
             latest_team_id = user_profile.team_ids[0] if len(user_profile.team_ids) > 0 else None
             session['auth_token'] = user_profile.token

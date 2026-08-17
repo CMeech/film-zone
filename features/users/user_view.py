@@ -6,7 +6,7 @@ from flask import Blueprint, flash, render_template, redirect, request
 from libs.auth.pre_authorize import pre_authorize
 from libs.auth.require_auth import require_auth
 from libs.context.user_context import get_user_profile
-from libs.hash.generate_token import generate_token
+from libs.auth.credentials import hash_credential
 from libs.security.rate_limit import limiter
 from libs.logging.logging import logger
 
@@ -36,7 +36,7 @@ def initialize_admin():
             user_repository.create_user(
                 username,
                 display_name,
-                generate_token(password),
+                hash_credential(password),
                 Role.ADMIN
             )
         return redirect("/dashboard")
@@ -56,7 +56,7 @@ def register_user():
             username = request.form['username']
             password = request.form['password']
             display_name = request.form['displayName']
-            password_hash = generate_token(password)
+            password_hash = hash_credential(password)
             user_repository.create_user(username, display_name, password_hash, Role.COACH)
             flash(f"User {username} registered successfully.")
         except Exception as e:
@@ -74,7 +74,7 @@ def register_player():
         try:
             password = request.form['password']
             team_id = request.form['teamId']
-            password_hash = generate_token(password)
+            password_hash = hash_credential(password)
             player = user_repository.create_access_code(password_hash, Role.PLAYER)
             team_repository.link_team_to_user(team_id, player.id)
             flash(f"Player access code registered successfully for team with id {team_id}")
@@ -108,7 +108,7 @@ def reset_password():
             if user_id is None:
                 user_id = get_user_profile().user.id
             password = request.form['password']
-            password_hash = generate_token(password)
+            password_hash = hash_credential(password)
             user_repository.reset_password(user_id, password_hash)
             flash(f"Password reset successfully for user with id {user_id}.")
         except Exception as e:
