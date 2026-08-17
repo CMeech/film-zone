@@ -14,6 +14,8 @@ def hash_credential(secret: str) -> str:
 
 def verify_credential(stored_hash: str, secret: str) -> tuple[bool, bool]:
     """Return whether a credential matches and whether its hash needs upgrading."""
+    # TODO: Remove legacy SHA-256 verification after all deployed credentials have
+    # migrated to Werkzeug hashes and the migration window has ended.
     if _is_legacy_sha256(stored_hash):
         candidate_hash = hashlib.sha256(secret.encode()).hexdigest()
         matches = hmac.compare_digest(stored_hash.lower(), candidate_hash)
