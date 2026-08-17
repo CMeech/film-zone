@@ -83,6 +83,19 @@ def test_production_accepts_private_secret():
 
     assert isinstance(config, ProductionConfig)
     assert config.FLASK_SECRET_KEY == "a-private-secret"
+    assert config.SESSION_COOKIE_SECURE is True
+
+
+def test_production_allows_explicit_insecure_cookie_override():
+    config = getConfig(
+        {
+            "FILMZONE_ENV": "production",
+            "FLASK_SECRET_KEY": "a-private-secret",
+            "SESSION_COOKIE_SECURE": "false",
+        }
+    )
+
+    assert config.SESSION_COOKIE_SECURE is False
 
 
 def test_tests_use_explicit_test_database_even_when_run_tests_is_false_string():

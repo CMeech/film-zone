@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, render_template, request, redirect, session, make_response
 
-from libs.auth.set_team import set_team_header
+from libs.auth.set_team import expire_team_header, set_team_header
 from libs.cache.cache import remove_from_cache
 from libs.security.rate_limit import limiter
 from features.auth.auth_service import authenticate_player_login, authenticate_coach_login
@@ -54,5 +54,5 @@ def logout():
         remove_from_cache(token)
 
     response = make_response(redirect('/'))
-    response.delete_cookie('activeTeamId')
+    expire_team_header(response)
     return response
