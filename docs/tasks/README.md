@@ -8,7 +8,6 @@ These documents track accepted maintenance work until it is moved into the proje
 | --- | --- | --- | --- |
 | `FZ-002` | [Upgrade password and access-code hashing](FZ-002-password-hashing.md) | High | Authentication |
 | `FZ-003` | [Correct and validate Redis cache configuration](FZ-003-redis-configuration.md) | Medium | Authentication/cache |
-| `FZ-008` | [Add a local browser regression suite](FZ-008-local-browser-regression-suite.md) | Medium | Frontend/testing |
 
 ## Completed tasks
 
@@ -18,6 +17,7 @@ These documents track accepted maintenance work until it is moved into the proje
 | `FZ-004` | [Revoke authentication tokens on logout](completed/FZ-004-token-revocation.md) | Authentication |
 | `FZ-005` | [Harden the active-team cookie](completed/FZ-005-active-team-cookie.md) | Authentication/team context |
 | `FZ-007` | [Preserve resource 403 and 404 responses](completed/FZ-007-resource-http-errors.md) | File resources/error handling |
+| `FZ-008` | [Add a local browser regression suite](completed/FZ-008-local-browser-regression-suite.md) | Frontend/testing |
 
 ## Explicitly not tracked
 

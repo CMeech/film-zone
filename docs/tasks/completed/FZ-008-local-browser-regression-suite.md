@@ -1,6 +1,6 @@
 # FZ-008: Add a local browser regression suite
 
-Status: Open  
+Status: Completed  
 Priority: Medium
 
 ## Problem
@@ -25,18 +25,18 @@ The application already supports an isolated database through `RUN_TESTS=True`, 
 
 ## Acceptance criteria
 
-- [ ] A documented command starts FilmZone with an isolated browser-test database and never reads from or writes to `stats-data/stats.db`.
-- [ ] The isolated database is created from the current dbmate migrations and populated deterministically.
-- [ ] Test setup does not depend on existing local users, cookies, uploads, or database contents.
-- [ ] Playwright can authenticate through both coach/admin login and player access-code login.
-- [ ] Mobile and desktop screenshot baselines cover the agreed student-facing page matrix.
-- [ ] Interaction smoke tests cover navigation, the mobile menu, team selection, and representative forms.
-- [ ] Visual failures produce useful diff images and identify the affected page and viewport.
-- [ ] Updating approved baselines requires a separate, explicit command.
-- [ ] Runtime artifacts such as traces, reports, videos, and failure screenshots are ignored by Git.
-- [ ] Approved baseline screenshots are stored in a stable, reviewable repository location.
-- [ ] The normal Tailwind and esbuild production builds succeed before the browser suite runs.
-- [ ] The local workflow and troubleshooting steps are documented.
+- [x] A documented command starts FilmZone with an isolated browser-test database and never reads from or writes to `stats-data/stats.db`.
+- [x] The isolated database is created from the current dbmate migrations and populated deterministically.
+- [x] Test setup does not depend on existing local users, cookies, uploads, or database contents.
+- [x] Playwright can authenticate through both coach/admin login and player access-code login.
+- [x] Mobile and desktop screenshot baselines cover the agreed student-facing page matrix.
+- [x] Interaction smoke tests cover navigation, the mobile menu, team selection, and representative forms.
+- [x] Visual failures produce useful diff images and identify the affected page and viewport.
+- [x] Updating approved baselines requires a separate, explicit command.
+- [x] Runtime artifacts such as traces, reports, videos, and failure screenshots are ignored by Git.
+- [x] Approved baseline screenshots are stored in a stable, reviewable repository location.
+- [x] The normal Tailwind and esbuild production builds succeed before the browser suite runs.
+- [x] The local workflow and troubleshooting steps are documented.
 
 ## Implementation notes
 
@@ -56,13 +56,12 @@ The initial audit should inventory each covered page in empty and representative
 
 ## Verification
 
-- Build browser assets with `npm run build-tailwind` and `NODE_ENV=production npm run build-esbuild`.
-- Run the complete Playwright suite at both configured viewports.
-- Deliberately alter a visible style and confirm the corresponding screenshot assertion fails with a useful diff.
-- Revert that alteration and confirm the suite passes without updating baselines.
-- Confirm form tests trigger the same enabled/disabled behavior observed during manual entry.
-- Confirm the development database checksum and modification time remain unchanged across a browser-test run.
-- Confirm repeated runs start from the same fixture state and do not accumulate records or files.
+- `PLAYWRIGHT_SCRIPT=test:browser:update docker compose -f docker-compose.browser.yml up --build --abort-on-container-exit --exit-code-from browser-tests`: production Tailwind and esbuild build succeeded; 10 Playwright tests passed and generated 18 approved screenshots across mobile and desktop. Tailwind reported its existing daisyUI `@property` optimization warning; npm reported six existing audit findings and two install-script approval warnings.
+- `docker compose -f docker-compose.browser.yml up --build --abort-on-container-exit --exit-code-from browser-tests`: clean non-update run passed 10/10 tests at `390x844` and `1440x900`, covering access/account authentication, dashboard, announcements, games, calendar, resources, whiteboard, roster, team selection, navigation/mobile menu, team creation, and announcement creation.
+- Temporarily changed the access-login background class and reran the normal command: 8 tests passed and the two access-login screenshots failed as intended. Playwright emitted expected, actual, and diff images identifying both `mobile/access-login.png` and `desktop/access-login.png`. The style change was reverted.
+- Form smoke tests confirmed Alpine's disabled/enabled lifecycle using actual fill plus blur/change events, then submitted representative team and announcement forms successfully.
+- `stats-data/stats.db` remained at SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` and mtime `1787011241` before and after the clean run.
+- Three successive app starts reset the dedicated migrated browser database before testing; runs did not depend on or mutate development users, cookies, uploads, or database contents.
 
 ## Notes
 

@@ -48,6 +48,45 @@ The test Compose service overrides the production image entrypoint with
 `assets/css/input.css` and `assets/js/**`, then rebuild through the development
 bundler service. Do not invoke `npm` directly on the host.
 
+## Browser regression tests
+
+The local Playwright workflow builds the production image (including Tailwind
+and esbuild), migrates and resets a dedicated `stats-playwright.db` volume,
+seeds deterministic users and feature data, and runs Chromium at `390x844` and
+`1440x900`:
+
+```sh
+docker compose -f docker-compose.browser.yml up --build \
+  --abort-on-container-exit --exit-code-from browser-tests
+```
+
+The stack never mounts `stats-data/stats.db` or the runtime `resources/`
+directory. It uses separate named volumes and the checked-in browser resource
+fixture. Each app start clears and reseeds the browser database, so repeated
+runs do not accumulate records. The fixture credentials are `browser-admin` /
+`admin-pass`, `browser-coach` / `coach-pass`, and player access code
+`player-access`.
+
+Approved screenshots are under `tests/browser/screenshots/`. Update them only
+after reviewing a deliberate visual change:
+
+```sh
+PLAYWRIGHT_SCRIPT=test:browser:update \
+  docker compose -f docker-compose.browser.yml up --build \
+  --abort-on-container-exit --exit-code-from browser-tests
+```
+
+On failure, inspect `playwright-report/` and `test-results/`; screenshot failures
+include expected, actual, and diff images named for the page and viewport.
+Traces can be opened from the Playwright container with `npx playwright
+show-trace <trace.zip>`. If the browser executable version does not match, keep
+the pinned `@playwright/test` package and the `mcr.microsoft.com/playwright`
+image tag identical. Remove disposable containers and volumes with:
+
+```sh
+docker compose -f docker-compose.browser.yml down --volumes
+```
+
 ## Runtime data
 
 Treat `resources/` and `stats-data/` as runtime data, not source fixtures. A

@@ -11,6 +11,7 @@ RUN npm install
 ENV NODE_ENV=production
 
 COPY ./assets ./assets
+COPY ./templates ./templates
 
 # Create the static directory structure
 RUN mkdir -p static/js static/css
@@ -47,7 +48,7 @@ RUN mkdir -p static/js static/css
 COPY --from=nodebuild /app/static/css/tailwind.css ./static/css/tailwind.css
 
 # Copy JS built from other image
-COPY --from=nodebuild /app/static/js/* ./static/js/
+COPY --from=nodebuild /app/static/js/ ./static/js/
 
 # Copy project files
 COPY . .

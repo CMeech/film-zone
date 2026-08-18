@@ -173,6 +173,13 @@ node_modules/**
 static/css/tailwind.css
 static/js/**
 
+# Playwright runtime output (approved screenshots live in tests/browser/screenshots/)
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+stats-data/stats-playwright.db*
+
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839

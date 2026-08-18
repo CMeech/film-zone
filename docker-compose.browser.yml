@@ -1,0 +1,44 @@
+services:
+  app-browser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      RUN_TESTS: "True"
+      DB_FILE: /app/stats-data/stats-playwright.db
+      DATABASE_URL: sqlite:/app/stats-data/stats-playwright.db
+      FLASK_SECRET_KEY: browser-tests-only
+      SESSION_COOKIE_DOMAIN: app-browser
+      CACHE_TYPE: SimpleCache
+    entrypoint:
+      - /bin/sh
+      - -c
+      - dbmate up && python tests/browser/seed.py && exec gunicorn -b 0.0.0.0:5000 app:app
+    volumes:
+      - browser-db:/app/stats-data
+      - browser-resources:/app/resources
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/actuator/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  browser-tests:
+    image: mcr.microsoft.com/playwright:v1.62.1-noble
+    working_dir: /work
+    depends_on:
+      app-browser:
+        condition: service_healthy
+    environment:
+      PLAYWRIGHT_BASE_URL: http://app-browser:5000
+      PLAYWRIGHT_SCRIPT: ${PLAYWRIGHT_SCRIPT:-test:browser}
+      CI: "1"
+    command: /bin/sh -c "npm ci && npm run $${PLAYWRIGHT_SCRIPT}"
+    volumes:
+      - .:/work
+      - browser-node-modules:/work/node_modules
+
+volumes:
+  browser-db:
+  browser-resources:
+  browser-node-modules:
