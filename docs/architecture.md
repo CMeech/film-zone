@@ -111,13 +111,24 @@ The CSP is generated per request. Scripts allow self, the request nonce, and jsD
 
 These are observations, not changes made by this survey. Prioritize them through focused tasks with tests.
 
-1. **Sparse tests (accepted constraint).** Only the health endpoint has coverage. Given FilmZone's low stakes and limited feature coupling, broad test expansion is not planned; add focused coverage when changing security-sensitive or destructive behavior.
+1. **Focused test coverage (accepted constraint).** Configuration,
+   authentication, cache, cookie, and resource error behavior now have focused
+   coverage. Given FilmZone's low stakes and limited feature coupling, broad
+   test expansion is not planned; continue adding focused coverage when
+   changing security-sensitive or destructive behavior.
 2. **SQLite write contention (accepted constraint).** FilmZone has at most two users who can write and normally only one active user. The current SQLite behavior is adequate for that usage profile.
-3. **Shared authentication cache.** `SimpleCache` is process-local. Multiple workers/processes require Redis; otherwise a login token created in one process may fail in another.
+3. **Shared authentication cache (resolved by FZ-003).** Production Redis
+   configuration supports URL or component settings, validates connectivity at
+   startup, and is documented for multi-process deployments. Development
+   continues to use process-local `SimpleCache`.
 4. **Configuration typing (resolved by FZ-001).** Boolean and integer settings are parsed explicitly, and production requires a non-default Flask secret.
-5. **Cache configuration defect.** The Redis password branch uses a type-annotation expression instead of assigning `CACHE_REDIS_PASSWORD`; password-protected Redis will not receive that setting.
+5. **Credential hashing (resolved by FZ-002).** New and reset credentials use
+   salted password hashes, legacy SHA-256 credentials upgrade after successful
+   authentication, and opaque tokens use a separate generator.
 6. **Authorization consistency.** Team membership is checked by decorators, but record ownership checks vary by feature/repository. Centralized team-scoped repository queries would make cross-team access harder to introduce.
-7. **Token lifecycle.** Logout removes the cookie session value but does not delete the cached token. Role/team/password changes also leave cached profiles valid until their two-hour expiry.
+7. **Token lifecycle (partially resolved by FZ-004).** Logout deletes the
+   cached token and clears the browser state. Role, team, and password changes
+   still leave other cached profiles valid until their two-hour expiry.
 8. **Upload consistency.** A same-named team file can overwrite an existing file, and filesystem/database operations are not atomic. The production Compose file persists SQLite but does not mount `resources/`, so uploads made in that container are not durable across replacement.
 9. **Game concurrent editing (accepted constraint).** Full game JSON is saved with last-write-wins semantics. This is acceptable for FilmZone's single-active-editor usage profile.
 10. **Migration integrity.** The initial migration creates `Games` before `Events`, and the home-flag migration drops/recreates `Games`, losing existing data. Its down migration recreates the same newer shape rather than restoring the previous one.
@@ -128,9 +139,9 @@ These are observations, not changes made by this survey. Prioritize them through
 
 1. Build a test harness that creates a temporary migrated SQLite database and deterministic users/teams.
 2. Add authorization and cross-team isolation tests around every feature.
-3. Centralize typed configuration and production validation.
-4. Harden SQLite connection/transaction behavior and decide whether SQLite remains the intended concurrent production store.
-5. Centralize team-scoped repository methods and token invalidation.
-6. Add optimistic concurrency to game stat saves if simultaneous editing is a real workflow.
+3. Harden SQLite connection/transaction behavior if the deployment's
+   concurrency needs change.
+4. Centralize team-scoped repository methods and user-wide token invalidation.
+5. Add optimistic concurrency to game stat saves if simultaneous editing is a real workflow.
 
 Keep these as separate, reviewable changes rather than one application-wide rewrite.

@@ -1,6 +1,6 @@
 # FZ-003: Correct and validate Redis cache configuration
 
-Status: Open  
+Status: Completed  
 Priority: Medium
 
 ## Problem
@@ -20,12 +20,12 @@ FilmZone currently serves with two threads, so a process-local cache can work fo
 
 ## Acceptance criteria
 
-- [ ] Password-protected Redis can initialize successfully.
-- [ ] The selected URL/component configuration has documented precedence.
-- [ ] Invalid Redis configuration produces a clear startup or diagnostic error.
-- [ ] Development can continue using `SimpleCache` without Redis.
-- [ ] The live two-thread deployment remains supported.
-- [ ] Focused configuration tests verify password and URL/component behavior without requiring a live production Redis instance.
+- [x] Password-protected Redis can initialize successfully.
+- [x] The selected URL/component configuration has documented precedence.
+- [x] Invalid Redis configuration produces a clear startup or diagnostic error.
+- [x] Development can continue using `SimpleCache` without Redis.
+- [x] The live two-thread deployment remains supported.
+- [x] Focused configuration tests verify password and URL/component behavior without requiring a live production Redis instance.
 
 ## Implementation notes
 

@@ -1,6 +1,6 @@
 # FZ-002: Upgrade password and access-code hashing
 
-Status: Open  
+Status: Completed  
 Priority: High
 
 ## Problem
@@ -19,12 +19,12 @@ The same helper also creates opaque login tokens. Password hashing and token gen
 
 ## Acceptance criteria
 
-- [ ] Newly created and reset credentials are salted and use a slow password hash.
-- [ ] Existing 64-character SHA-256 credentials can still authenticate during migration.
-- [ ] A successful legacy login upgrades that stored credential to the new format.
-- [ ] Authentication tokens remain opaque and unpredictable without being processed as password hashes.
-- [ ] Logs never contain raw passwords, access codes, or stored credential hashes.
-- [ ] Focused tests cover new hashes, valid/invalid login, legacy login, and legacy upgrade.
+- [x] Newly created and reset credentials are salted and use a slow password hash.
+- [x] Existing 64-character SHA-256 credentials can still authenticate during migration.
+- [x] A successful legacy login upgrades that stored credential to the new format.
+- [x] Authentication tokens remain opaque and unpredictable without being processed as password hashes.
+- [x] Logs never contain raw passwords, access codes, or stored credential hashes.
+- [x] Focused tests cover new hashes, valid/invalid login, legacy login, and legacy upgrade.
 
 ## Implementation notes
 
@@ -36,10 +36,12 @@ Consider renaming `generate_token` to reflect its remaining token-specific purpo
 
 ## Verification
 
-- Test both coach and player login paths.
-- Confirm an old database credential upgrades only after successful authentication.
-- Confirm a failed attempt does not change the stored value.
-- Confirm password reset invalidation behavior is coordinated with FZ-004 if both tasks are implemented together.
+- Focused credential tests cover new salted hashes, coach and player login,
+  successful legacy upgrades, failed legacy attempts, and password resets.
+- Token tests confirm authentication tokens use a separate opaque,
+  unpredictable generator.
+- Exact historical test commands and counts were not recorded in this task
+  document when the implementation was completed.
 
 ## Notes
 

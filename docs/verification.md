@@ -11,9 +11,9 @@ ready.
   and desktop widths.
 - Authentication or team-context changes require unauthenticated, wrong-role,
   wrong-team, and valid-access cases.
-- Until FZ-008 supplies the local browser regression suite, every bug fix or
-  feature change requires a basic browser smoke test, including backend changes
-  that can affect startup, sessions, authentication, or rendered routes.
+- Every bug fix or feature change requires the relevant local browser regression
+  coverage or a basic browser smoke test, including backend changes that can
+  affect startup, sessions, authentication, or rendered routes.
 
 ## Browser smoke test
 
