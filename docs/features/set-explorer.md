@@ -39,19 +39,21 @@ sections below.
 
 ### Technical scope
 
-- [ ] Write and review the technical implementation plan.
-- [ ] Choose and pin the 3D rendering dependency.
-- [ ] Define the scene coordinate system and attacking-team orientation.
-- [ ] Define the centralized calibration configuration.
-- [ ] Define the canonical client-side state and animation state machine.
-- [ ] Define URL parsing, validation, clamping, serialization, and clearing.
-- [ ] Define curve construction and invalid-geometry handling.
-- [ ] Define pointer ownership for objects, camera controls, and the mobile
+- [x] Write the technical implementation plan.
+- [ ] Review and accept the technical implementation plan.
+- [x] Choose Three.js as the 3D rendering dependency.
+- [ ] Pin the exact Three.js version when implementation begins.
+- [x] Define the scene coordinate system and attacking-team orientation.
+- [x] Define the centralized calibration configuration.
+- [x] Define the canonical client-side state and animation state machine.
+- [x] Define URL parsing, validation, clamping, serialization, and clearing.
+- [x] Define curve construction and invalid-geometry handling.
+- [x] Define pointer ownership for objects, camera controls, and the mobile
   control sheet.
-- [ ] Define phone, desktop, full-screen, and resize behavior.
-- [ ] Define the authenticated Flask route, template, bundle, and navigation
+- [x] Define phone, desktop, full-screen, and resize behavior.
+- [x] Define the authenticated Flask route, template, bundle, and navigation
   integration.
-- [ ] Define the verification and browser-test strategy.
+- [x] Define the verification and browser-test strategy.
 
 ### Interaction proof of concept
 
@@ -180,9 +182,11 @@ On a 9-metre-wide court, this places positions 1, 3, 5, 7, and 9 at 0.5, 2.5,
 reasonable distance inside the sidelines.
 
 Position 6 is special: it is always approximately 2.5 feet (0.762 metres)
-behind the setter rather than fixed to the court. Its lateral coordinate
-follows the setter, and its calibrated direction follows the attacking team's
-court orientation rather than the camera.
+behind the setter in the back-set direction, toward the attacking team's right
+side, rather than fixed to the court. Its lateral coordinate follows the
+setter, and this direction follows the attacking team's court orientation
+rather than the camera. The setter may still rotate to face the resulting
+target for visualization.
 
 Selecting position 6 establishes this dynamic relationship. If the user then
 manually drags the endpoint, the endpoint becomes custom and stops following
