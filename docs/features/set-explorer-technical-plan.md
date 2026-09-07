@@ -148,7 +148,8 @@ z = 0.0 .. 9.0
 The net lies on `z = 0`. Camera location and rotation never change the meaning
 of the axes or numbered positions. The net tape height is 7 feet 11.75 inches,
 represented internally as approximately `2.432` metres. Contact-point height
-and net-clearance checks use this value as their baseline.
+and net-clearance checks use this value as their baseline. The fixed contact
+point is 1.75 feet (`0.5334 m`) above that baseline.
 
 Fixed target lateral coordinates use:
 
@@ -298,8 +299,9 @@ not create overlapping loops.
 ## Force mapping
 
 Force controls total travel duration, not curve shape. Represent it in state as
-a bounded UI value, likely `0 .. 100`, and map it monotonically to calibrated
-minimum and maximum durations.
+a bounded `0 .. 100` percentage and map it monotonically from 1.5 seconds at 0%
+to 0.45 seconds at 100%. Show the percentage in the UI without displaying the
+derived duration.
 
 A preliminary mapping can be linear for the proof of concept:
 
@@ -351,8 +353,8 @@ arc length more evenly than a raw curve parameter.
 
 ## Setter representation and orientation
 
-The exact visual representation remains a coaching/design decision. The
-technical interface should treat it as a grouped Three.js object with:
+Use a lightweight coaching marker built from simple Three.js geometry. The
+technical interface treats it as a grouped Three.js object with:
 
 - A world-space floor position.
 - A stable release-point child marker above the forehead.
@@ -372,9 +374,9 @@ Compute release height from the configured setter height plus the selected
 preserve the setter's floor coordinates, update the representation and release
 marker, rebuild the curve, and return the ball to the new release point.
 
-The initial proof of concept should use simple geometry or a lightweight
-stylized figure. A detailed animated character model adds asset, loading,
-orientation, and mobile-performance risks without validating the core feature.
+A detailed animated character model remains outside the first release because
+it adds asset, loading, orientation, and mobile-performance costs without
+improving validation of the core teaching interaction.
 
 ## Input and gesture ownership
 
@@ -627,9 +629,5 @@ complete.
 
 ## Decisions intentionally deferred to the spike
 
-- Exact contact height within the agreed 1.5-to-2-foot range.
-- Force-to-duration minimum, maximum, and curve.
-- Exact setter and target drag bounds.
-- Final setter visual design.
 - Final camera coordinates and zoom limits.
 - Custom-target label tolerance.

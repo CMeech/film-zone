@@ -40,16 +40,17 @@ sections below.
 - [x] Choose 5 feet 10 inches as the default selected setter height.
 - [x] Place the ball's center 8 inches above the setter's modeled forehead
   height at release.
-- [ ] Choose the default contact height between 1.5 and 2 feet above the net.
-- [ ] Choose the force slider's minimum and maximum travel times.
-- [ ] Decide whether to display force only or force plus estimated travel time.
-- [ ] Define the exact setter and endpoint drag boundaries.
-- [ ] Choose the setter's visual representation.
+- [x] Set the contact point 1.75 feet above the net.
+- [x] Map the force slider to travel times from 1.5 seconds down to 0.45
+  seconds.
+- [x] Display force as a percentage without estimated travel time.
+- [x] Define the setter and endpoint drag boundaries.
+- [x] Use a lightweight coaching-marker setter made from simple geometry.
 
 ### Technical scope
 
 - [x] Write the technical implementation plan.
-- [ ] Review and accept the technical implementation plan.
+- [x] Review and accept the technical implementation plan.
 - [x] Choose Three.js as the 3D rendering dependency.
 - [x] Pin the exact Three.js version when implementation begins.
 - [x] Define the scene coordinate system and attacking-team orientation.
@@ -226,9 +227,8 @@ The net is 7 feet 11.75 inches tall (approximately 2.432 metres). This is the
 reference height for the endpoint and all net-clearance calculations.
 
 The endpoint represents the intended hitter contact point, not where the ball
-would land. Its initial vertical position is fixed approximately 1.5 to 2 feet
-(0.46 to 0.61 metres) above the net. The proposed default is 1.75 feet
-(approximately 0.53 metres) above the net.
+would land. Its vertical position is fixed 1.75 feet (0.5334 metres) above the
+net.
 
 Users may move the contact point left or right and tight to or away from the
 net. They may not move it vertically in the first release. Vertical adjustment
@@ -304,8 +304,9 @@ and endpoint is preferred so that it can:
 - Animate consistently at different force values.
 
 The same complete state must always produce the same path and animation.
-Displayed timing should be described as estimated unless it is later
-calibrated against measured footage.
+The selected force maps linearly from 1.5 seconds at 0% to 0.45 seconds at
+100%. These internal times are calibration values rather than claims about
+measured player performance and are not displayed in the first-release UI.
 
 ## Controls
 
@@ -328,6 +329,13 @@ calibrated against measured footage.
 - Dragging the contact point moves it left/right and tight/off the net.
 - Dragging elsewhere in the scene rotates the camera.
 - Pinching on touch devices or scrolling with a mouse zooms the camera.
+
+The setter is clamped to `x = 0.3 .. 8.7 m` and `z = 0.25 .. 8.5 m`. The
+contact point is clamped to `x = 0.3 .. 8.7 m` and `z = 0.05 .. 2.5 m`. These
+bounds retain a small sideline margin, keep the setter inside the attacking
+half court, and keep the endpoint within the front-zone area relevant to sets.
+Dragging changes only horizontal coordinates; contact height remains fixed at
+1.75 feet (0.5334 metres) above the net.
 - Camera rotation is temporarily disabled while the setter or contact point is
   being dragged.
 - Setter and contact-point handles require touch targets larger than their
@@ -420,7 +428,7 @@ distinctly optimized layout in the first release.
 ### Large screen
 
 - The scene and controls can appear side by side.
-- Current position, height, force, and estimated travel time remain visible.
+- Current position, height, and force remain visible.
 - Preset camera views are available without opening a compact menu.
 - Full-screen presentation is supported.
 
@@ -491,9 +499,10 @@ links is not guaranteed when the state format changes.
 - Validate the net at 7 feet 11.75 inches high.
 - Validate the setter's default distance of 2 feet from the net.
 - Validate the 5-foot-10-inch default setter height and 8-inch release offset.
-- Confirm the default contact height.
-- Calibrate force values to useful estimated travel times.
-- Define valid setter and endpoint movement boundaries and curve limits.
+- Validate the 1.75-foot contact height.
+- Validate the 0.45-to-1.5-second force mapping.
+- Validate the selected setter and endpoint movement boundaries and curve
+  limits.
 - Produce phone and large-screen wireframes.
 
 ### Phase 2: Interaction proof of concept
@@ -551,19 +560,6 @@ JSON endpoints.
 - Reset actions always return the user to a usable set and camera state.
 - The scene remains legible and interactive on phone and large-screen layouts.
 - Existing FilmZone navigation, authentication, and features remain unaffected.
-
-## Open coaching decisions
-
-These decisions should be resolved before implementation or during the
-calibration prototype:
-
-1. Should the default contact point be 1.5, 1.75, or 2 feet above the net?
-2. What travel-time range should the force slider represent?
-3. Should the force control display only a percentage, or percentage plus
-   estimated seconds?
-4. How far may the setter and target be dragged before being clamped?
-5. Should the setter be represented by a simple coaching marker, a stylized
-   figure, or a more realistic player model?
 
 ## Future possibilities
 

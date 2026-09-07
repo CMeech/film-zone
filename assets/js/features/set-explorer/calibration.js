@@ -2,7 +2,7 @@ export const CALIBRATION = Object.freeze({
     court: { width: 9, depth: 9, attackLine: 3 },
     net: { height: 2.432, postHeight: 2.7 },
     ballRadius: 0.105,
-    contactAboveNet: 0.533,
+    contactAboveNet: 0.5334,
     releaseAboveHead: 0.2032,
     defaultSetter: { x: 5.5, z: 0.61, height: 1.778 },
     setterBounds: { minX: 0.3, maxX: 8.7, minZ: 0.25, maxZ: 8.5 },
