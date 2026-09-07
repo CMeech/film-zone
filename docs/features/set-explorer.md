@@ -37,7 +37,7 @@ sections below.
 - [x] Set the setter's default distance from the net to 2 feet.
 - [x] Set the configurable setter-height range to 5 feet 2 inches through 6
   feet 4 inches.
-- [ ] Choose the default selected setter height.
+- [x] Choose 5 feet 10 inches as the default selected setter height.
 - [ ] Choose the release offset above the setter's forehead.
 - [ ] Choose the default contact height between 1.5 and 2 feet above the net.
 - [ ] Choose the force slider's minimum and maximum travel times.
@@ -264,8 +264,10 @@ This starting lane is distinct from target position 6, which remains a special
 setter-relative back set.
 
 Setter height is configurable from 5 feet 2 inches through 6 feet 4 inches
-(approximately 1.575 through 1.930 metres). The initially selected height and
-the release offset above the forehead remain calibration decisions.
+(approximately 1.575 through 1.930 metres). The initially selected height is 5
+feet 10 inches (approximately 1.778 metres), providing a neutral starting point
+without preventing immediate adjustment for a specific player. The release
+offset above the forehead remains a calibration decision.
 
 ## Set state model
 
@@ -485,8 +487,8 @@ links is not guaranteed when the state format changes.
 - Validate position 6 at 2.5 feet behind the setter.
 - Validate the net at 7 feet 11.75 inches high.
 - Validate the setter's default distance of 2 feet from the net.
-- Choose the default setter height and calibrate the release offset above the
-  forehead.
+- Validate the 5-foot-10-inch default setter height and calibrate the release
+  offset above the forehead.
 - Confirm the default contact height.
 - Calibrate force values to useful estimated travel times.
 - Define valid setter and endpoint movement boundaries and curve limits.

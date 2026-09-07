@@ -627,8 +627,6 @@ complete.
 
 ## Decisions intentionally deferred to the spike
 
-- Default setter height within the established 5-foot-2-inch to
-  6-foot-4-inch range.
 - Release offset above the setter's forehead.
 - Exact contact height within the agreed 1.5-to-2-foot range.
 - Force-to-duration minimum, maximum, and curve.
