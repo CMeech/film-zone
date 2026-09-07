@@ -146,7 +146,9 @@ z = 0.0 .. 9.0
 ```
 
 The net lies on `z = 0`. Camera location and rotation never change the meaning
-of the axes or numbered positions.
+of the axes or numbered positions. The net tape height is 7 feet 11.75 inches,
+represented internally as approximately `2.432` metres. Contact-point height
+and net-clearance checks use this value as their baseline.
 
 Fixed target lateral coordinates use:
 
@@ -157,6 +159,19 @@ x = (position - 0.5) * (courtWidth / 9)
 On a 9-metre court, positions 1, 3, 5, 7, and 9 resolve to `0.5`, `2.5`, `4.5`,
 `6.5`, and `8.5` metres. Their default `z` value is the calibrated target
 offset from the net.
+
+The setter's default lateral position uses the centre of lane 6 from the same
+nine-lane grid:
+
+```text
+defaultSetter.x = (6 - 0.5) * (courtWidth / 9)
+defaultSetter.z = 0.610
+```
+
+On a 9-metre court, `defaultSetter.x` is `5.5` metres. Its default distance from
+the net is 2 feet (approximately `0.610` metres) into the attacking court. The
+setter's starting lane is independent of the special setter-relative target
+position 6.
 
 Position 6 is computed from the setter:
 
@@ -183,8 +198,11 @@ scattering numbers through rendering and control code.
 The configuration should group:
 
 - Court width, court depth, attack-line distance, and line width.
-- Net height, net width, tape size, antenna dimensions, and ball radius.
+- Net height of 7 feet 11.75 inches (approximately 2.432 metres), net width,
+  tape size, antenna dimensions, and ball radius.
 - Default setter position and release-point offset.
+- Setter-height bounds of 5 feet 2 inches through 6 feet 4 inches
+  (approximately 1.575 through 1.930 metres), plus the default selection.
 - Setter and endpoint movement bounds.
 - Position lane formula and default net offset.
 - Position 6 distance.
@@ -205,7 +223,7 @@ Maintain one serializable set state independent of Three.js objects:
 
 ```text
 setState
-  setter: { x, z }
+  setter: { x, z, height }
   target:
     mode: "standard" | "position6" | "custom"
     position: 1 | 3 | 5 | 6 | 7 | 9 | null
@@ -216,7 +234,8 @@ setState
   cameraView: "end" | "left" | "middle" | "right" | "opposition"
 ```
 
-Contact height, release offset, court dimensions, and other coaching constants
+The configured setter height is shareable state. Contact height, release
+offset, court dimensions, setter-height bounds, and other coaching constants
 come from calibration rather than URL state.
 
 Maintain animation and transient interaction separately:
@@ -245,8 +264,8 @@ mutating meshes directly.
 
 ### Set edits
 
-Selecting a position, changing height or force, or committing a setter/target
-drag performs this sequence:
+Selecting a position, changing set height, force, or setter height, or
+committing a setter/target drag performs this sequence:
 
 1. Cancel the active animation frame's playback state.
 2. Update and clamp canonical set state.
@@ -340,11 +359,18 @@ technical interface should treat it as a grouped Three.js object with:
 - A separate visible floor-ring selection indicator.
 - A larger invisible floor-level raycast target.
 - Horizontal rotation around the vertical axis.
+- A configurable physical height that scales the representation and positions
+  its forehead marker.
 
 After either endpoint moves, rotate the setter group to face the horizontal
 target direction. All trajectories, including back sets, start from the same
 release marker above the setter. Do not shift the release marker based on set
 direction.
+
+Compute release height from the configured setter height and a calibrated
+offset above the forehead. Setter-height changes must preserve the setter's
+floor coordinates, update the representation and release marker, rebuild the
+curve, and return the ball to the new release point.
 
 The initial proof of concept should use simple geometry or a lightweight
 stylized figure. A detailed animated character model adds asset, loading,
@@ -432,6 +458,7 @@ h   height level
 f   force
 sx  setter x
 sz  setter z
+sh  setter height
 tx  target x, when custom
 tz  target z, when custom
 v   named camera view
@@ -452,10 +479,10 @@ Parsing rules:
   impossible.
 
 On initial load, apply validated URL state before the first meaningful render.
-Mark it pristine. The first edit to setter, target, position, height, force, or
-named camera view calls `history.replaceState` with the same path and no query
-string. Playback, pause, selection, sheet state, and free orbit do not clear
-the query.
+Mark it pristine. The first edit to setter position, setter height, target,
+position, set height, force, or named camera view calls `history.replaceState`
+with the same path and no query string. Playback, pause, selection, sheet state,
+and free orbit do not clear the query.
 
 The share action always serializes the current canonical state into a newly
 constructed URL and copies it. It does not need to mutate the current address.
@@ -506,10 +533,12 @@ Add focused tests proving:
 
 ### Browser logic and interaction coverage
 
-Prefer testing observable behavior through Playwright. If curve and URL helpers
-become complex enough to require direct unit coverage, add a small Node test
-runner only as a separate, deliberate tooling decision; do not introduce one
-solely to test trivial functions.
+Use the repository's established Playwright setup for observable behavior. A
+baseline Set Explorer test now covers both configured viewport projects; grow
+it into an interactive regression suite as the prototype is calibrated. If
+curve and URL helpers become complex enough to require direct unit coverage,
+add a small Node test runner only as a separate, deliberate tooling decision;
+do not introduce one solely to test trivial functions.
 
 Playwright should cover:
 
@@ -598,8 +627,9 @@ complete.
 
 ## Decisions intentionally deferred to the spike
 
-- Default setter court position.
-- Setter release-point height.
+- Default setter height within the established 5-foot-2-inch to
+  6-foot-4-inch range.
+- Release offset above the setter's forehead.
 - Exact contact height within the agreed 1.5-to-2-foot range.
 - Force-to-duration minimum, maximum, and curve.
 - Exact setter and target drag bounds.

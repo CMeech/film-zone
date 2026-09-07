@@ -6,6 +6,7 @@ from features.events.events_view import events_bp
 from features.games.game_view import game_bp
 from features.resources.resource_view import resource_bp
 from features.rosters.rosters_view import roster_bp
+from features.set_explorer.set_explorer_view import set_explorer_bp
 from features.teams.team_view import team_bp
 from features.users.user_view import user_bp
 from libs.logging.logging import logger
@@ -41,6 +42,9 @@ def register_views(app: Flask):
 
         # Resources
         app.register_blueprint(resource_bp, url_prefix='/resources')
+
+        # Set Explorer
+        app.register_blueprint(set_explorer_bp, url_prefix='/set-explorer')
 
         # Events
         app.register_blueprint(events_bp, url_prefix='/events')

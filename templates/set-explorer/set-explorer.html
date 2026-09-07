@@ -1,0 +1,82 @@
+{% extends "base-nav/base-nav.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/components/set-explorer/set-explorer.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div id="set-explorer-app" class="h-full min-h-0 bg-base-200 p-3 md:p-6">
+    <div class="mx-auto flex h-full min-h-[calc(100vh-6.5rem)] max-w-[1600px] flex-col gap-3 md:flex-row">
+        <section class="card relative min-h-[58vh] min-w-0 flex-1 overflow-hidden bg-neutral shadow-xl md:min-h-0">
+            <div id="set-explorer-scene" class="absolute inset-0 min-h-0 min-w-0 overflow-hidden touch-none [contain:strict]" aria-label="Interactive three-dimensional volleyball set visualization"></div>
+
+            <div class="pointer-events-none absolute left-3 top-3 rounded-box bg-base-100/90 px-3 py-2 shadow">
+                <div id="set-explorer-label" class="font-bold">Set 51</div>
+                <div id="set-explorer-status" class="text-xs text-base-content/70">Ready</div>
+            </div>
+
+            <div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+                <button id="set-explorer-play" type="button" class="btn btn-primary btn-sm min-w-24">Play</button>
+                <button id="set-explorer-reset" type="button" class="btn btn-sm">Reset</button>
+            </div>
+
+            <div id="set-explorer-fallback" class="absolute inset-0 hidden place-items-center bg-base-100 p-8 text-center">
+                <p>This device could not start the 3D Set Explorer.</p>
+            </div>
+        </section>
+
+        <button id="set-explorer-controls-toggle" type="button" class="btn btn-sm md:hidden">Show controls</button>
+
+        <aside id="set-explorer-controls" class="card hidden max-h-[48vh] overflow-y-auto bg-base-100 shadow-xl md:block md:max-h-none md:w-80">
+            <div class="card-body gap-5 p-4">
+                <div>
+                    <div class="mb-2 text-sm font-semibold">Target position</div>
+                    <div id="set-explorer-positions" class="grid grid-cols-6 gap-1">
+                        {% for position in [1, 3, 5, 6, 7, 9] %}
+                        <button type="button" class="btn btn-sm" data-position="{{ position }}">{{ position }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="mb-2 text-sm font-semibold">Set height</div>
+                    <div id="set-explorer-heights" class="grid grid-cols-3 gap-2">
+                        {% for height in [1, 2, 3] %}
+                        <button type="button" class="btn btn-sm" data-height="{{ height }}">{{ height }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <label class="form-control">
+                    <span class="label-text mb-1 text-sm font-semibold">Force <span id="set-explorer-force-value">50%</span></span>
+                    <input id="set-explorer-force" type="range" min="0" max="100" value="50" class="range range-primary range-sm">
+                </label>
+
+                <label class="form-control">
+                    <span class="label-text mb-1 text-sm font-semibold">Setter height <span id="set-explorer-setter-height-value">5′10″</span></span>
+                    <input id="set-explorer-setter-height" type="range" min="62" max="76" value="70" step="1" class="range range-secondary range-sm">
+                </label>
+
+                <div>
+                    <div class="mb-2 text-sm font-semibold">View</div>
+                    <div id="set-explorer-views" class="grid grid-cols-2 gap-2">
+                        <button type="button" class="btn btn-sm" data-view="end">End court</button>
+                        <button type="button" class="btn btn-sm" data-view="left">Left side</button>
+                        <button type="button" class="btn btn-sm" data-view="middle">Middle</button>
+                        <button type="button" class="btn btn-sm" data-view="right">Right side</button>
+                        <button type="button" class="btn btn-sm col-span-2" data-view="opposition">Opposition</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="set-explorer-camera-reset" type="button" class="btn btn-sm">Reset camera</button>
+                    <button id="set-explorer-fullscreen" type="button" class="btn btn-sm">Full screen</button>
+                    <button id="set-explorer-share" type="button" class="btn btn-outline btn-sm col-span-2">Copy share link</button>
+                </div>
+
+                <p class="text-xs text-base-content/60">Drag the ring beneath the setter or the ball target. Drag empty court space to rotate; pinch or scroll to zoom.</p>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

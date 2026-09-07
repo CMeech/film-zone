@@ -22,6 +22,11 @@ sections below.
 - [x] Define height 1, 2, and 3 release angles as approximately 45, 52, and 60
   degrees.
 - [x] Make the setter and contact point movable on constrained planes.
+- [x] Place the setter's default lateral position in lane 6 of the nine-lane
+  court-width grid.
+- [x] Derive the release point above the setter's forehead.
+- [x] Allow the setter's height to be configured.
+- [x] Set the net height to 7 feet 11.75 inches.
 - [x] Keep contact height fixed in the first release.
 - [x] Make force control travel speed without changing trajectory geometry.
 - [x] Use deterministic curves instead of a physics simulation.
@@ -29,8 +34,11 @@ sections below.
 - [x] Define the five named camera views.
 - [x] Use URL query parameters for sharing and remove them after an edit.
 - [x] Remove coach-saved presets from the planned scope.
-- [ ] Choose the default setter location.
-- [ ] Choose the setter release-point height.
+- [x] Set the setter's default distance from the net to 2 feet.
+- [x] Set the configurable setter-height range to 5 feet 2 inches through 6
+  feet 4 inches.
+- [ ] Choose the default selected setter height.
+- [ ] Choose the release offset above the setter's forehead.
 - [ ] Choose the default contact height between 1.5 and 2 feet above the net.
 - [ ] Choose the force slider's minimum and maximum travel times.
 - [ ] Decide whether to display force only or force plus estimated travel time.
@@ -42,7 +50,7 @@ sections below.
 - [x] Write the technical implementation plan.
 - [ ] Review and accept the technical implementation plan.
 - [x] Choose Three.js as the 3D rendering dependency.
-- [ ] Pin the exact Three.js version when implementation begins.
+- [x] Pin the exact Three.js version when implementation begins.
 - [x] Define the scene coordinate system and attacking-team orientation.
 - [x] Define the centralized calibration configuration.
 - [x] Define the canonical client-side state and animation state machine.
@@ -71,26 +79,30 @@ sections below.
 
 ### FilmZone implementation
 
-- [ ] Add the authenticated feature route and template.
-- [ ] Add the bundled 3D dependency and feature JavaScript entry point.
-- [ ] Implement the regulation-scale scene and responsive renderer lifecycle.
-- [ ] Implement setter orientation, dragging, and release-point behavior.
-- [ ] Implement standard targets, custom target dragging, and snapping.
-- [ ] Implement trajectory construction and preview rendering.
-- [ ] Implement force-based animation with play, pause, resume, and reset.
-- [ ] Implement named camera views, orbit, zoom, camera reset, and full screen.
-- [ ] Implement phone controls and the collapsible control sheet.
-- [ ] Implement desktop and large-screen presentation controls.
-- [ ] Implement generated set labels and adjusted/custom status.
-- [ ] Implement validated share-link generation and loading.
-- [ ] Remove loaded query parameters after the first shared-state edit.
-- [ ] Add the FilmZone navigation or dashboard entry.
-- [ ] Add basic fallback and failure handling.
-- [ ] Rebuild generated frontend assets through Docker Compose.
+- [x] Add the authenticated feature route and template.
+- [x] Add the bundled 3D dependency and feature JavaScript entry point.
+- [x] Implement the regulation-scale scene and responsive renderer lifecycle.
+- [x] Implement setter height, orientation, dragging, and release-point behavior.
+- [x] Implement standard targets and custom target dragging.
+- [x] Implement trajectory construction and preview rendering.
+- [x] Implement force-based animation with play, pause, resume, and reset.
+- [x] Implement named camera views, orbit, zoom, camera reset, and full screen.
+- [x] Implement phone controls and the collapsible control sheet.
+- [x] Implement desktop and large-screen presentation controls.
+- [x] Implement generated set labels and adjusted/custom status.
+- [x] Implement validated share-link generation and loading.
+- [x] Remove loaded query parameters after the first shared-state edit.
+- [x] Add the FilmZone navigation and dashboard entries.
+- [x] Add basic WebGL fallback handling.
+- [x] Rebuild generated frontend assets through Docker Compose.
 
 ### Verification and release
 
-- [ ] Add focused browser coverage for state, controls, URL sharing, and resets.
+- [x] Add focused browser coverage for state, controls, URL sharing, and resets.
+- [ ] Expand the Playwright suite into interactive coverage for pointer dragging,
+  camera controls, animation interruption/replay, and responsive control state.
+- [ ] Add deterministic Playwright assertions for position 6 following setter
+  movement and force changing duration without changing trajectory geometry.
 - [ ] Test the supported phone viewport with touch-equivalent interactions.
 - [ ] Test the supported desktop viewport and full-screen presentation.
 - [ ] Verify that opening and closing mobile controls preserves scene framing.
@@ -209,6 +221,9 @@ curve. They are not the output of a physics calculation.
 
 ### Contact point
 
+The net is 7 feet 11.75 inches tall (approximately 2.432 metres). This is the
+reference height for the endpoint and all net-clearance calculations.
+
 The endpoint represents the intended hitter contact point, not where the ball
 would land. Its initial vertical position is fixed approximately 1.5 to 2 feet
 (0.46 to 0.61 metres) above the net. The proposed default is 1.75 feet
@@ -237,8 +252,20 @@ detail, particularly on lower-powered phones.
 
 The setter rotates horizontally to face the current target whenever the setter
 or target moves. All sets, including back sets, originate from the same stable
-release point above the setter's forehead; the release point does not shift
-behind the setter for a back set.
+release point above the setter's forehead. Its vertical coordinate is derived
+from the configured setter height plus a calibrated release offset. The release
+point does not shift behind the setter for a back set.
+
+The setter starts close to and in front of the net with its lateral position at
+lane 6 of the same nine-lane court-width grid. On a 9-metre court, the centre of
+lane 6 is `5.5 m` from the attacking team's left sideline. Its default distance
+from the net is 2 feet (approximately 0.610 metres) into the attacking court.
+This starting lane is distinct from target position 6, which remains a special
+setter-relative back set.
+
+Setter height is configurable from 5 feet 2 inches through 6 feet 4 inches
+(approximately 1.575 through 1.930 metres). The initially selected height and
+the release offset above the forehead remain calibration decisions.
 
 ## Set state model
 
@@ -247,6 +274,7 @@ A rendered set is determined by these independent values:
 | Value | Purpose |
 | --- | --- |
 | Setter position | Establishes the trajectory origin on the court plane |
+| Setter height | Scales the setter and establishes the forehead height |
 | Target position | Selects a standard destination along the net |
 | Custom target coordinates | Records fine adjustment left/right and tight/off the net |
 | Height level | Selects the approximate initial angle and curve shape |
@@ -281,6 +309,8 @@ calibrated against measured footage.
 - **Position:** Select 1, 3, 5, 6, 7, or 9.
 - **Height:** Select 1, 2, or 3.
 - **Force:** Use a continuous slider that controls travel time.
+- **Setter height:** Adjust the setter model and release-point height while
+  preserving its floor position.
 - **Play/pause:** Start or pause the ball at any point on its path. Playing
   after completion begins the set again from the release point.
 - **Reset set:** Restore the selected configuration to its defaults.
@@ -409,6 +439,7 @@ The first release should support sharing the current configuration without
 server persistence. The URL state includes:
 
 - Setter court coordinates.
+- Setter height.
 - Selected target position.
 - Custom target coordinates or offsets.
 - Height level.
@@ -452,7 +483,10 @@ links is not guaranteed when the state format changes.
 
 - Validate the calculated court coordinates for positions 1, 3, 5, 7, and 9.
 - Validate position 6 at 2.5 feet behind the setter.
-- Confirm the setter's default position and release-point height.
+- Validate the net at 7 feet 11.75 inches high.
+- Validate the setter's default distance of 2 feet from the net.
+- Choose the default setter height and calibrate the release offset above the
+  forehead.
 - Confirm the default contact height.
 - Calibrate force values to useful estimated travel times.
 - Define valid setter and endpoint movement boundaries and curve limits.
@@ -519,13 +553,15 @@ JSON endpoints.
 These decisions should be resolved before implementation or during the
 calibration prototype:
 
-1. What are the default setter location and release-point height?
-2. Should the default contact point be 1.5, 1.75, or 2 feet above the net?
-3. What travel-time range should the force slider represent?
-4. Should the force control display only a percentage, or percentage plus
+1. What is the default selected setter height within the 5-foot-2-inch to
+   6-foot-4-inch range?
+2. How far above the forehead should the release point be?
+3. Should the default contact point be 1.5, 1.75, or 2 feet above the net?
+4. What travel-time range should the force slider represent?
+5. Should the force control display only a percentage, or percentage plus
    estimated seconds?
-5. How far may the setter and target be dragged before being clamped?
-6. Should the setter be represented by a simple coaching marker, a stylized
+6. How far may the setter and target be dragged before being clamped?
+7. Should the setter be represented by a simple coaching marker, a stylized
    figure, or a more realistic player model?
 
 ## Future possibilities
