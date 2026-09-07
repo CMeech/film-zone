@@ -367,10 +367,10 @@ target direction. All trajectories, including back sets, start from the same
 release marker above the setter. Do not shift the release marker based on set
 direction.
 
-Compute release height from the configured setter height and a calibrated
-offset above the forehead. Setter-height changes must preserve the setter's
-floor coordinates, update the representation and release marker, rebuild the
-curve, and return the ball to the new release point.
+Compute release height from the configured setter height plus the selected
+8-inch (0.2032-metre) offset to the ball's center. Setter-height changes must
+preserve the setter's floor coordinates, update the representation and release
+marker, rebuild the curve, and return the ball to the new release point.
 
 The initial proof of concept should use simple geometry or a lightweight
 stylized figure. A detailed animated character model adds asset, loading,
@@ -627,7 +627,6 @@ complete.
 
 ## Decisions intentionally deferred to the spike
 
-- Release offset above the setter's forehead.
 - Exact contact height within the agreed 1.5-to-2-foot range.
 - Force-to-duration minimum, maximum, and curve.
 - Exact setter and target drag bounds.

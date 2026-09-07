@@ -38,7 +38,8 @@ sections below.
 - [x] Set the configurable setter-height range to 5 feet 2 inches through 6
   feet 4 inches.
 - [x] Choose 5 feet 10 inches as the default selected setter height.
-- [ ] Choose the release offset above the setter's forehead.
+- [x] Place the ball's center 8 inches above the setter's modeled forehead
+  height at release.
 - [ ] Choose the default contact height between 1.5 and 2 feet above the net.
 - [ ] Choose the force slider's minimum and maximum travel times.
 - [ ] Decide whether to display force only or force plus estimated travel time.
@@ -266,8 +267,10 @@ setter-relative back set.
 Setter height is configurable from 5 feet 2 inches through 6 feet 4 inches
 (approximately 1.575 through 1.930 metres). The initially selected height is 5
 feet 10 inches (approximately 1.778 metres), providing a neutral starting point
-without preventing immediate adjustment for a specific player. The release
-offset above the forehead remains a calibration decision.
+without preventing immediate adjustment for a specific player. At release, the
+ball's center is 8 inches (0.2032 metres) above the setter's modeled forehead
+height. This value remains centralized so a coaching calibration session can
+adjust it without changing trajectory logic.
 
 ## Set state model
 
@@ -487,8 +490,7 @@ links is not guaranteed when the state format changes.
 - Validate position 6 at 2.5 feet behind the setter.
 - Validate the net at 7 feet 11.75 inches high.
 - Validate the setter's default distance of 2 feet from the net.
-- Validate the 5-foot-10-inch default setter height and calibrate the release
-  offset above the forehead.
+- Validate the 5-foot-10-inch default setter height and 8-inch release offset.
 - Confirm the default contact height.
 - Calibrate force values to useful estimated travel times.
 - Define valid setter and endpoint movement boundaries and curve limits.
@@ -555,15 +557,12 @@ JSON endpoints.
 These decisions should be resolved before implementation or during the
 calibration prototype:
 
-1. What is the default selected setter height within the 5-foot-2-inch to
-   6-foot-4-inch range?
-2. How far above the forehead should the release point be?
-3. Should the default contact point be 1.5, 1.75, or 2 feet above the net?
-4. What travel-time range should the force slider represent?
-5. Should the force control display only a percentage, or percentage plus
+1. Should the default contact point be 1.5, 1.75, or 2 feet above the net?
+2. What travel-time range should the force slider represent?
+3. Should the force control display only a percentage, or percentage plus
    estimated seconds?
-6. How far may the setter and target be dragged before being clamped?
-7. Should the setter be represented by a simple coaching marker, a stylized
+4. How far may the setter and target be dragged before being clamped?
+5. Should the setter be represented by a simple coaching marker, a stylized
    figure, or a more realistic player model?
 
 ## Future possibilities
