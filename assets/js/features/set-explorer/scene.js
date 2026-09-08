@@ -8,7 +8,7 @@ const CAMERA_VIEWS = {
     left: { position: [-4.5, 5.2, 5.5], target: [4.2, 1.6, 0.5] },
     middle: { position: [4.5, 5.8, 8.5], target: [4.5, 1.5, 0.4] },
     right: { position: [13.5, 5.2, 5.5], target: [4.8, 1.6, 0.5] },
-    opposition: { position: [4.5, 5.2, -8.5], target: [4.5, 1.5, 0.5] },
+    opposition: { position: [4.5, 5.8, -12.5], target: [4.5, 1.5, 0.5] },
 };
 
 function material(color, options = {}) {

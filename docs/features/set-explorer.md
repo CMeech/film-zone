@@ -67,8 +67,8 @@ sections below.
 
 ### Interaction proof of concept
 
-- [ ] Render a regulation-scale half court, net, setter, ball, target, and path.
-- [ ] Validate the numbered target coordinates visually.
+- [x] Render a regulation-scale half court, net, setter, ball, target, and path.
+- [x] Validate the numbered target coordinates visually.
 - [ ] Validate the setter-relative position 6 behavior.
 - [ ] Validate the three height curves at short, long, front, and back targets.
 - [ ] Validate force-based travel speed.
@@ -78,6 +78,22 @@ sections below.
 - [ ] Calibrate setter location, release height, contact height, and force range.
 - [ ] Review the prototype from every named camera view.
 - [ ] Decide whether the prototype interaction is ready for FilmZone integration.
+
+#### Validation log
+
+- 2026-09-08: Confirmed the regulation-scale half court, net, setter, ball,
+  target, and path render together at the desktop review width.
+- 2026-09-08: Confirmed positions 1, 3, 5, 7, and 9 use the expected
+  `0.5, 2.5, 4.5, 6.5, 8.5 m` lateral coordinates. The opposition camera was
+  moved back so the complete net and both extreme targets remain visible.
+- 2026-09-08: Confirmed heights 1, 2, and 3 produce ordered, visibly distinct
+  arcs for long outside sets. Numeric curve sampling found that the apexes for
+  short sets at positions 5, 6, and 7 remain very close together; coaching
+  calibration is still required before marking height-curve validation
+  complete.
+- 2026-09-08: Confirmed the position-6 formula remains 0.762 metres to the
+  attacking team's right of the setter. Setter-drag behavior remains open for
+  interactive verification.
 
 ### FilmZone implementation
 
