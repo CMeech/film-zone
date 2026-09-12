@@ -39,6 +39,10 @@ if (app) {
         app.dataset.targetX = state.target.x.toFixed(3);
         app.dataset.targetZ = state.target.z.toFixed(3);
         app.dataset.targetMode = state.target.mode;
+        app.dataset.animationStatus = animation.status;
+        app.dataset.cameraView = state.cameraView;
+        app.dataset.animationStatus = animation.status;
+        app.dataset.cameraView = state.cameraView;
         label.textContent = currentLabel();
         force.value = String(state.force);
         forceValue.textContent = `${Math.round(state.force)}%`;

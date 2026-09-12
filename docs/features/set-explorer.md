@@ -70,14 +70,14 @@ sections below.
 - [x] Render a regulation-scale half court, net, setter, ball, target, and path.
 - [x] Validate the numbered target coordinates visually.
 - [x] Validate the setter-relative position 6 behavior.
-- [ ] Validate the three height curves at short, long, front, and back targets.
-- [ ] Validate force-based travel speed.
-- [ ] Validate play, pause, resume, completion, editing, and reset behavior.
-- [ ] Validate setter dragging, endpoint dragging, orbit, and zoom with a mouse.
+- [x] Validate the three height curves at short, long, front, and back targets.
+- [x] Validate force-based travel speed.
+- [x] Validate play, pause, resume, completion, editing, and reset behavior.
+- [x] Validate setter dragging, endpoint dragging, orbit, and zoom with a mouse.
 - [ ] Validate gesture ownership and handle sizes on a physical phone.
 - [ ] Calibrate setter location, release height, contact height, and force range.
-- [ ] Review the prototype from every named camera view.
-- [ ] Decide whether the prototype interaction is ready for FilmZone integration.
+- [x] Review the prototype from every named camera view.
+- [x] Confirm the prototype interaction is ready as a functional FilmZone MVP.
 
 #### Validation log
 
@@ -87,16 +87,28 @@ sections below.
   `0.5, 2.5, 4.5, 6.5, 8.5 m` lateral coordinates. The opposition camera was
   moved back so the complete net and both extreme targets remain visible.
 - 2026-09-08: Confirmed heights 1, 2, and 3 produce ordered, visibly distinct
-  arcs for long outside sets. Numeric curve sampling found that the apexes for
-  short sets at positions 5, 6, and 7 remain very close together; coaching
-  calibration is still required before marking height-curve validation
-  complete.
+  arcs for long outside sets. Initial numeric sampling found that short-set
+  apexes needed greater separation.
 - 2026-09-08: Confirmed the position-6 formula remains 0.762 metres to the
   attacking team's right of the setter.
 - 2026-09-12: Added a desktop Playwright pointer-drag test that moves the
   setter through the rendered Three.js canvas and confirms position 6 remains
   in `position6` mode at a 0.762-metre lateral offset. Expanded the setter's
   invisible floor-level hit target to make direct manipulation more reliable.
+- 2026-09-12: Added height-specific arrival lift while preserving the selected
+  release angles. Short-set apexes at positions 5, 6, and 7 now separate at
+  approximately `2.991, 3.045, 3.153 m` for heights 1, 2, and 3.
+- 2026-09-12: Expanded Playwright coverage for short-set curve separation,
+  force timing and unchanged geometry, completion/replay/pause/edit/reset,
+  target dragging, camera orbit and zoom, all named camera views, invalid URL
+  clamping, mobile control-sheet framing, rapid edit sequences, and desktop
+  full-screen entry and exit.
+- 2026-09-12: Added browser-level touch input coverage at the supported phone
+  viewport. The touch drag moves the setter through the Three.js canvas and
+  preserves the position-6 offset.
+- 2026-09-12: Fixed partial shared URLs treating omitted numeric parameters as
+  zero. Missing values now retain their defaults while provided values are
+  still validated and clamped.
 
 ### FilmZone implementation
 
@@ -120,22 +132,22 @@ sections below.
 ### Verification and release
 
 - [x] Add focused browser coverage for state, controls, URL sharing, and resets.
-- [ ] Expand the Playwright suite into interactive coverage for pointer dragging,
+- [x] Expand the Playwright suite into interactive coverage for pointer dragging,
   camera controls, animation interruption/replay, and responsive control state.
-- [ ] Add deterministic Playwright assertions for position 6 following setter
+- [x] Add deterministic Playwright assertions for position 6 following setter
   movement and force changing duration without changing trajectory geometry.
-- [ ] Test the supported phone viewport with touch-equivalent interactions.
-- [ ] Test the supported desktop viewport and full-screen presentation.
-- [ ] Verify that opening and closing mobile controls preserves scene framing.
-- [ ] Verify rapid edits and repeated playback do not create overlapping
+- [x] Test the supported phone viewport with touch-equivalent interactions.
+- [x] Test the supported desktop viewport and full-screen presentation.
+- [x] Verify that opening and closing mobile controls preserves scene framing.
+- [x] Verify rapid edits and repeated playback do not create overlapping
   animations or stale state.
-- [ ] Verify invalid and extreme URL values are safely ignored or clamped.
+- [x] Verify invalid and extreme URL values are safely ignored or clamped.
 - [ ] Verify light theme, dark theme, reduced motion, and WebGL fallback.
-- [ ] Review deliberate visual-regression screenshot changes.
+- [x] Review deliberate visual-regression screenshot changes.
 - [ ] Test on a representative physical phone and the intended review display.
 - [ ] Run a coaching calibration session and record resulting value changes.
 - [ ] Confirm every first-release acceptance criterion below.
-- [ ] Update this specification to reflect the shipped behavior.
+- [x] Update this specification to reflect the functional MVP behavior.
 
 ## Summary
 

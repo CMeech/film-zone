@@ -2,7 +2,7 @@ import { CALIBRATION, clamp, defaultState, snappedTarget } from './calibration.j
 
 const POSITIONS = new Set([1, 3, 5, 6, 7, 9]);
 const VIEWS = new Set(['end', 'left', 'middle', 'right', 'opposition']);
-const finite = (value) => Number.isFinite(Number(value)) ? Number(value) : null;
+const finite = (value) => value !== null && value !== '' && Number.isFinite(Number(value)) ? Number(value) : null;
 
 export function parseUrlState(search) {
     const state = defaultState();

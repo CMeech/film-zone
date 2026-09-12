@@ -28,7 +28,7 @@ export function attachInteraction(sceneView, getState, commit) {
             return;
         }
         cast(event);
-        const targetHit = raycaster.intersectObject(sceneView.target, false).length > 0;
+        const targetHit = raycaster.intersectObject(sceneView.targetHitTarget, false).length > 0;
         const setterHit = raycaster.intersectObject(sceneView.setterHitTarget, false).length > 0;
         const kind = targetHit ? 'target' : setterHit ? 'setter' : null;
         sceneView.setSelection(kind);

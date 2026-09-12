@@ -7,7 +7,9 @@ services:
     environment:
       - NODE_ENV=development
       - EXPLAIN_TEMPLATE_LOADING=False
+      - FILMZONE_ENV=development
       - FLASK_ENV=development
+      - FLASK_SECRET_KEY=development-only-secret
       - ADMIN_USERNAME=cmeeches-admin
       - ADMIN_PASSWORD=secret123
       - ADMIN_DISPLAY_NAME=Cassius Meeches
@@ -52,3 +54,6 @@ services:
     entrypoint: []
     command: npm run watch-bundler
     working_dir: /app
+
+volumes:
+  sqlite-data:

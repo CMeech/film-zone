@@ -11,6 +11,7 @@ export const CALIBRATION = Object.freeze({
     position6Offset: 0.762,
     targetNetOffset: 0.35,
     angles: { 1: 45, 2: 52, 3: 60 },
+    arrivalLift: { 1: 0.18, 2: 0.35, 3: 0.6 },
     duration: { min: 0.45, max: 1.5 },
     customTolerance: 0.18,
 });

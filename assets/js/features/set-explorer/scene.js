@@ -116,7 +116,11 @@ export class SetExplorerScene {
             new THREE.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.9 }),
         );
         this.target.userData.kind = 'target';
-        this.scene.add(this.target);
+        this.targetHitTarget = new THREE.Mesh(
+            new THREE.SphereGeometry(0.34, 16, 12),
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
+        );
+        this.scene.add(this.target, this.targetHitTarget);
     }
 
     createBall() {
@@ -139,15 +143,20 @@ export class SetExplorerScene {
         const direction = new THREE.Vector3(state.target.x - state.setter.x, 0, state.target.z - state.setter.z);
         if (direction.lengthSq() > 0.001) this.setter.rotation.y = Math.atan2(direction.x, direction.z);
         this.target.position.copy(contactPoint(state));
+        this.targetHitTarget.position.copy(this.target.position);
         this.curve = createTrajectory(state);
+        const curvePoints = this.curve.getPoints(72);
+        this.container.dataset.trajectoryApex = String(Math.max(...curvePoints.map((point) => point.y)));
         this.path.geometry.dispose();
-        this.path.geometry = new THREE.BufferGeometry().setFromPoints(this.curve.getPoints(72));
+        this.path.geometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
         this.ball.position.copy(releasePoint(state));
+        this.container.dataset.ballProgress = '0';
         this.requestRender();
     }
 
     setBallProgress(progress) {
         this.ball.position.copy(this.curve.getPointAt(progress));
+        this.container.dataset.ballProgress = String(progress);
         this.requestRender();
     }
 
@@ -191,8 +200,19 @@ export class SetExplorerScene {
     updateHandleCoordinates() {
         this.camera.updateMatrixWorld();
         const setterPoint = new THREE.Vector3(this.state.setter.x, 0.04, this.state.setter.z).project(this.camera);
+        const targetPoint = this.target.position.clone().project(this.camera);
         this.container.dataset.setterHandleX = String((setterPoint.x + 1) / 2);
         this.container.dataset.setterHandleY = String((1 - setterPoint.y) / 2);
+        this.container.dataset.targetHandleX = String((targetPoint.x + 1) / 2);
+        this.container.dataset.targetHandleY = String((1 - targetPoint.y) / 2);
+        this.container.dataset.cameraX = String(this.camera.position.x);
+        this.container.dataset.cameraY = String(this.camera.position.y);
+        this.container.dataset.cameraZ = String(this.camera.position.z);
+        this.container.dataset.cameraDistance = String(this.camera.position.distanceTo(this.controls.target));
+        this.container.dataset.cameraX = String(this.camera.position.x);
+        this.container.dataset.cameraY = String(this.camera.position.y);
+        this.container.dataset.cameraZ = String(this.camera.position.z);
+        this.container.dataset.cameraDistance = String(this.camera.position.distanceTo(this.controls.target));
     }
 
     dispose() {

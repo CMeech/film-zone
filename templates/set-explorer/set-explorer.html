@@ -27,8 +27,8 @@
 
         <button id="set-explorer-controls-toggle" type="button" class="btn btn-sm md:hidden">Show controls</button>
 
-        <aside id="set-explorer-controls" class="card hidden max-h-[48vh] overflow-y-auto bg-base-100 shadow-xl md:block md:max-h-none md:w-80">
-            <div class="card-body gap-5 p-4">
+        <aside id="set-explorer-controls" class="card hidden max-h-[48vh] overflow-y-auto bg-base-100 shadow-xl md:block md:max-h-none md:w-64">
+            <div class="card-body gap-4 p-4">
                 <div>
                     <div class="mb-2 text-sm font-semibold">Target position</div>
                     <div id="set-explorer-positions" class="grid grid-cols-6 gap-1">
@@ -59,12 +59,12 @@
 
                 <div>
                     <div class="mb-2 text-sm font-semibold">View</div>
-                    <div id="set-explorer-views" class="grid grid-cols-2 gap-2">
-                        <button type="button" class="btn btn-sm" data-view="end">End court</button>
-                        <button type="button" class="btn btn-sm" data-view="left">Left side</button>
-                        <button type="button" class="btn btn-sm" data-view="middle">Middle</button>
-                        <button type="button" class="btn btn-sm" data-view="right">Right side</button>
-                        <button type="button" class="btn btn-sm col-span-2" data-view="opposition">Opposition</button>
+                    <div id="set-explorer-views" class="flex flex-wrap gap-1">
+                        <button type="button" class="btn btn-sm w-fit px-2" data-view="end">End court</button>
+                        <button type="button" class="btn btn-sm w-fit px-2" data-view="left">Left side</button>
+                        <button type="button" class="btn btn-sm w-fit px-2" data-view="middle">Middle</button>
+                        <button type="button" class="btn btn-sm w-fit px-2" data-view="right">Right side</button>
+                        <button type="button" class="btn btn-sm w-fit px-2" data-view="opposition">Opposition</button>
                     </div>
                 </div>
 

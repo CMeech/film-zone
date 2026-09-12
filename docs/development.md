@@ -9,12 +9,11 @@ host.
 Development uses the Compose base plus its automatic override:
 
 ```sh
-FLASK_SECRET_KEY=local-development-only docker compose up --build --watch
+docker compose up --build --watch
 ```
 
-Compose interpolates the base file before applying the override, so a
-`FLASK_SECRET_KEY` must be present. Use a local-only value and never reuse it in
-production.
+The development override supplies a local-only `FLASK_SECRET_KEY`. Production
+does not use the override and still requires a private secret at startup.
 
 The first development build may take several minutes while Node, the native
 file watcher, and Python dependencies are built. Continued Docker layer

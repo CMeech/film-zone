@@ -30,9 +30,10 @@ export function createTrajectory(state) {
         .addScaledVector(horizontal, handle)
         .add(new THREE.Vector3(0, Math.tan(radians) * handle, 0));
     const arrivalHandle = clamp(distance * 0.2, 0.25, 1.25);
+    const arrivalLift = Math.max(distance * 0.08, CALIBRATION.arrivalLift[state.height]);
     const p2 = end.clone()
         .addScaledVector(horizontal, -arrivalHandle)
-        .add(new THREE.Vector3(0, clamp(distance * 0.08, 0.18, 0.55), 0));
+        .add(new THREE.Vector3(0, clamp(arrivalLift, 0.18, 0.7), 0));
 
     return new THREE.CubicBezierCurve3(start, p1, p2, end);
 }
