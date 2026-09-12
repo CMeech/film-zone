@@ -101,7 +101,12 @@ export class SetExplorerScene {
         );
         this.setterRing.rotation.x = -Math.PI / 2;
         this.setterRing.position.y = 0.025;
-        this.setter.add(this.setterRing);
+        this.setterHitTarget = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.55, 0.55, 0.08, 20),
+            new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
+        );
+        this.setterHitTarget.position.y = 0.04;
+        this.setter.add(this.setterRing, this.setterHitTarget);
         this.scene.add(this.setter);
     }
 
@@ -178,8 +183,16 @@ export class SetExplorerScene {
         this.renderRequested = requestAnimationFrame(() => {
             this.renderRequested = null;
             this.controls.update();
+            this.updateHandleCoordinates();
             this.renderer.render(this.scene, this.camera);
         });
+    }
+
+    updateHandleCoordinates() {
+        this.camera.updateMatrixWorld();
+        const setterPoint = new THREE.Vector3(this.state.setter.x, 0.04, this.state.setter.z).project(this.camera);
+        this.container.dataset.setterHandleX = String((setterPoint.x + 1) / 2);
+        this.container.dataset.setterHandleY = String((1 - setterPoint.y) / 2);
     }
 
     dispose() {

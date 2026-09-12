@@ -34,6 +34,11 @@ if (app) {
     }
 
     function syncUi() {
+        app.dataset.setterX = state.setter.x.toFixed(3);
+        app.dataset.setterZ = state.setter.z.toFixed(3);
+        app.dataset.targetX = state.target.x.toFixed(3);
+        app.dataset.targetZ = state.target.z.toFixed(3);
+        app.dataset.targetMode = state.target.mode;
         label.textContent = currentLabel();
         force.value = String(state.force);
         forceValue.textContent = `${Math.round(state.force)}%`;

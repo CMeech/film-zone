@@ -69,7 +69,7 @@ sections below.
 
 - [x] Render a regulation-scale half court, net, setter, ball, target, and path.
 - [x] Validate the numbered target coordinates visually.
-- [ ] Validate the setter-relative position 6 behavior.
+- [x] Validate the setter-relative position 6 behavior.
 - [ ] Validate the three height curves at short, long, front, and back targets.
 - [ ] Validate force-based travel speed.
 - [ ] Validate play, pause, resume, completion, editing, and reset behavior.
@@ -92,8 +92,11 @@ sections below.
   calibration is still required before marking height-curve validation
   complete.
 - 2026-09-08: Confirmed the position-6 formula remains 0.762 metres to the
-  attacking team's right of the setter. Setter-drag behavior remains open for
-  interactive verification.
+  attacking team's right of the setter.
+- 2026-09-12: Added a desktop Playwright pointer-drag test that moves the
+  setter through the rendered Three.js canvas and confirms position 6 remains
+  in `position6` mode at a 0.762-metre lateral offset. Expanded the setter's
+  invisible floor-level hit target to make direct manipulation more reliable.
 
 ### FilmZone implementation
 
