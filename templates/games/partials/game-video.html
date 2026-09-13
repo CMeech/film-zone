@@ -3,11 +3,11 @@
 <section class="card bg-base-100 shadow-lg">
     <div class="card-body">
         <h2 class="card-title">Match Video</h2>
-        <div x-show="hasVideo" class="w-full max-w-4xl mx-auto">
+        <div x-show="hasVideo" x-effect="updateVideoFrame" class="w-full max-w-4xl mx-auto">
             <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
                 <iframe class="absolute top-0 left-0 w-full h-full"
                         allowfullscreen loading="lazy" referrerpolicy="no-referrer"
-                        :src="embedVideoUrl"></iframe>
+                        x-ref="videoFrame" title="Match video"></iframe>
             </div>
         </div>
         <div x-show="!hasVideo" class="text-base-content/60">

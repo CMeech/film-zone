@@ -56,6 +56,24 @@ document.addEventListener('alpine:init', function () {
             get embedVideoUrl() {
                 return this.toEmbedUrl(this.formVideoUrl || '');
             },
+            updateVideoFrame() {
+                // CSP Alpine cannot evaluate directives on an iframe itself.
+                // Read reactively on the wrapper, then update the DOM in code.
+                const raw = this.embedVideoUrl;
+                let src = '';
+                try {
+                    const url = new URL(raw);
+                    if (url.protocol === 'https:' || url.protocol === 'http:') src = url.href;
+                } catch (_) { /* Empty or incomplete input clears the player. */ }
+                this.$nextTick(() => {
+                    const frame = this.$refs.videoFrame;
+                    if (src) {
+                        if (frame.getAttribute('src') !== src) frame.setAttribute('src', src);
+                    } else {
+                        frame.removeAttribute('src');
+                    }
+                });
+            },
             get setLabels() {
                 return ['Set 1','Set 2','Set 3','Set 4','Set 5','Total'];
             },
