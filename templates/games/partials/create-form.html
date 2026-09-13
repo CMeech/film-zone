@@ -17,7 +17,7 @@
                             id="opponent_name"
                             name="opponent_name"
                             required
-                            x-model="newGame.opponent_name"
+                            x-model="formOpponentName"
                             class="input input-bordered"
                     />
                 </div>
@@ -30,7 +30,7 @@
                             type="text"
                             id="final_score"
                             name="final_score"
-                            x-model="newGame.final_score"
+                            x-model="formFinalScore"
                             class="input input-bordered"
                     />
                 </div>
@@ -42,7 +42,7 @@
                                 type="checkbox"
                                 id="is_home"
                                 name="is_home"
-                                x-model="newGame.is_home"
+                                x-model="formIsHome"
                                 class="checkbox"
                         />
                     </label>
@@ -55,7 +55,7 @@
                     <select
                             id="event_id"
                             name="event_id"
-                            x-model="newGame.event_id"
+                            x-model="formEventId"
                             class="select select-bordered"
                     >
                         <option value="">-- Select an Event --</option>

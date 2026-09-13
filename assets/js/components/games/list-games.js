@@ -6,15 +6,14 @@ document.addEventListener('alpine:init', () => {
         events: [],
         submitting: false,
         submitText: 'Create Game',
-        newGame: {
-            opponent_name: '',
-            final_score: '',
-            is_home: false,
-            event_id: null,
-        },
+        // Alpine CSP x-model supports assignments to top-level fields.
+        formOpponentName: '',
+        formFinalScore: '',
+        formIsHome: false,
+        formEventId: '',
 
         get disabled() {
-            return !this.newGame.opponent_name || this.submitting;
+            return !this.formOpponentName || this.submitting;
         },
 
         // ---- Navigation & title ----
@@ -91,10 +90,10 @@ document.addEventListener('alpine:init', () => {
 
             try {
                 const payload = {
-                    opponent_name: this.newGame.opponent_name,
-                    final_score: this.newGame.final_score || null,
-                    is_home: !!this.newGame.is_home,
-                    event_id: this.newGame.event_id,
+                    opponent_name: this.formOpponentName,
+                    final_score: this.formFinalScore || null,
+                    is_home: !!this.formIsHome,
+                    event_id: this.formEventId || null,
                 };
 
                 const res = await fetch('/games/create', {
@@ -110,7 +109,10 @@ document.addEventListener('alpine:init', () => {
                 if (!res.ok) throw new Error('Failed to create game');
 
                 // Reset form
-                this.newGame = { opponent_name: '', final_score: '', is_home: false, event_id: null };
+                this.formOpponentName = '';
+                this.formFinalScore = '';
+                this.formIsHome = false;
+                this.formEventId = '';
 
                 await this.loadGames();
             } catch (err) {

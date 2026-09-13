@@ -1,0 +1,42 @@
+import { test, expect } from '@playwright/test';
+import { loginAsAdmin } from './helpers.js';
+
+test('create game fields persist and reset without CSP errors', async ({ page }, testInfo) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  await loginAsAdmin(page);
+  await page.goto('/team/list/user');
+  await page.locator('li').filter({ hasText: 'Falcons Varsity' }).getByRole('button', { name: 'Select' }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+  await page.clock.setFixedTime(new Date('2026-08-22T12:00:00Z'));
+  await page.goto('/games/list');
+  const submit = page.getByRole('button', { name: 'Create Game', exact: true });
+  await expect(submit).toBeDisabled();
+  const opponent = `CSP regression ${testInfo.project.name}`;
+  await page.locator('#opponent_name').fill(opponent);
+  await page.locator('#final_score').fill('3-1');
+  await page.locator('#is_home').check();
+  expect(errors).toEqual([]);
+  await expect(page.locator('#event_id option')).not.toHaveCount(1);
+  const eventId = await page.locator('#event_id option').nth(1).getAttribute('value');
+  await page.locator('#event_id').selectOption(eventId);
+  expect(errors).toEqual([]);
+  await expect(submit).toBeEnabled();
+  const created = page.waitForResponse(response => response.url().endsWith('/games/create') && response.request().method() === 'POST');
+  await submit.click();
+  const response = await created;
+  expect(response.ok()).toBeTruthy();
+  expect(response.request().postDataJSON()).toEqual({ opponent_name: opponent, final_score: '3-1', is_home: true, event_id: eventId });
+  await expect(page.locator('#games-list')).toContainText(opponent);
+  await expect(page.locator('#opponent_name')).toHaveValue('');
+  await expect(page.locator('#final_score')).toHaveValue('');
+  await expect(page.locator('#is_home')).not.toBeChecked();
+  await expect(page.locator('#event_id')).toHaveValue('');
+  await expect(submit).toBeDisabled();
+  await page.reload();
+  await expect(page.locator('#games-list')).toContainText(opponent);
+  expect(errors).toEqual([]);
+});
