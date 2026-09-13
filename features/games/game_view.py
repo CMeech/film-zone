@@ -158,7 +158,7 @@ def update_game(game_id):
     try:
         game = get_game_internal(game_id)
     except RuntimeError as e:
-        return jsonify({"error": e}), 401
+        return jsonify({"error": str(e)}), 401
     if not game:
         return jsonify({"error": "Game not found"}), 404
     try:
@@ -213,7 +213,7 @@ def delete_game(game_id):
     try:
         game = get_game_internal(game_id)
     except RuntimeError as e:
-        return jsonify({"error": e}), 401
+        return jsonify({"error": str(e)}), 401
     if not game:
         return jsonify({"error": "Game not found"}), 404
     try:

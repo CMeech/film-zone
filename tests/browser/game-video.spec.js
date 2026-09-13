@@ -14,6 +14,7 @@ test('game video URL saves and embeds without Alpine errors', async ({ page }) =
   await page.locator('li').filter({ hasText: 'Falcons Varsity' }).getByRole('button', { name: 'Select' }).click();
   await expect(page).toHaveURL(/\/dashboard/);
   await page.goto('/games/view/501');
+  await page.locator('#final_score').fill('3-2');
   await page.locator('#video_url').fill(videoUrl);
   await expect(page.locator('iframe')).toHaveAttribute('src', videoUrl);
   const saved = page.waitForResponse(response => response.url().endsWith('/games/update/501') && response.request().method() === 'POST');
@@ -21,6 +22,11 @@ test('game video URL saves and embeds without Alpine errors', async ({ page }) =
   expect((await saved).ok()).toBeTruthy();
   await page.reload();
   await expect(page.locator('#video_url')).toHaveValue(videoUrl);
+  await expect(page.locator('#final_score')).toHaveValue('3-2');
+  const persisted = await (await page.request.get('/games/501')).json();
+  expect(persisted.final_score).toBe('3-2');
+  expect(persisted.video_url).toBe(videoUrl);
+  expect(persisted.event_id).toBe(402);
   await expect(page.locator('iframe')).toHaveAttribute('src', videoUrl);
   await page.locator('#video_url').fill('');
   await expect(page.getByText('No video URL set.')).toBeVisible();

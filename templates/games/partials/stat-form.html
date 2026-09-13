@@ -1,7 +1,8 @@
 <!-- 3) Interactive Stats Form -->
+{% if g.user_profile.user.role.value in ["admin", "coach"] %}
 <section
     class="hidden md:block card bg-base-100 shadow-lg"
-    x-show="latestGameData"
+    x-show="latestGameData && activeSetIndex < 5"
     x-cloak
 >
     <div class="card-body">
@@ -214,6 +215,7 @@
                             <button
                                 type="button"
                                 class="btn btn-success"
+                                :disabled="invalidOpponentNumber"
                                 @click="addOpponentPlayerFromForm">Add</button>
                         </div>
                     </div>
@@ -257,7 +259,8 @@
                                             type="number"
                                             min="1"
                                             max="99"
-                                            x-model.number="rotationEdit.team[idx]"
+                                            :value="rotationEdit.team[idx]"
+                                            @input="setRotationNumber('team', idx, $event.target.value)"
                                            class="input input-bordered input-sm"
                                         />
                                     </template>
@@ -275,7 +278,8 @@
                                             type="number"
                                             min="1"
                                             max="99"
-                                            x-model.number="rotationEdit.opponent[idx]"
+                                            :value="rotationEdit.opponent[idx]"
+                                            @input="setRotationNumber('opponent', idx, $event.target.value)"
                                            class="input input-bordered input-sm"
                                         />
                                     </template>
@@ -350,3 +354,4 @@
         </div>
     </div>
 </section>
+{% endif %}

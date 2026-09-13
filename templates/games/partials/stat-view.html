@@ -31,7 +31,7 @@
                     type="button"
                     class="tab"
                     :class="activeTeamKey===team.key ? 'tab-active' : ''"
-                    @click="activeTeamKey=team.key"
+                    @click="setActiveTeam(team.key)"
                 >
                     <span x-text="team.label"></span>
                 </button>

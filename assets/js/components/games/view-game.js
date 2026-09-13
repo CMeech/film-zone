@@ -96,7 +96,18 @@ document.addEventListener('alpine:init', function () {
 
             setActiveSet(idx) {
                 this.activeSetIndex = idx;
-                this.enterSetRotation();
+                if (idx < 5) this.enterSetRotation();
+                else this.resetInteractive();
+            },
+            setActiveTeam(teamKey) {
+                this.activeTeamKey = teamKey;
+            },
+            setRotationNumber(teamKey, idx, value) {
+                const number = Number(value);
+                this.rotationEdit[teamKey][idx] = value !== '' && Number.isInteger(number) && number >= 1 && number <= 99 ? number : null;
+            },
+            get invalidOpponentNumber() {
+                return !Number.isInteger(this.newOpponentNumber) || this.newOpponentNumber < 1 || this.newOpponentNumber > 99;
             },
 
             // returns array of [num, stats] sorted by player number (used in table)
@@ -444,7 +455,7 @@ document.addEventListener('alpine:init', function () {
 
             // Adds a player to opponent roster (from the add-player form)
             addOpponentPlayerFromForm: function () {
-                if (!this.newOpponentNumber) return;
+                if (this.invalidOpponentNumber) return;
                 var num = Number(this.newOpponentNumber);
                 if (!Number.isFinite(num)) return;
                 // ensure player_stats object exists for current set
